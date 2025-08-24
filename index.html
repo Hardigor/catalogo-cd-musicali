@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport migliorato per dispositivi mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Catalogo CD Musicali - Integrazione Google Sheets</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --accent-color: #2c3e50;
+            --border-color: #dee2e6;
+            --button-bg: #495057;
+            --button-hover: #343a40;
+            --button-text: #ffffff;
+            --header-bg: #343a40;
+            --stat-bg: #e9ecef;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.12);
+            --success-color: #28a745;
+            --warning-color: #dc3545;
+            --radius: 8px;
+            --radius-sm: 4px;
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Fix per il body - rimuovere overflow-x nascosto che potrebbe causare problemi */
+        html, body {
+            width: 100%;
+            position: relative;
+            overflow-x: hidden; /* Previene scroll orizzontale */
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            /* Assicura che il body non ecceda la larghezza dello schermo */
+            width: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            width: 100%;
+            /* Previene sovrapposizioni */
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-container {
+            background: var(--header-bg);
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            width: 100%;
+            position: relative;
+            z-index: 5;
+            /* Assicura che non ci siano sovrapposizioni */
+            overflow: hidden;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .logo {
+                justify-content: flex-start;
+            }
+        }
+
+        .logo-icon {
+            font-size: 24px;
+            color: #ffffff;
+            background: #495057;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .logo-icon {
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .header-controls {
+                justify-content: flex-end;
+            }
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-export {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--button-bg);
+        }
+
+        .btn-export:hover {
+            background: var(--button-hover);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 16px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                display: grid;
+                grid-template-columns: 320px 1fr;
+                gap: 24px;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: 0 2px 8px var(--shadow-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--accent-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #6c757d;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+        }
+
+        .btn-submit {
+            background: var(--button-bg);
+            color: var(--button-text);
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 16px;
+            margin-top: 10px;
+            border: 1px solid var(--button-bg);
+        }
+
+        .btn-submit:hover {
+            background: var(--button-hover);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-input:focus {
+            border-color: #6c757d;
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+        }
+
+        .btn-search {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--button-bg);
+            padding: 0 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .btn-search:hover {
+            background: var(--button-hover);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            max-height: 600px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+            /* Assicura che la tabella non causi overflow */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 600px;
+        }
+
+        @media (max-width: 767px) {
+            table {
+                font-size: 16px;
+            }
+            
+            th, td {
+                padding: 16px 12px;
+            }
+        }
+
+        thead {
+            background: #f8f9fa;
+            color: var(--text-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        th {
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+            color: #495057;
+        }
+
+        th:hover {
+            background-color: #e9ecef;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        tr {
+            transition: var(--transition);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .text-center {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .stat-box {
+            background: var(--stat-bg);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            padding: 20px;
+            color: var(--text-color);
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .highlight {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* Stile per i messaggi di stato */
+        .status-message {
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            display: none;
+            font-weight: 500;
+            width: 100%;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Loader */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #495057;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Configurazione Google Sheets */
+        .sheets-config {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .sheets-config-details {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        .sheets-config-details summary {
+            padding: 16px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #6c757d;
+            transition: var(--transition);
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sheets-config-details summary:hover {
+            color: var(--text-color);
+        }
+
+        .sheets-config-details[open] summary {
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .sheets-config-content {
+            padding: 16px;
+        }
+
+        .sheets-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        @media (min-width: 480px) {
+            .sheets-buttons {
+                flex-direction: row;
+            }
+        }
+
+        .btn-config {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .btn-config:hover {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border-color: var(--button-bg);
+        }
+
+        .btn-config.btn-remove:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+        }
+
+        /* Paginazione */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+            min-width: 44px;
+        }
+
+        .pagination button:hover {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+        }
+
+        .pagination button.active {
+            background: var(--button-bg);
+            color: var(--button-text);
+            font-weight: 600;
+            border: 1px solid var(--button-bg);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Debug info */
+        .debug-info {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            display: none;
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        .debug-toggle {
+            margin-top: 12px;
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 14px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 12px auto;
+            padding: 12px;
+        }
+
+        .debug-toggle:hover {
+            color: var(--text-color);
+        }
+
+        /* Scrollbar personalizzata */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Menu mobile per la tabella */
+        .mobile-table-menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-table-menu {
+                display: none;
+            }
+        }
+
+        .mobile-table-menu button {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .mobile-table-menu button.active {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--button-bg);
+        }
+
+        /* Vista a card per dispositivi mobile */
+        .mobile-cards-view {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .mobile-cards-view {
+                display: block;
+            }
+            
+            .table-container {
+                display: none;
+            }
+            
+            .mobile-card {
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius);
+                padding: 16px;
+                margin-bottom: 16px;
+                box-shadow: 0 2px 4px var(--shadow-color);
+            }
+            
+            .mobile-card div {
+                margin-bottom: 12px;
+                display: flex;
+            }
+            
+            .mobile-card div strong {
+                min-width: 80px;
+                display: inline-block;
+                margin-right: 12px;
+                color: #495057;
+            }
+        }
+
+        /* Fix per sovrapposizione su mobile - MODIFICHE PRINCIPALI */
+        @media (max-width: 767px) {
+            html, body {
+                width: 100%;
+                overflow-x: hidden;
+                position: relative;
+            }
+            
+            body {
+                padding: 12px;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            
+            .container {
+                gap: 16px;
+                width: 100%;
+            }
+            
+            .card {
+                padding: 16px;
+                margin-bottom: 16px;
+                width: 100%;
+            }
+            
+            .header-container {
+                padding: 12px;
+                width: 100%;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .btn-search {
+                padding: 12px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .sheets-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-config {
+                width: 100%;
+            }
+            
+            /* Assicura che tutti gli elementi non eccedano la larghezza del viewport */
+            .main-content, .header-container, .container, 
+            .left-column, .right-column, .card,
+            .table-container, .sheets-config {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            /* Previene il ridimensionamento del testo */
+            html {
+                -webkit-text-size-adjust: 100%;
+            }
+        }
+
+        /* Aggiustamenti per dispositivi molto piccoli */
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 20px;
+            }
+            
+            .logo {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .card-title {
+                font-size: 16px;
+            }
+            
+            .stat-value {
+                font-size: 20px;
+            }
+            
+            body {
+                padding: 8px;
+            }
+            
+            .header-container, .card {
+                padding: 12px;
+            }
+        }
+
+        /* Regola specifica per Google Sites */
+        /* Questa regola può aiutare a prevenire problemi di sovrapposizione */
+        #sites-chrome {
+            overflow: visible !important;
+        }
+        
+        /* Assicura che il contenuto sia sempre visualizzato correttamente */
+        .sites-layout-tile {
+            overflow: visible !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="header-container">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-compact-disc"></i>
+                    </div>
+                    <h1>Catalogo CD Musicali</h1>
+                </div>
+                <div class="header-controls">
+                    <button class="btn btn-export" onclick="loadCds()">
+                        <i class="fas fa-sync-alt"></i> Ricarica
+                    </button>
+                </div>
+            </header>
+        </div>
+        
+        <div id="status-message" class="status-message"></div>
+        <div id="loader" class="loader"></div>
+
+        <div class="container">
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-search"></i> Cerca e Filtra</h2>
+                    <div class="search-box">
+                        <input type="text" id="search-input" class="search-input" placeholder="Cerca per titolo, artista...">
+                        <button class="btn-search" onclick="searchCds()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-genre">Filtra per genere</label>
+                        <select id="filter-genre" onchange="filterByGenre()">
+                            <option value="">Tutti i generi</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Hard Rock">Hard Rock</option>
+                            <option value="Metal">Metal</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Jazz">Jazz</option>
+                            <option value="Classica">Classica</option>
+                            <option value="Blues">Blues</option>
+                            <option value="Hip Hop">Hip Hop</option>
+                            <option value="Elettronica">Elettronica</option>
+                            <option value="Altro">Altro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-year">Filtra per anno</label>
+                        <select id="filter-year" onchange="filterByYear()">
+                            <option value="">Tutti gli anni</option>
+                            <option value="2020s">2020-oggi</option>
+                            <option value="2010s">2010-2019</option>
+                            <option value="2000s">2000-2009</option>
+                            <option value="1990s">1990-1999</option>
+                            <option value="1980s">1980-1989</option>
+                            <option value="1970s">1970-1979</option>
+                            <option value="1960s">1960-1969</option>
+                            <option value="1950s">1950-1959</option>
+                            <option value="pre1950">Prima del 1950</option>
+                        </select>
+                    </div>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-value" id="total-cds">0</div>
+                            <div class="stat-label">CD Totali</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="unique-artists">0</div>
+                            <div class="stat-label">Artisti</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configurazione Google Sheets spostata qui sotto il box di ricerca -->
+                <div class="sheets-config">
+                    <details class="sheets-config-details">
+                        <summary><i class="fas fa-cog"></i> Configurazione Google Sheets</summary>
+                        <div class="sheets-config-content">
+                            <div class="form-group">
+                                <label for="sheets-url">URL Google Sheet:</label>
+                                <input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+                            </div>
+                            <div class="sheets-buttons">
+                                <button class="btn-config" onclick="saveSheetsUrl()">
+                                    <i class="fas fa-save"></i> Salva
+                                </button>
+                                <button class="btn-config" onclick="importFromSheetsUrl()">
+                                    <i class="fas fa-download"></i> Importa
+                                </button>
+                                <button class="btn-config btn-remove" onclick="clearSheetsUrl()">
+                                    <i class="fas fa-trash"></i> Rimuovi
+                                </button>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco CD</h2>
+                    
+                    <!-- Menu per dispositivi mobile -->
+                    <div class="mobile-table-menu">
+                        <button class="active" data-view="cards">Vista Card</button>
+                        <button data-view="table">Vista Tabella</button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="cd-table">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortBy('title')">Titolo <span class="sort-indicator" id="sort-title">↕</span></th>
+                                    <th onclick="sortBy('artist')">Artista <span class="sort-indicator" id="sort-artist">↕</span></th>
+                                    <th onclick="sortBy('year')">Anno <span class="sort-indicator" id="sort-year">↕</span></th>
+                                    <th onclick="sortBy('genre')">Genere <span class="sort-indicator" id="sort-genre">↕</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cd-list">
+                                <tr>
+                                    <td colspan="4" class="text-center">Nessun CD presente. Importa i dati da Google Sheets.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Vista a card per dispositivi mobile -->
+                    <div id="mobile-cards-view" class="mobile-cards-view">
+                        <!-- I contenuti verranno generati dinamicamente da JavaScript -->
+                    </div>
+                    
+                    <div id="pagination" class="pagination"></div>
+                    <p id="no-cds" class="text-center" style="display: none;">Nessun CD presente nel catalogo</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="debug-toggle" onclick="toggleDebug()"><i class="fas fa-bug"></i> Mostra informazioni di debug</button>
+        <div id="debug-info" class="debug-info"></div>
+    </div>
+
+    <div class="footer">
+        <p>Catalogo CD © 2025 - Developed by Hardigor - <span class="highlight">Integrazione Google Sheets</span></p>
+    </div>
+
+    <script>
+        // Dati e configurazione
+        let cds = [];
+        let filteredCds = [];
+        let sortField = 'title';
+        let sortDirection = 1; // 1 = ascendente, -1 = discendente
+        let currentPage = 1;
+        const itemsPerPage = 10; // Ridotto per mobile
+        let currentView = 'cards'; // 'cards' o 'table'
+        
+        // Elementi DOM
+        const cdList = document.getElementById('cd-list');
+        const mobileCardsView = document.getElementById('mobile-cards-view');
+        const noCds = document.getElementById('no-cds');
+        const searchInput = document.getElementById('search-input');
+        const totalCdsElement = document.getElementById('total-cds');
+        const uniqueArtistsElement = document.getElementById('unique-artists');
+        const statusMessage = document.getElementById('status-message');
+        const loader = document.getElementById('loader');
+        const paginationElement = document.getElementById('pagination');
+        const debugInfo = document.getElementById('debug-info');
+        const sheetsUrlInput = document.getElementById('sheets-url');
+        const viewButtons = document.querySelectorAll('.mobile-table-menu button');
+        
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carica l'URL del Google Sheet se salvato in precedenza
+            const savedSheetsUrl = localStorage.getItem('sheetsUrl');
+            if (savedSheetsUrl) {
+                sheetsUrlInput.value = savedSheetsUrl;
+                // Importa automaticamente i dati all'avvio
+                importFromSheetsUrl();
+            } else {
+                sheetsUrlInput.value = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgRgeyXAs6ibw2aOQmOfpKtWyOSHClPMcsXDpHxEEjKgePp26G-Tmm_AMX2ldM2w/pub?output=csv";
+                localStorage.setItem('sheetsUrl', sheetsUrlInput.value);
+                importFromSheetsUrl();
+            }
+            setupEventListeners();
+            updateDebugInfo();
+            setupMobileView();
+        });
+        
+        function setupEventListeners() {
+            // Ricerca in tempo reale
+            searchInput.addEventListener('input', searchCds);
+            
+            // Listener per i pulsanti di vista mobile
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const view = this.getAttribute('data-view');
+                    switchView(view);
+                    
+                    // Aggiorna lo stato attivo dei pulsanti
+                    viewButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+        
+        function setupMobileView() {
+            // Controlla la larghezza dello schermo e imposta la vista iniziale
+            if (window.innerWidth <= 767) {
+                switchView('cards');
+            } else {
+                switchView('table');
+            }
+            
+            // Aggiungi listener per il ridimensionamento della finestra
+            window.addEventListener('resize', function() {
+                if (window.innerWidth <= 767 && currentView === 'table') {
+                    switchView('cards');
+                    viewButtons.forEach(btn => {
+                        if (btn.getAttribute('data-view') === 'cards') {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                } else if (window.innerWidth > 767 && currentView === 'cards') {
+                    switchView('table');
+                }
+            });
+        }
+        
+        function switchView(view) {
+            currentView = view;
+            const tableContainer = document.querySelector('.table-container');
+            const mobileView = document.getElementById('mobile-cards-view');
+            
+            if (view === 'table') {
+                tableContainer.style.display = 'block';
+                mobileView.style.display = 'none';
+            } else {
+                tableContainer.style.display = 'none';
+                mobileView.style.display = 'block';
+            }
+            
+            // Se stiamo passando alla vista card, aggiorna le card
+            if (view === 'cards' && filteredCds.length > 0) {
+                renderMobileCards();
+            }
+        }
+        
+        function showStatus(message, isError = false) {
+            statusMessage.textContent = message;
+            statusMessage.className = isError ? 'status-message status-error' : 'status-message status-success';
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoader() {
+            loader.style.display = 'block';
+        }
+        
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+        
+        function loadCds() {
+            showLoader();
+            setTimeout(() => {
+                const storedCds = localStorage.getItem('cds');
+                if (storedCds) {
+                    try {
+                        cds = JSON.parse(storedCds);
+                        filteredCds = [...cds];
+                        renderCds();
+                        showStatus('Dati caricati dalla memoria locale!');
+                    } catch (e) {
+                        console.error('Errore nel parsing dei dati:', e);
+                        showStatus('Errore nel caricamento dei dati. I dati potrebbero essere corrotti.', true);
+                    }
+                } else {
+                    showStatus('Nessun dato trovato. Importa i dati da Google Sheets.', true);
+                }
+                hideLoader();
+                updateDebugInfo();
+            }, 500);
+        }
+        
+        // Funzione principale per importare i dati da Google Sheets
+        async function importFromSheetsUrl() {
+            const url = sheetsUrlInput.value.trim();
+            if (!url) {
+                showStatus('Inserisci un URL valido per Google Sheets', true);
+                return;
+            }
+            
+            showStatus('Importazione in corso...');
+            
+            try {
+                // Aggiungi un timestamp per evitare caching
+                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+                
+                const response = await fetch(cacheBusterUrl);
+                if (!response.ok) {
+                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
+                }
+                
+                const csvText = await response.text();
+                
+                if (!csvText || csvText.trim().length === 0) {
+                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
+                }
+                
+                // Parsing del CSV
+                const lines = csvText.split('\n');
+                
+                // Rimuovi la prima riga (intestazioni) e righe vuote
+                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
+                
+                if (dataLines.length === 0) {
+                    throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
+                }
+                
+                cds = [];
+                
+                for (const line of dataLines) {
+                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
+                    const values = [];
+                    let inQuotes = false;
+                    let currentValue = '';
+                    
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        
+                        if (char === '"') {
+                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
+                                currentValue += '"';
+                                i++; // Salta il prossimo "
+                            } else {
+                                inQuotes = !inQuotes;
+                            }
+                        } else if (char === ',' && !inQuotes) {
+                            values.push(currentValue.trim());
+                            currentValue = '';
+                        } else {
+                            currentValue += char;
+                        }
+                    }
+                    values.push(currentValue.trim());
+                    
+                    if (values.length >= 4) {
+                        cds.push({
+                            title: values[0].replace(/^"|"$/g, ''),
+                            artist: values[1].replace(/^"|"$/g, ''),
+                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
+                            genre: values[3].replace(/^"|"$/g, '')
+                        });
+                    }
+                }
+                
+                if (cds.length === 0) {
+                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
+                }
+                
+                // Salva i dati e aggiorna l'interfaccia
+                localStorage.setItem('cds', JSON.stringify(cds));
+                filteredCds = [...cds];
+                renderCds();
+                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
+                
+            } catch (error) {
+                console.error('Errore nel caricamento da Google Sheets:', error);
+                showStatus(`Errore: ${error.message}`, true);
+                
+                // Tentativo di caricare dati locali come fallback
+                try {
+                    const storedCds = localStorage.getItem('cds');
+                    if (storedCds) {
+                        cds = JSON.parse(storedCds);
+                        filteredCds = [...cds];
+                        renderCds();
+                        showStatus('Caricati dati salvati localmente.', false);
+                    }
+                } catch (e) {
+                    console.error('Errore nel caricamento dei dati locali:', e);
+                }
+            }
+            
+            updateDebugInfo();
+        }
+        
+        // Salva l'URL del Google Sheets per importazioni future
+        function saveSheetsUrl() {
+            const url = sheetsUrlInput.value.trim();
+            if (!url) {
+                showStatus('Inserisci an URL valido per Google Sheets', true);
+                return;
+            }
+            
+            localStorage.setItem('sheetsUrl', url);
+            showStatus('URL salvato con successo! I dati verranno caricati automaticamente all\'avvio.');
+        }
+        
+        // Rimuovi l'URL salvato
+        function clearSheetsUrl() {
+            localStorage.removeItem('sheetsUrl');
+            sheetsUrlInput.value = '';
+            showStatus('URL rimosso con successo!');
+        }
+        
+        function updateStats() {
+            totalCdsElement.textContent = cds.length;
+            
+            const artists = new Set(cds.map(cd => cd.artist));
+            uniqueArtistsElement.textContent = artists.size;
+        }
+        
+        function sortBy(field) {
+            if (sortField === field) {
+                sortDirection = -sortDirection;
+            } else {
+                sortField = field;
+                sortDirection = 1;
+            }
+            
+            renderCds();
+        }
+        
+        function renderCds() {
+            // Applica l'ordinamento
+            filteredCds.sort((a, b) => {
+                let cmp;
+                if (sortField === 'year') {
+                    cmp = a.year - b.year;
+                } else {
+                    cmp = a[sortField].localeCompare(b[sortField], 'it', { sensitivity: 'base' });
+                }
+                return cmp * sortDirection;
+            });
+            
+            // Paginazione
+            const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredCds.length);
+            const currentItems = filteredCds.slice(startIndex, endIndex);
+            
+            // Renderizza la tabella
+            cdList.innerHTML = '';
+            if (currentItems.length === 0) {
+                cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato con i filtri selezionati</td></tr>';
+                noCds.style.display = 'block';
+            } else {
+                noCds.style.display = 'none';
+                currentItems.forEach((cd) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${cd.title}</td>
+                        <td>${cd.artist}</td>
+                        <td>${cd.year}</td>
+                        <td>${cd.genre}</td>
+                    `;
+                    cdList.appendChild(row);
+                });
+            }
+            
+            // Renderizza le card per mobile
+            if (currentView === 'cards') {
+                renderMobileCards();
+            }
+            
+            // Aggiorna la paginazione
+            updatePagination(totalPages);
+            
+            // Aggiorna le freccette nelle intestazioni
+            document.querySelectorAll('.sort-indicator').forEach(s => {
+                s.innerHTML = '↕';
+                s.classList.remove('active');
+            });
+            
+            const arrow = sortDirection === 1 ? '↑' : '↓';
+            const activeIndicator = document.getElementById(`sort-${sortField}`);
+            if (activeIndicator) {
+                activeIndicator.innerHTML = arrow;
+                activeIndicator.classList.add('active');
+            }
+            
+            updateStats();
+        }
+        
+        function renderMobileCards() {
+            const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredCds.length);
+            const currentItems = filteredCds.slice(startIndex, endIndex);
+            
+            mobileCardsView.innerHTML = '';
+            
+            if (currentItems.length === 0) {
+                mobileCardsView.innerHTML = '<div class="text-center">Nessun CD trovato con i filtri selezionati</div>';
+                return;
+            }
+            
+            currentItems.forEach((cd) => {
+                const card = document.createElement('div');
+                card.className = 'mobile-card';
+                card.innerHTML = `
+                    <div><strong>Titolo:</strong> ${cd.title}</div>
+                    <div><strong>Artista:</strong> ${cd.artist}</div>
+                    <div><strong>Anno:</strong> ${cd.year}</div>
+                    <div><strong>Genere:</strong> ${cd.genre}</div>
+                `;
+                mobileCardsView.appendChild(card);
+            });
+        }
+        
+        function updatePagination(totalPages) {
+            paginationElement.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // Pulsante Indietro
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&laquo;';
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderCds();
+                }
+            });
+            paginationElement.appendChild(prevButton);
+            
+            // Pulsanti pagina
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.classList.toggle('active', i === currentPage);
+                pageButton.addEventListener('click', () => {
+                    currentPage = i;
+                    renderCds();
+                });
+                paginationElement.appendChild(pageButton);
+            }
+            
+            // Pulsante Avanti
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&raquo;';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderCds();
+                }
+            });
+            paginationElement.appendChild(nextButton);
+        }
+        
+        function searchCds() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (!searchTerm) {
+                filteredCds = [...cds];
+            } else {
+                filteredCds = cds.filter(cd => 
+                    cd.title.toLowerCase().includes(searchTerm) ||
+                    cd.artist.toLowerCase().includes(searchTerm) ||
+                    cd.year.toString().includes(searchTerm) ||
+                    cd.genre.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Applica anche il filtro per genere se attivo
+            const genreFilter = document.getElementById('filter-genre').value;
+            if (genreFilter) {
+                filteredCds = filteredCds.filter(cd => cd.genre === genreFilter);
+            }
+            
+            // Applica anche il filtro per anno se attivo
+            const yearFilter = document.getElementById('filter-year').value;
+            if (yearFilter) {
+                const currentYear = new Date().getFullYear();
+                let startYear, endYear;
+                
+                switch(yearFilter) {
+                    case '2020s':
+                        startYear = 2020;
+                        endYear = currentYear;
+                        break;
+                    case '2010s':
+                        startYear = 2010;
+                        endYear = 2019;
+                        break;
+                    case '2000s':
+                        startYear = 2000;
+                        endYear = 2009;
+                        break;
+                    case '1990s':
+                        startYear = 1990;
+                        endYear = 1999;
+                        break;
+                    case '1980s':
+                        startYear = 1980;
+                        endYear = 1989;
+                        break;
+                    case '1970s':
+                        startYear = 1970;
+                        endYear = 1979;
+                        break;
+                    case '1960s':
+                        startYear = 1960;
+                        endYear = 1969;
+                        break;
+                    case '1950s':
+                        startYear = 1950;
+                        endYear = 1959;
+                        break;
+                    case 'pre1950':
+                        startYear = 0;
+                        endYear = 1949;
+                        break;
+                }
+                
+                filteredCds = filteredCds.filter(cd => {
+                    if (yearFilter === 'pre1950') {
+                        return cd.year < 1950;
+                    } else {
+                        return cd.year >= startYear && cd.year <= endYear;
+                    }
+                });
+            }
+            
+            currentPage = 1;
+            renderCds();
+            updateDebugInfo();
+        }
+        
+        function filterByGenre() {
+            searchCds();
+        }
+        
+        function filterByYear() {
+            searchCds();
+        }
+        
+        function toggleDebug() {
+            debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
+            updateDebugInfo();
+        }
+        
+        function updateDebugInfo() {
+            debugInfo.innerHTML = `
+                <strong>Informazioni di Debug:</strong><br>
+                CD totali: ${cds.length}<br>
+                CD filtrati: ${filteredCds.length}<br>
+                Pagina corrente: ${currentPage}<br>
+                Elementi per pagina: ${itemsPerPage}<br>
+                Dimensione localStorage: ${localStorage.getItem('cds') ? Math.ceil(localStorage.getItem('cds').length / 1024) : 0} KB<br>
+                URL Google Sheets salvato: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br>
+                Browser: ${navigator.userAgent}<br>
+                <button onclick="clearLocalStorage()">Cancella tutti i dati</button>
+            `;
+        }
+        
+        function clearLocalStorage() {
+            if (confirm('Sei sicuro di voler cancellare tutti i dati? Questa operazione non può essere annullata.')) {
+                localStorage.removeItem('cds');
+                localStorage.removeItem('sheetsUrl');
+                cds = [];
+                filteredCds = [];
+                sheetsUrlInput.value = '';
+                renderCds();
+                showStatus('Tutti i dati sono stati cancellati.');
+                updateDebugInfo();
+            }
+        }
+    </script>
+</body>
+</html>
