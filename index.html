@@ -139,15 +139,10 @@
             }
         }
 
-        .header-controls {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
+        /* MODIFICA: Rimuovere header-controls in desktop */
         @media (min-width: 768px) {
             .header-controls {
-                justify-content: flex-end;
+                display: none;
             }
         }
 
@@ -189,6 +184,7 @@
                 display: grid;
                 grid-template-columns: 320px 1fr;
                 gap: 24px;
+                align-items: start; /* MODIFICA: Allinea i box in alto */
             }
         }
 
@@ -201,6 +197,13 @@
             border: 1px solid var(--border-color);
             width: 100%;
             overflow: hidden;
+        }
+
+        /* MODIFICA: Allineamento card in desktop */
+        @media (min-width: 992px) {
+            .left-column .card {
+                height: 100%;
+            }
         }
 
         .card-title {
@@ -654,11 +657,12 @@
             overflow-x: auto;
             padding-bottom: 8px;
             -webkit-overflow-scrolling: touch;
+            display: none; /* MODIFICA: Nascondi menu mobile per default */
         }
 
-        @media (min-width: 768px) {
+        @media (max-width: 767px) {
             .mobile-table-menu {
-                display: none;
+                display: flex; /* MODIFICA: Mostra solo su mobile */
             }
         }
 
@@ -832,11 +836,7 @@
                     </div>
                     <h1>Catalogo CD Musicali</h1>
                 </div>
-                <div class="header-controls">
-                    <button class="btn btn-export" onclick="loadCds()">
-                        <i class="fas fa-sync-alt"></i> Ricarica
-                    </button>
-                </div>
+                <!-- MODIFICA: Rimosso completamente il pulsante Ricarica -->
             </header>
         </div>
         
@@ -1014,7 +1014,7 @@
             // Ricerca in tempo reale
             searchInput.addEventListener('input', searchCds);
             
-            // Listener per i pulsanti di vista mobile
+            // Listener per i pulsanti de vista mobile
             viewButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const view = this.getAttribute('data-view');
@@ -1035,7 +1035,7 @@
                 switchView('table');
             }
             
-            // Aggiungi listener per il ridimensionamento della finestra
+            // Aggiungi listener para il ridimensionamento della finestra
             window.addEventListener('resize', function() {
                 if (window.innerWidth <= 767 && currentView === 'table') {
                     switchView('cards');
