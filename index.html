@@ -39,6 +39,7 @@
             width: 100%;
             position: relative;
             overflow-x: hidden; /* Previene scroll orizzontale */
+            height: 100%;
         }
 
         body {
@@ -52,6 +53,8 @@
             min-height: 100vh;
             /* Assicura che il body non ecceda la larghezza dello schermo */
             width: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .main-content {
@@ -184,7 +187,7 @@
                 display: grid;
                 grid-template-columns: 320px 1fr;
                 gap: 24px;
-                align-items: start; /* MODIFICA: Allinea i box in alto */
+                align-items: stretch; /* MODIFICA: Allunga entrambe le colonne alla stessa altezza */
             }
         }
 
@@ -197,12 +200,32 @@
             border: 1px solid var(--border-color);
             width: 100%;
             overflow: hidden;
+            height: 100%; /* MODIFICA: Assicura che le card riempiano l'altezza disponibile */
         }
 
         /* MODIFICA: Allineamento card in desktop */
         @media (min-width: 992px) {
-            .left-column .card {
+            .left-column {
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
                 height: 100%;
+            }
+            
+            .left-column .card {
+                flex: 1; /* MODIFICA: Fai espandere la card per riempire lo spazio */
+                margin-bottom: 0;
+            }
+            
+            .right-column .card {
+                height: 100%;
+                margin-bottom: 0;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .right-column .card .table-container {
+                flex: 1; /* MODIFICA: Fai espandere la tabella per riempire lo spazio */
             }
         }
 
