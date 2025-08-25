@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Il CSS rimane invariato */
         :root {
             --primary-bg: #f8f9fa;
             --card-bg: #ffffff;
@@ -768,6 +769,19 @@
         .inline-config-content.show {
             display: block;
         }
+
+        /* Stile per l'indicatore di caricamento automatico */
+        .auto-load-indicator {
+            background-color: #e7f5ff;
+            border-left: 4px solid #0066cc;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -784,6 +798,10 @@
         </div>
         
         <div id="status-message" class="status-message"></div>
+        <div id="auto-load-message" class="auto-load-indicator" style="display: none;">
+            <i class="fas fa-sync fa-spin"></i>
+            <span>Aggiornamento automatico dei dati in corso...</span>
+        </div>
         <div id="loader" class="loader"></div>
 
         <div class="container">
@@ -923,6 +941,7 @@
         const debugToggle = document.getElementById('debug-toggle');
         const filterGenre = document.getElementById('filter-genre');
         const filterYear = document.getElementById('filter-year');
+        const autoLoadMessage = document.getElementById('auto-load-message');
         
         // Nuovi elementi per la configurazione inline
         const configToggle = document.getElementById('config-toggle');
@@ -938,10 +957,14 @@
             const savedSheetsUrl = localStorage.getItem('sheetsUrl');
             if (savedSheetsUrl) {
                 inlineSheetsUrlInput.value = savedSheetsUrl;
+                // Esegui l'importazione automatica all'avvio
+                setTimeout(() => {
+                    autoImportFromSheetsUrl();
+                }, 1000);
+            } else {
+                // Se non c'è un URL salvato, carica i dati dal localStorage
+                loadCds();
             }
-            
-            // Carica i dati dal localStorage
-            loadCds();
             
             // Imposta i gestori degli eventi
             setupEventListeners();
@@ -996,6 +1019,14 @@
             loader.style.display = 'none';
         }
         
+        function showAutoLoadMessage() {
+            autoLoadMessage.style.display = 'flex';
+        }
+        
+        function hideAutoLoadMessage() {
+            autoLoadMessage.style.display = 'none';
+        }
+        
         function loadCds() {
             showLoader();
             setTimeout(() => {
@@ -1018,7 +1049,111 @@
             }, 500);
         }
         
-        // Funzione principale per importare i dati da Google Sheets
+        // Funzione per import automatico all'avvio
+        async function autoImportFromSheetsUrl() {
+            const url = inlineSheetsUrlInput.value.trim();
+            if (!url) {
+                loadCds();
+                return;
+            }
+            
+            showAutoLoadMessage();
+            
+            try {
+                // Aggiungi un timestamp per evitare caching
+                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+                
+                const response = await fetch(cacheBusterUrl);
+                if (!response.ok) {
+                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
+                }
+                
+                const csvText = await response.text();
+                
+                if (!csvText || csvText.trim().length === 0) {
+                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
+                }
+                
+                // Parsing del CSV
+                const lines = csvText.split('\n');
+                
+                // Rimuovi la prima riga (intestazioni) e righe vuote
+                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
+                
+                if (dataLines.length === 0) {
+                    throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
+                }
+                
+                cds = [];
+                
+                for (const line of dataLines) {
+                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
+                    const values = [];
+                    let inQuotes = false;
+                    let currentValue = '';
+                    
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        
+                        if (char === '"') {
+                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
+                                currentValue += '"';
+                                i++; // Salta il prossimo "
+                            } else {
+                                inQuotes = !inQuotes;
+                            }
+                        } else if (char === ',' && !inQuotes) {
+                            values.push(currentValue.trim());
+                            currentValue = '';
+                        } else {
+                            currentValue += char;
+                        }
+                    }
+                    values.push(currentValue.trim());
+                    
+                    if (values.length >= 4) {
+                        cds.push({
+                            title: values[0].replace(/^"|"$/g, ''),
+                            artist: values[1].replace(/^"|"$/g, ''),
+                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
+                            genre: values[3].replace(/^"|"$/g, '')
+                        });
+                    }
+                }
+                
+                if (cds.length === 0) {
+                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
+                }
+                
+                // Salva i dati e aggiorna l'interfaccia
+                localStorage.setItem('cds', JSON.stringify(cds));
+                filteredCds = [...cds];
+                renderCds();
+                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
+                
+            } catch (error) {
+                console.error('Errore nel caricamento da Google Sheets:', error);
+                showStatus(`Errore: ${error.message}`, true);
+                
+                // Tentativo di caricare dati locali come fallback
+                try {
+                    const storedCds = localStorage.getItem('cds');
+                    if (storedCds) {
+                        cds = JSON.parse(storedCds);
+                        filteredCds = [...cds];
+                        renderCds();
+                        showStatus('Caricati dati salvati localmente.', false);
+                    }
+                } catch (e) {
+                    console.error('Errore nel caricamento dei dati locali:', e);
+                }
+            }
+            
+            hideAutoLoadMessage();
+            updateDebugInfo();
+        }
+        
+        // Funzione principale per importare i dati da Google Sheets (manuale)
         async function importFromSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
             if (!url) {
