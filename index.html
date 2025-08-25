@@ -64,7 +64,7 @@
             padding: 12px;
             border-radius: var(--radius);
             margin-bottom: 15px;
-            box-shadow: 0 2px 6px var(--shadow-color);
+            box-shadow: 0 2px,6px var(--shadow-color);
             width: 100%;
         }
 
@@ -580,9 +580,10 @@
             margin-top: 15px;
             font-family: monospace;
             font-size: 11px;
-            display: none;
             line-height: 1.4;
             width: 100%;
+            overflow: auto;
+            max-height: 300px;
         }
 
         .debug-toggle {
@@ -1042,9 +1043,6 @@
             
             // Imposta i gestori degli eventi
             setupEventListeners();
-            
-            // Aggiorna le informazioni di debug
-            updateDebugInfo();
         });
         
         function setupEventListeners() {
@@ -1286,7 +1284,7 @@
                 cds = [];
                 
                 for (const line of dataLines) {
-                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
+                    // Gestione dei valori entre virgolette che potrebbero contenere virgole
                     const values = [];
                     let inQuotes = false;
                     let currentValue = '';
@@ -1433,7 +1431,7 @@
             // Aggiorna le freccette nelle intestazioni
             document.querySelectorAll('.sort-indicator').forEach(s => {
                 s.innerHTML = '↕';
-                s.classList.remove('active');
+                s.classList.remove('active';
             });
             
             const arrow = sortDirection === 1 ? '↑' : '↓';
@@ -1444,6 +1442,7 @@
             }
             
             updateStats();
+            updateDebugInfo();
         }
         
         function updatePagination(totalPages) {
@@ -1567,21 +1566,23 @@
             
             currentPage = 1;
             renderCds();
-            updateDebugInfo();
         }
         
         function updateDebugInfo() {
-            debugInfo.innerHTML = `
-                <strong>Informazioni di Debug:</strong><br>
-                CD totali: ${cds.length}<br>
-                CD filtrati: ${filteredCds.length}<br>
-                Pagina corrente: ${currentPage}<br>
-                Elementi per pagina: ${itemsPerPage}<br>
-                Dimensione localStorage: ${localStorage.getItem('cds') ? Math.ceil(localStorage.getItem('cds').length / 1024) : 0} KB<br>
-                URL Google Sheets salvato: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br>
-                Browser: ${navigator.userAgent}<br>
-                <button onclick="clearLocalStorage()">Cancella tutti i dati</button>
-            `;
+            const debugElement = document.getElementById('debug-info');
+            if (debugElement) {
+                debugElement.innerHTML = `
+                    <strong>Informazioni di Debug:</strong><br>
+                    CD totali: ${cds.length}<br>
+                    CD filtrati: ${filteredCds.length}<br>
+                    Pagina corrente: ${currentPage}<br>
+                    Elementi per pagina: ${itemsPerPage}<br>
+                    Dimensione localStorage: ${localStorage.getItem('cds') ? Math.ceil(localStorage.getItem('cds').length / 1024) : 0} KB<br>
+                    URL Google Sheets salvato: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br>
+                    Browser: ${navigator.userAgent}<br>
+                    <button onclick="clearLocalStorage()">Cancella tutti i dati</button>
+                `;
+            }
         }
         
         function clearLocalStorage() {
