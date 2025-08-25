@@ -283,7 +283,6 @@
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
             box-shadow: 0 1px 3px var(--shadow-color);
-            /* MODIFICA: Rimossa l'altezza fissa e lo scroll verticale */
             overflow-y: visible;
             -webkit-overflow-scrolling: touch;
             width: 100%;
@@ -450,6 +449,7 @@
             padding: 0;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             width: 100%;
+            overflow: hidden;
         }
 
         .sheets-config-details summary {
@@ -487,6 +487,7 @@
         @media (min-width: 480px) {
             .sheets-buttons {
                 flex-direction: row;
+                flex-wrap: wrap; /* MODIFICA: Permette ai pulsanti di andare a capo */
             }
         }
 
@@ -504,6 +505,7 @@
             justify-content: center;
             gap: 6px;
             flex: 1;
+            min-width: 100px; /* MODIFICA: Larghezza minima per i pulsanti */
         }
 
         .btn-config:hover {
@@ -686,6 +688,15 @@
             .header-container, .card {
                 padding: 10px;
             }
+            
+            /* MODIFICA: Per schermi molto piccoli, assicurati che i pulsanti non siano troppo larghi */
+            .sheets-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-config {
+                min-width: unset;
+            }
         }
 
         #sites-chrome {
@@ -788,7 +799,7 @@
                         <div class="sheets-config-content">
                             <div class="form-group">
                                 <label for="sheets-url">URL Google Sheet:</label>
-                                <input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+                                <input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/..." value="https://docs.google.com/spreadsheet">
                             </div>
                             <div class="sheets-buttons">
                                 <button class="btn-config" onclick="saveSheetsUrl()">
