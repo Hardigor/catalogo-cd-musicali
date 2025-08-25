@@ -729,6 +729,45 @@
         .sort-indicator.active {
             color: var(--accent-color);
         }
+
+        /* Nuovi stili per la configurazione inline */
+        .inline-config-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .inline-config-text {
+            color: #6c757d;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .inline-config-text:hover {
+            color: var(--text-color);
+        }
+        
+        .inline-config-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            width: 100%;
+        }
+        
+        .inline-config-content.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -799,29 +838,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="sheets-config">
-                    <details class="sheets-config-details">
-                        <summary><i class="fas fa-cog"></i> Configurazione Google Sheets</summary>
-                        <div class="sheets-config-content">
-                            <div class="form-group">
-                                <label for="sheets-url">URL Google Sheet:</label>
-                                <input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-                            </div>
-                            <div class="sheets-buttons">
-                                <button class="btn-config" id="save-sheets-url">
-                                    <i class="fas fa-save"></i> Salva
-                                </button>
-                                <button class="btn-config" id="import-sheets">
-                                    <i class="fas fa-download"></i> Importa
-                                </button>
-                                <button class="btn-config btn-remove" id="remove-sheets-url">
-                                    <i class="fas fa-trash"></i> Rimuovi
-                                </button>
-                            </div>
-                        </div>
-                    </details>
-                </div>
             </div>
 
             <div class="right-column">
@@ -852,7 +868,31 @@
             </div>
         </div>
 
-        <button class="debug-toggle" id="debug-toggle"><i class="fas fa-bug"></i> Mostra informazioni di debug</button>
+        <div class="inline-config-container">
+            <button class="debug-toggle" id="debug-toggle"><i class="fas fa-bug"></i> Mostra informazioni di debug</button>
+            <span class="inline-config-text" id="config-toggle">
+                <i class="fas fa-cog"></i> Configurazione Google Sheets
+            </span>
+        </div>
+        
+        <div id="inline-config-content" class="inline-config-content">
+            <div class="form-group">
+                <label for="inline-sheets-url">URL Google Sheet:</label>
+                <input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+            </div>
+            <div class="sheets-buttons">
+                <button class="btn-config" id="inline-save-sheets-url">
+                    <i class="fas fa-save"></i> Salva
+                </button>
+                <button class="btn-config" id="inline-import-sheets">
+                    <i class="fas fa-download"></i> Importa
+                </button>
+                <button class="btn-config btn-remove" id="inline-remove-sheets-url">
+                    <i class="fas fa-trash"></i> Rimuovi
+                </button>
+            </div>
+        </div>
+        
         <div id="debug-info" class="debug-info"></div>
     </div>
 
@@ -881,19 +921,23 @@
         const paginationElement = document.getElementById('pagination');
         const debugInfo = document.getElementById('debug-info');
         const debugToggle = document.getElementById('debug-toggle');
-        const sheetsUrlInput = document.getElementById('sheets-url');
-        const saveSheetsUrlBtn = document.getElementById('save-sheets-url');
-        const importSheetsBtn = document.getElementById('import-sheets');
-        const removeSheetsUrlBtn = document.getElementById('remove-sheets-url');
         const filterGenre = document.getElementById('filter-genre');
         const filterYear = document.getElementById('filter-year');
+        
+        // Nuovi elementi per la configurazione inline
+        const configToggle = document.getElementById('config-toggle');
+        const inlineConfigContent = document.getElementById('inline-config-content');
+        const inlineSheetsUrlInput = document.getElementById('inline-sheets-url');
+        const inlineSaveSheetsUrlBtn = document.getElementById('inline-save-sheets-url');
+        const inlineImportSheetsBtn = document.getElementById('inline-import-sheets');
+        const inlineRemoveSheetsUrlBtn = document.getElementById('inline-remove-sheets-url');
         
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
             // Carica l'URL del Google Sheet se salvato in precedenza
             const savedSheetsUrl = localStorage.getItem('sheetsUrl');
             if (savedSheetsUrl) {
-                sheetsUrlInput.value = savedSheetsUrl;
+                inlineSheetsUrlInput.value = savedSheetsUrl;
             }
             
             // Carica i dati dal localStorage
@@ -920,13 +964,18 @@
                 th.addEventListener('click', () => sortBy(th.getAttribute('data-sort')));
             });
             
-            // Configurazione Google Sheets
-            saveSheetsUrlBtn.addEventListener('click', saveSheetsUrl);
-            importSheetsBtn.addEventListener('click', importFromSheetsUrl);
-            removeSheetsUrlBtn.addEventListener('click', clearSheetsUrl);
+            // Configurazione Google Sheets (nuova versione inline)
+            configToggle.addEventListener('click', toggleInlineConfig);
+            inlineSaveSheetsUrlBtn.addEventListener('click', saveSheetsUrl);
+            inlineImportSheetsBtn.addEventListener('click', importFromSheetsUrl);
+            inlineRemoveSheetsUrlBtn.addEventListener('click', clearSheetsUrl);
             
             // Debug
             debugToggle.addEventListener('click', toggleDebug);
+        }
+        
+        function toggleInlineConfig() {
+            inlineConfigContent.classList.toggle('show');
         }
         
         function showStatus(message, isError = false) {
@@ -971,7 +1020,7 @@
         
         // Funzione principale per importare i dati da Google Sheets
         async function importFromSheetsUrl() {
-            const url = sheetsUrlInput.value.trim();
+            const url = inlineSheetsUrlInput.value.trim();
             if (!url) {
                 showStatus('Inserisci un URL valido per Google Sheets', true);
                 return;
@@ -1076,7 +1125,7 @@
         
         // Salva l'URL del Google Sheets per importazioni future
         function saveSheetsUrl() {
-            const url = sheetsUrlInput.value.trim();
+            const url = inlineSheetsUrlInput.value.trim();
             if (!url) {
                 showStatus('Inserisci un URL valido per Google Sheets', true);
                 return;
@@ -1089,7 +1138,7 @@
         // Rimuovi l'URL salvato
         function clearSheetsUrl() {
             localStorage.removeItem('sheetsUrl');
-            sheetsUrlInput.value = '';
+            inlineSheetsUrlInput.value = '';
             showStatus('URL rimosso con successo!');
         }
         
@@ -1316,7 +1365,7 @@
                 localStorage.removeItem('sheetsUrl');
                 cds = [];
                 filteredCds = [];
-                sheetsUrlInput.value = '';
+                inlineSheetsUrlInput.value = '';
                 renderCds();
                 showStatus('Tutti i dati sono stati cancellati.');
                 updateDebugInfo();
