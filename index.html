@@ -56,6 +56,8 @@
         .main-content {
             flex: 1;
             width: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .header-container {
@@ -124,35 +126,13 @@
             justify-content: center;
         }
 
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-        }
-
-        .btn-export {
-            background: var(--button-bg);
-            color: var(--button-text);
-            border: 1px solid var(--button-bg);
-        }
-
-        .btn-export:hover {
-            background: var(--button-hover);
-        }
-
         .container {
             display: flex;
             flex-direction: column;
             gap: 15px;
             margin-top: 12px;
             width: 100%;
+            flex: 1;
         }
 
         @media (min-width: 992px) {
@@ -173,7 +153,13 @@
             border: 1px solid var(--border-color);
             width: 100%;
             overflow: hidden;
-            height: 100%;
+            height: auto;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .card-title {
@@ -220,25 +206,6 @@
             box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.1);
         }
 
-        .btn-submit {
-            background: var(--button-bg);
-            color: var(--button-text);
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            font-size: 14px;
-            margin-top: 8px;
-            border: 1px solid var(--button-bg);
-        }
-
-        .btn-submit:hover {
-            background: var(--button-hover);
-        }
-
         .search-box {
             display: flex;
             gap: 6px;
@@ -254,7 +221,7 @@
             font-size: 14px;
             background-color: var(--card-bg);
             color: var(--text-color);
-            transition: var(--transition);
+            transition: var(--transition;
             font-family: 'Inter', sans-serif;
         }
 
@@ -276,6 +243,164 @@
 
         .btn-search:hover {
             background: var(--button-hover);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .stat-box {
+            background: var(--stat-bg);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            color: var(--text-color);
+            font-size: 12px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .highlight {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .status-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            display: none;
+            font-weight: 500;
+            width: 100%;
+            font-size: 13px;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .sheets-config {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .sheets-config-details {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .sheets-config-details summary {
+            padding: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #6c757d;
+            transition: var(--transition);
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sheets-config-details summary:hover {
+            color: var(--text-color);
+        }
+
+        .sheets-config-details[open] summary {
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .sheets-config-content {
+            padding: 12px;
+            max-height: 200px; /* Altezza massima con scroll */
+            overflow-y: auto;
+        }
+
+        .sheets-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        @media (min-width: 480px) {
+            .sheets-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+
+        .btn-config {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-config:hover {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border-color: var(--button-bg);
+        }
+
+        .btn-config.btn-remove:hover {
+            background: #dc3545;
+            border-color: #dc3545;
         }
 
         .table-container {
@@ -346,177 +471,6 @@
             padding: 20px;
             color: #6c757d;
             font-style: italic;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .stat-box {
-            background: var(--stat-bg);
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin-bottom: 2px;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            color: var(--text-color);
-            font-size: 12px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        .highlight {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-
-        .status-message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            display: none;
-            font-weight: 500;
-            width: 100%;
-            font-size: 13px;
-        }
-        
-        .status-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .status-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .loader {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #495057;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 15px auto;
-            display: none;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .sheets-config {
-            margin-top: 15px;
-            width: 100%;
-        }
-
-        .sheets-config-details {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .sheets-config-details summary {
-            padding: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #6c757d;
-            transition: var(--transition);
-            list-style: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .sheets-config-details summary:hover {
-            color: var(--text-color);
-        }
-
-        .sheets-config-details[open] summary {
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-color);
-        }
-
-        .sheets-config-content {
-            padding: 12px;
-        }
-
-        .sheets-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        @media (min-width: 480px) {
-            .sheets-buttons {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-        }
-
-        .btn-config {
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-color);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-size: 14px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            flex: 1;
-            min-width: 100px;
-        }
-
-        .btn-config:hover {
-            background: var(--button-bg);
-            color: var(--button-text);
-            border-color: var(--button-bg);
-        }
-
-        .btn-config.btn-remove:hover {
-            background: #dc3545;
-            border-color: #dc3545;
         }
 
         .pagination {
@@ -806,7 +760,7 @@
                         <div class="sheets-config-content">
                             <div class="form-group">
                                 <label for="sheets-url">URL Google Sheet:</label>
-                                <input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+                                <input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/..." value="https://docs.google.com/spreadsheet">
                             </div>
                             <div class="sheets-buttons">
                                 <button class="btn-config" id="save-sheets-url">
@@ -992,7 +946,7 @@
                 const csvText = await response.text();
                 
                 if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
+                    throw new Error('Il foglio sembra essere vuoto or non accessibile.');
                 }
                 
                 // Parsing del CSV
