@@ -387,10 +387,26 @@
             font-size: 12px;
             border-top: 1px solid var(--border-color);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 8px;
-            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .footer-config {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
             width: 100%;
         }
 
@@ -662,6 +678,11 @@
             html {
                 -webkit-text-size-adjust: 100%;
             }
+
+            .footer {
+                padding: 12px;
+                gap: 12px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -782,6 +803,25 @@
             align-items: center;
             gap: 8px;
         }
+
+        /* Stili migliorati per il footer */
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .footer-section {
+            margin: 10px 0;
+            width: 100%;
+        }
+        
+        .footer-debug {
+            margin-top: 15px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -885,37 +925,45 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Rimosso il container inline-config-container da qui -->
+    </div>
 
-        <div class="inline-config-container">
+    <div class="footer">
+        <div class="footer-content">
+            <p>Catalogo CD © 2025 - Developed by Hardigor - <span class="highlight">Integrazione Google Sheets</span></p>
+        </div>
+        
+        <div class="footer-buttons">
             <button class="debug-toggle" id="debug-toggle"><i class="fas fa-bug"></i> Mostra informazioni di debug</button>
             <span class="inline-config-text" id="config-toggle">
                 <i class="fas fa-cog"></i> Configurazione Google Sheets
             </span>
         </div>
         
-        <div id="inline-config-content" class="inline-config-content">
-            <div class="form-group">
-                <label for="inline-sheets-url">URL Google Sheet:</label>
-                <input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-            </div>
-            <div class="sheets-buttons">
-                <button class="btn-config" id="inline-save-sheets-url">
-                    <i class="fas fa-save"></i> Salva
-                </button>
-                <button class="btn-config" id="inline-import-sheets">
-                    <i class="fas fa-download"></i> Importa
-                </button>
-                <button class="btn-config btn-remove" id="inline-remove-sheets-url">
-                    <i class="fas fa-trash"></i> Rimuovi
-                </button>
+        <div class="footer-section">
+            <div id="inline-config-content" class="inline-config-content">
+                <div class="form-group">
+                    <label for="inline-sheets-url">URL Google Sheet:</label>
+                    <input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+                </div>
+                <div class="sheets-buttons">
+                    <button class="btn-config" id="inline-save-sheets-url">
+                        <i class="fas fa-save"></i> Salva
+                    </button>
+                    <button class="btn-config" id="inline-import-sheets">
+                        <i class="fas fa-download"></i> Importa
+                    </button>
+                    <button class="btn-config btn-remove" id="inline-remove-sheets-url">
+                        <i class="fas fa-trash"></i> Rimuovi
+                    </button>
+                </div>
             </div>
         </div>
         
-        <div id="debug-info" class="debug-info"></div>
-    </div>
-
-    <div class="footer">
-        <p>Catalogo CD © 2025 - Developed by Hardigor - <span class="highlight">Integrazione Google Sheets</span></p>
+        <div class="footer-debug">
+            <div id="debug-info" class="debug-info"></div>
+        </div>
     </div>
 
     <script>
