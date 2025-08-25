@@ -319,6 +319,7 @@
 
         th:hover {
             background-color: #e9ecef;
+            color: #212529;
         }
 
         td {
@@ -387,10 +388,26 @@
             font-size: 12px;
             border-top: 1px solid var(--border-color);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 8px;
-            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .footer-config {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
             width: 100%;
         }
 
@@ -662,6 +679,11 @@
             html {
                 -webkit-text-size-adjust: 100%;
             }
+
+            .footer {
+                padding: 12px;
+                gap: 12px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -737,7 +759,6 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            margin-top: 15px;
             flex-wrap: wrap;
         }
         
@@ -885,37 +906,43 @@
                 </div>
             </div>
         </div>
-
-        <div class="inline-config-container">
-            <button class="debug-toggle" id="debug-toggle"><i class="fas fa-bug"></i> Mostra informazioni di debug</button>
-            <span class="inline-config-text" id="config-toggle">
-                <i class="fas fa-cog"></i> Configurazione Google Sheets
-            </span>
-        </div>
         
-        <div id="inline-config-content" class="inline-config-content">
-            <div class="form-group">
-                <label for="inline-sheets-url">URL Google Sheet:</label>
-                <input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-            </div>
-            <div class="sheets-buttons">
-                <button class="btn-config" id="inline-save-sheets-url">
-                    <i class="fas fa-save"></i> Salva
-                </button>
-                <button class="btn-config" id="inline-import-sheets">
-                    <i class="fas fa-download"></i> Importa
-                </button>
-                <button class="btn-config btn-remove" id="inline-remove-sheets-url">
-                    <i class="fas fa-trash"></i> Rimuovi
-                </button>
-            </div>
-        </div>
-        
-        <div id="debug-info" class="debug-info"></div>
+        <!-- Rimosso il container inline-config-container da qui -->
     </div>
 
     <div class="footer">
-        <p>Catalogo CD © 2025 - Developed by Hardigor - <span class="highlight">Integrazione Google Sheets</span></p>
+        <div class="footer-content">
+            <p>Catalogo CD © 2025 - Developed by Hardigor - <span class="highlight">Integrazione Google Sheets</span></p>
+        </div>
+        
+        <div class="footer-config">
+            <div class="inline-config-container">
+                <button class="debug-toggle" id="debug-toggle"><i class="fas fa-bug"></i> Mostra informazioni di debug</button>
+                <span class="inline-config-text" id="config-toggle">
+                    <i class="fas fa-cog"></i> Configurazione Google Sheets
+                </span>
+            </div>
+            
+            <div id="inline-config-content" class="inline-config-content">
+                <div class="form-group">
+                    <label for="inline-sheets-url">URL Google Sheet:</label>
+                    <input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+                </div>
+                <div class="sheets-buttons">
+                    <button class="btn-config" id="inline-save-sheets-url">
+                        <i class="fas fa-save"></i> Salva
+                    </button>
+                    <button class="btn-config" id="inline-import-sheets">
+                        <i class="fas fa-download"></i> Importa
+                    </button>
+                    <button class="btn-config btn-remove" id="inline-remove-sheets-url">
+                        <i class="fas fa-trash"></i> Rimuovi
+                    </button>
+                </div>
+            </div>
+            
+            <div id="debug-info" class="debug-info"></div>
+        </div>
     </div>
 
     <script>
@@ -1176,7 +1203,7 @@
                 const csvText = await response.text();
                 
                 if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
+                    throw new Error('Il foglio sembra essere vuoto or non accessibile.');
                 }
                 
                 // Parsing del CSV
@@ -1320,7 +1347,7 @@
                 noCds.style.display = 'block';
             } else {
                 noCds.style.display = 'none';
-                currentItems.forEach((cd) => {
+                currentItems.forEach((cd) {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${cd.title}</td>
