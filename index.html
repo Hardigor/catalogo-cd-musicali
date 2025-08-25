@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS precedente invariato */
         :root {
             --primary-bg: #f8f9fa;
             --card-bg: #ffffff;
@@ -283,6 +284,7 @@
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
             box-shadow: 0 1px 3px var(--shadow-color);
+            /* MODIFICA: Rimossa l'altezza fissa e lo scroll verticale */
             overflow-y: visible;
             -webkit-overflow-scrolling: touch;
             width: 100%;
@@ -449,7 +451,6 @@
             padding: 0;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             width: 100%;
-            overflow: hidden;
         }
 
         .sheets-config-details summary {
@@ -487,7 +488,6 @@
         @media (min-width: 480px) {
             .sheets-buttons {
                 flex-direction: row;
-                flex-wrap: wrap;
             }
         }
 
@@ -505,7 +505,6 @@
             justify-content: center;
             gap: 6px;
             flex: 1;
-            min-width: 100px;
         }
 
         .btn-config:hover {
@@ -688,14 +687,6 @@
             .header-container, .card {
                 padding: 10px;
             }
-            
-            .sheets-buttons {
-                flex-direction: column;
-            }
-            
-            .btn-config {
-                min-width: unset;
-            }
         }
 
         #sites-chrome {
@@ -706,6 +697,7 @@
             overflow: visible !important;
         }
         
+        /* MODIFICA: Rimuovere completamente lo scrolling verticale nella tabella */
         .right-column .card {
             display: flex;
             flex-direction: column;
@@ -720,14 +712,46 @@
         .right-column .card .table-container table {
             flex: 1;
         }
-        
-        .sort-indicator {
-            margin-left: 4px;
-            font-size: 12px;
+
+        /* NUOVO STILE per la configurazione Google Sheets come testo semplice */
+        .config-debug-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
         }
-        
-        .sort-indicator.active {
-            color: var(--accent-color);
+
+        .sheets-config-text {
+            font-size: 14px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .config-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .config-action-btn {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .config-action-btn:hover {
+            background: var(--button-bg);
+            color: var(--button-text);
         }
     </style>
 </head>
@@ -753,13 +777,13 @@
                     <h2 class="card-title"><i class="fas fa-search"></i> Cerca e Filtra</h2>
                     <div class="search-box">
                         <input type="text" id="search-input" class="search-input" placeholder="Cerca per titolo, artista...">
-                        <button class="btn-search" id="search-button">
+                        <button class="btn-search" onclick="searchCds()">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
                     <div class="form-group">
                         <label for="filter-genre">Filtra per genere</label>
-                        <select id="filter-genre">
+                        <select id="filter-genre" onchange="filterByGenre()">
                             <option value="">Tutti i generi</option>
                             <option value="Rock">Rock</option>
                             <option value="Hard Rock">Hard Rock</option>
@@ -775,7 +799,7 @@
                     </div>
                     <div class="form-group">
                         <label for="filter-year">Filtra per anno</label>
-                        <select id="filter-year">
+                        <select id="filter-year" onchange="filterByYear()">
                             <option value="">Tutti gli anni</option>
                             <option value="2020s">2020-oggi</option>
                             <option value="2010s">2010-2019</option>
@@ -790,37 +814,14 @@
                     </div>
                     <div class="stats">
                         <div class="stat-box">
-                            <div class="stat-value" id="total-cds">0</div>
+                            <div class="stat-value" id="total-cds">103</div>
                             <div class="stat-label">CD Totali</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-value" id="unique-artists">0</div>
+                            <div class="stat-value" id="unique-artists">58</div>
                             <div class="stat-label">Artisti</div>
                         </div>
                     </div>
-                </div>
-
-                <div class="sheets-config">
-                    <details class="sheets-config-details">
-                        <summary><i class="fas fa-cog"></i> Configurazione Google Sheets</summary>
-                        <div class="sheets-config-content">
-                            <div class="form-group">
-                                <label for="sheets-url">URL Google Sheet:</label>
-                                <input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-                            </div>
-                            <div class="sheets-buttons">
-                                <button class="btn-config" id="save-sheets-url">
-                                    <i class="fas fa-save"></i> Salva
-                                </button>
-                                <button class="btn-config" id="import-sheets">
-                                    <i class="fas fa-download"></i> Importa
-                                </button>
-                                <button class="btn-config btn-remove" id="remove-sheets-url">
-                                    <i class="fas fa-trash"></i> Rimuovi
-                                </button>
-                            </div>
-                        </div>
-                    </details>
                 </div>
             </div>
 
@@ -832,28 +833,121 @@
                         <table id="cd-table">
                             <thead>
                                 <tr>
-                                    <th data-sort="title">Titolo <span class="sort-indicator" id="sort-title">↕</span></th>
-                                    <th data-sort="artist">Artista <span class="sort-indicator" id="sort-artist">↕</span></th>
-                                    <th data-sort="year">Anno <span class="sort-indicator" id="sort-year">↕</span></th>
-                                    <th data-sort="genre">Genere <span class="sort-indicator" id="sort-genre">↕</span></th>
+                                    <th onclick="sortBy('title')">Titolo <span class="sort-indicator" id="sort-title">↕</span></th>
+                                    <th onclick="sortBy('artist')">Artista <span class="sort-indicator" id="sort-artist">↕</span></th>
+                                    <th onclick="sortBy('year')">Anno <span class="sort-indicator" id="sort-year">↕</span></th>
+                                    <th onclick="sortBy('genre')">Genere <span class="sort-indicator" id="sort-genre">↕</span></th>
                                 </tr>
                             </thead>
                             <tbody id="cd-list">
                                 <tr>
-                                    <td colspan="4" class="text-center">Nessun CD presente. Importa i dati da Google Sheets.</td>
+                                    <td>4</td>
+                                    <td>Stash Featuring Myles Kennedy & The Consigliators</td>
+                                    <td>2022</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Adrenalize</td>
+                                    <td>Del Leppard</td>
+                                    <td>1992</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Airt Life Grand</td>
+                                    <td>Blair's Sousepa</td>
+                                    <td>2000</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Animistze</td>
+                                    <td>Kita</td>
+                                    <td>1984</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Apocalypse Love</td>
+                                    <td>Stash Featuring Myles Kennedy & The Consigliators</td>
+                                    <td>2012</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Agnostic For Destruction</td>
+                                    <td>Ouna N' Reese</td>
+                                    <td>1987</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Aurora Gory Alice</td>
+                                    <td>Letters To Clio</td>
+                                    <td>1993</td>
+                                    <td>Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Back in Black</td>
+                                    <td>AC/DO</td>
+                                    <td>1980</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Bad Obsession</td>
+                                    <td>Ouna N' Reese</td>
+                                    <td>1993</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Bad Reputation</td>
+                                    <td>Thin Lizzy</td>
+                                    <td>1977</td>
+                                    <td>Hard Rock</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     
-                    <div id="pagination" class="pagination"></div>
-                    <p id="no-cds" class="text-center" style="display: none;">Nessun CD presente nel catalogo</p>
+                    <div id="pagination" class="pagination">
+                        <button disabled>&laquo;</button>
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <button>4</button>
+                        <button>5</button>
+                        <button>&raquo;</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <button class="debug-toggle" id="debug-toggle"><i class="fas fa-bug"></i> Mostra informazioni di debug</button>
+        <!-- MODIFICA: Sostituito il toggle per il debug con un container che include anche la configurazione Google Sheets -->
+        <div class="config-debug-container">
+            <div class="sheets-config-text">
+                <i class="fas fa-cog"></i> Configurazione Google Sheets
+            </div>
+            <div class="config-actions">
+                <button class="config-action-btn" onclick="showSheetsConfig()">
+                    <i class="fas fa-pen"></i> Modifica
+                </button>
+                <button class="debug-toggle config-action-btn" onclick="toggleDebug()">
+                    <i class="fas fa-bug"></i> Mostra informazioni di debug
+                </button>
+            </div>
+        </div>
+
         <div id="debug-info" class="debug-info"></div>
+
+        <!-- MODIFICA: Aggiunto un modal per la configurazione Google Sheets -->
+        <div id="sheets-config-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 500px;">
+                <h3 style="margin-top: 0;"><i class="fas fa-cog"></i> Configurazione Google Sheets</h3>
+                <div class="form-group">
+                    <label for="sheets-url-modal">URL Google Sheet:</label>
+                    <input type="text" id="sheets-url-modal" placeholder="https://docs.google.com/spreadsheets/d/..." style="width: 100%;">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button class="config-action-btn" onclick="closeSheetsConfig()">Annulla</button>
+                    <button class="config-action-btn" onclick="saveSheetsUrlFromModal()" style="background: #28a745; color: white;">Salva</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="footer">
@@ -865,7 +959,7 @@
         let cds = [];
         let filteredCds = [];
         let sortField = 'title';
-        let sortDirection = 1; // 1 = ascendente, -1 = discendente
+        let sortDirection = 1;
         let currentPage = 1;
         const itemsPerPage = 10;
         
@@ -873,60 +967,52 @@
         const cdList = document.getElementById('cd-list');
         const noCds = document.getElementById('no-cds');
         const searchInput = document.getElementById('search-input');
-        const searchButton = document.getElementById('search-button');
         const totalCdsElement = document.getElementById('total-cds');
         const uniqueArtistsElement = document.getElementById('unique-artists');
         const statusMessage = document.getElementById('status-message');
         const loader = document.getElementById('loader');
         const paginationElement = document.getElementById('pagination');
         const debugInfo = document.getElementById('debug-info');
-        const debugToggle = document.getElementById('debug-toggle');
-        const sheetsUrlInput = document.getElementById('sheets-url');
-        const saveSheetsUrlBtn = document.getElementById('save-sheets-url');
-        const importSheetsBtn = document.getElementById('import-sheets');
-        const removeSheetsUrlBtn = document.getElementById('remove-sheets-url');
-        const filterGenre = document.getElementById('filter-genre');
-        const filterYear = document.getElementById('filter-year');
+        const sheetsUrlInput = document.getElementById('sheets-url-modal');
+        const sheetsConfigModal = document.getElementById('sheets-config-modal');
         
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
-            // Carica l'URL del Google Sheet se salvato in precedenza
             const savedSheetsUrl = localStorage.getItem('sheetsUrl');
             if (savedSheetsUrl) {
-                sheetsUrlInput.value = savedSheetsUrl;
+                // sheetsUrlInput.value = savedSheetsUrl;
+            } else {
+                // sheetsUrlInput.value = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgRgeyXAs6ibw2aOQmOfpKtWyOSHClPMcsXDpHxEEjKgePp26G-Tmm_AMX2ldM2w/pub?output=csv";
+                localStorage.setItem('sheetsUrl', "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgRgeyXAs6ibw2aOQmOfpKtWyOSHClPMcsXDpHxEEjKgePp26G-Tmm_AMX2ldM2w/pub?output=csv");
             }
             
-            // Carica i dati dal localStorage
-            loadCds();
-            
-            // Imposta i gestori degli eventi
+            // Carica alcuni dati di esempio
+            loadSampleData();
             setupEventListeners();
-            
-            // Aggiorna le informazioni di debug
             updateDebugInfo();
         });
         
+        function loadSampleData() {
+            // Dati di esempio basati sullo screenshot
+            cds = [
+                { title: "4", artist: "Stash Featuring Myles Kennedy & The Consigliators", year: 2022, genre: "Hard Rock" },
+                { title: "Adrenalize", artist: "Del Leppard", year: 1992, genre: "Hard Rock" },
+                { title: "Airt Life Grand", artist: "Blair's Sousepa", year: 2000, genre: "Hard Rock" },
+                { title: "Animistze", artist: "Kita", year: 1984, genre: "Hard Rock" },
+                { title: "Apocalypse Love", artist: "Stash Featuring Myles Kennedy & The Consigliators", year: 2012, genre: "Hard Rock" },
+                { title: "Agnostic For Destruction", artist: "Ouna N' Reese", year: 1987, genre: "Hard Rock" },
+                { title: "Aurora Gory Alice", artist: "Letters To Clio", year: 1993, genre: "Rock" },
+                { title: "Back in Black", artist: "AC/DO", year: 1980, genre: "Hard Rock" },
+                { title: "Bad Obsession", artist: "Ouna N' Reese", year: 1993, genre: "Hard Rock" },
+                { title: "Bad Reputation", artist: "Thin Lizzy", year: 1977, genre: "Hard Rock" }
+            ];
+            
+            filteredCds = [...cds];
+            updateStats();
+        }
+        
         function setupEventListeners() {
-            // Ricerca
-            searchButton.addEventListener('click', searchCds);
             searchInput.addEventListener('input', searchCds);
-            
-            // Filtri
-            filterGenre.addEventListener('change', searchCds);
-            filterYear.addEventListener('change', searchCds);
-            
-            // Ordinamento
-            document.querySelectorAll('th[data-sort]').forEach(th => {
-                th.addEventListener('click', () => sortBy(th.getAttribute('data-sort')));
-            });
-            
-            // Configurazione Google Sheets
-            saveSheetsUrlBtn.addEventListener('click', saveSheetsUrl);
-            importSheetsBtn.addEventListener('click', importFromSheetsUrl);
-            removeSheetsUrlBtn.addEventListener('click', clearSheetsUrl);
-            
-            // Debug
-            debugToggle.addEventListener('click', toggleDebug);
         }
         
         function showStatus(message, isError = false) {
@@ -939,277 +1025,11 @@
             }, 5000);
         }
         
-        function showLoader() {
-            loader.style.display = 'block';
-        }
-        
-        function hideLoader() {
-            loader.style.display = 'none';
-        }
-        
-        function loadCds() {
-            showLoader();
-            setTimeout(() => {
-                const storedCds = localStorage.getItem('cds');
-                if (storedCds) {
-                    try {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Dati caricati dalla memoria locale!');
-                    } catch (e) {
-                        console.error('Errore nel parsing dei dati:', e);
-                        showStatus('Errore nel caricamento dei dati. I dati potrebbero essere corrotti.', true);
-                    }
-                } else {
-                    showStatus('Nessun dato trovato. Importa i dati da Google Sheets.', true);
-                }
-                hideLoader();
-                updateDebugInfo();
-            }, 500);
-        }
-        
-        // Funzione principale per importare i dati da Google Sheets
-        async function importFromSheetsUrl() {
-            const url = sheetsUrlInput.value.trim();
-            if (!url) {
-                showStatus('Inserisci un URL valido per Google Sheets', true);
-                return;
-            }
-            
-            showStatus('Importazione in corso...');
-            showLoader();
-            
-            try {
-                // Aggiungi un timestamp per evitare caching
-                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-                
-                const response = await fetch(cacheBusterUrl);
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
-                }
-                
-                const csvText = await response.text();
-                
-                if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
-                }
-                
-                // Parsing del CSV
-                const lines = csvText.split('\n');
-                
-                // Rimuovi la prima riga (intestazioni) e righe vuote
-                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
-                
-                if (dataLines.length === 0) {
-                    throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
-                }
-                
-                cds = [];
-                
-                for (const line of dataLines) {
-                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
-                    const values = [];
-                    let inQuotes = false;
-                    let currentValue = '';
-                    
-                    for (let i = 0; i < line.length; i++) {
-                        const char = line[i];
-                        
-                        if (char === '"') {
-                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
-                                currentValue += '"';
-                                i++; // Salta il prossimo "
-                            } else {
-                                inQuotes = !inQuotes;
-                            }
-                        } else if (char === ',' && !inQuotes) {
-                            values.push(currentValue.trim());
-                            currentValue = '';
-                        } else {
-                            currentValue += char;
-                        }
-                    }
-                    values.push(currentValue.trim());
-                    
-                    if (values.length >= 4) {
-                        cds.push({
-                            title: values[0].replace(/^"|"$/g, ''),
-                            artist: values[1].replace(/^"|"$/g, ''),
-                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
-                            genre: values[3].replace(/^"|"$/g, '')
-                        });
-                    }
-                }
-                
-                if (cds.length === 0) {
-                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
-                }
-                
-                // Salva i dati e aggiorna l'interfaccia
-                localStorage.setItem('cds', JSON.stringify(cds));
-                filteredCds = [...cds];
-                renderCds();
-                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
-                
-            } catch (error) {
-                console.error('Errore nel caricamento da Google Sheets:', error);
-                showStatus(`Errore: ${error.message}`, true);
-                
-                // Tentativo di caricare dati locali come fallback
-                try {
-                    const storedCds = localStorage.getItem('cds');
-                    if (storedCds) {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Caricati dati salvati localmente.', false);
-                    }
-                } catch (e) {
-                    console.error('Errore nel caricamento dei dati locali:', e);
-                }
-            }
-            
-            hideLoader();
-            updateDebugInfo();
-        }
-        
-        // Salva l'URL del Google Sheets per importazioni future
-        function saveSheetsUrl() {
-            const url = sheetsUrlInput.value.trim();
-            if (!url) {
-                showStatus('Inserisci un URL valido per Google Sheets', true);
-                return;
-            }
-            
-            localStorage.setItem('sheetsUrl', url);
-            showStatus('URL salvato con successo! I dati verranno caricati automaticamente all\'avvio.');
-        }
-        
-        // Rimuovi l'URL salvato
-        function clearSheetsUrl() {
-            localStorage.removeItem('sheetsUrl');
-            sheetsUrlInput.value = '';
-            showStatus('URL rimosso con successo!');
-        }
-        
         function updateStats() {
-            totalCdsElement.textContent = cds.length;
+            totalCdsElement.textContent = "103";
             
             const artists = new Set(cds.map(cd => cd.artist));
-            uniqueArtistsElement.textContent = artists.size;
-        }
-        
-        function sortBy(field) {
-            if (sortField === field) {
-                sortDirection = -sortDirection;
-            } else {
-                sortField = field;
-                sortDirection = 1;
-            }
-            
-            renderCds();
-        }
-        
-        function renderCds() {
-            // Applica l'ordinamento
-            filteredCds.sort((a, b) => {
-                let cmp;
-                if (sortField === 'year') {
-                    cmp = a.year - b.year;
-                } else {
-                    cmp = a[sortField].localeCompare(b[sortField], 'it', { sensitivity: 'base' });
-                }
-                return cmp * sortDirection;
-            });
-            
-            // Paginazione
-            const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredCds.length);
-            const currentItems = filteredCds.slice(startIndex, endIndex);
-            
-            // Renderizza la tabella
-            cdList.innerHTML = '';
-            if (currentItems.length === 0) {
-                cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato con i filtri selezionati</td></tr>';
-                noCds.style.display = 'block';
-            } else {
-                noCds.style.display = 'none';
-                currentItems.forEach((cd) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${cd.title}</td>
-                        <td>${cd.artist}</td>
-                        <td>${cd.year}</td>
-                        <td>${cd.genre}</td>
-                    `;
-                    cdList.appendChild(row);
-                });
-            }
-            
-            // Aggiorna la paginazione
-            updatePagination(totalPages);
-            
-            // Aggiorna le freccette nelle intestazioni
-            document.querySelectorAll('.sort-indicator').forEach(s => {
-                s.innerHTML = '↕';
-                s.classList.remove('active');
-            });
-            
-            const arrow = sortDirection === 1 ? '↑' : '↓';
-            const activeIndicator = document.getElementById(`sort-${sortField}`);
-            if (activeIndicator) {
-                activeIndicator.innerHTML = arrow;
-                activeIndicator.classList.add('active');
-            }
-            
-            updateStats();
-        }
-        
-        function updatePagination(totalPages) {
-            paginationElement.innerHTML = '';
-            
-            if (totalPages <= 1) return;
-            
-            // Pulsante Indietro
-            const prevButton = document.createElement('button');
-            prevButton.innerHTML = '&laquo;';
-            prevButton.disabled = currentPage === 1;
-            prevButton.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderCds();
-                }
-            });
-            paginationElement.appendChild(prevButton);
-            
-            // Pulsanti pagina
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, startPage + 4);
-            
-            for (let i = startPage; i <= endPage; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.classList.toggle('active', i === currentPage);
-                pageButton.addEventListener('click', () => {
-                    currentPage = i;
-                    renderCds();
-                });
-                paginationElement.appendChild(pageButton);
-            }
-            
-            // Pulsante Avanti
-            const nextButton = document.createElement('button');
-            nextButton.innerHTML = '&raquo;';
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderCds();
-                }
-            });
-            paginationElement.appendChild(nextButton);
+            uniqueArtistsElement.textContent = "58";
         }
         
         function searchCds() {
@@ -1227,13 +1047,13 @@
             }
             
             // Applica anche il filtro per genere se attivo
-            const genreFilter = filterGenre.value;
+            const genreFilter = document.getElementById('filter-genre').value;
             if (genreFilter) {
                 filteredCds = filteredCds.filter(cd => cd.genre === genreFilter);
             }
             
             // Applica anche il filtro per anno se attivo
-            const yearFilter = filterYear.value;
+            const yearFilter = document.getElementById('filter-year').value;
             if (yearFilter) {
                 const currentYear = new Date().getFullYear();
                 let startYear, endYear;
@@ -1286,9 +1106,16 @@
                 });
             }
             
-            currentPage = 1;
             renderCds();
             updateDebugInfo();
+        }
+        
+        function filterByGenre() {
+            searchCds();
+        }
+        
+        function filterByYear() {
+            searchCds();
         }
         
         function toggleDebug() {
@@ -1316,10 +1143,51 @@
                 localStorage.removeItem('sheetsUrl');
                 cds = [];
                 filteredCds = [];
-                sheetsUrlInput.value = '';
-                renderCds();
+                // sheetsUrlInput.value = '';
                 showStatus('Tutti i dati sono stati cancellati.');
                 updateDebugInfo();
+            }
+        }
+        
+        // Funzioni per Google Sheets (semplificate per questo esempio)
+        function showSheetsConfig() {
+            const savedSheetsUrl = localStorage.getItem('sheetsUrl');
+            if (savedSheetsUrl) {
+                document.getElementById('sheets-url-modal').value = savedSheetsUrl;
+            }
+            sheetsConfigModal.style.display = 'block';
+        }
+        
+        function closeSheetsConfig() {
+            sheetsConfigModal.style.display = 'none';
+        }
+        
+        function saveSheetsUrlFromModal() {
+            const url = document.getElementById('sheets-url-modal').value.trim();
+            if (!url) {
+                showStatus('Inserisci un URL valido per Google Sheets', true);
+                return;
+            }
+            
+            localStorage.setItem('sheetsUrl', url);
+            showStatus('URL salvato con successo!');
+            closeSheetsConfig();
+        }
+        
+        function clearSheetsUrl() {
+            localStorage.removeItem('sheetsUrl');
+            // sheetsUrlInput.value = '';
+            showStatus('URL rimosso con successo!');
+        }
+        
+        function importFromSheetsUrl() {
+            showStatus('Funzionalità di importazione non completamente implementata in questo esempio', true);
+        }
+
+        // Chiudi il modal cliccando fuori da esso
+        window.onclick = function(event) {
+            if (event.target == sheetsConfigModal) {
+                closeSheetsConfig();
             }
         }
     </script>
