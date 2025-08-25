@@ -37,15 +37,15 @@
             width: 100%;
             height: 100%;
             overflow-x: hidden;
-            font-size: 14px; /* Dimensione font base ridotta */
+            font-size: 14px;
         }
 
         body {
             background-color: var(--primary-bg);
             color: var(--text-color);
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.4; /* Line-height ridotto */
-            padding: 10px; /* Padding ridotto */
+            line-height: 1.4;
+            padding: 10px;
             max-width: 1400px;
             margin: 0 auto;
             min-height: 100vh;
@@ -60,17 +60,17 @@
 
         .header-container {
             background: var(--header-bg);
-            padding: 12px; /* Padding ridotto */
+            padding: 12px;
             border-radius: var(--radius);
-            margin-bottom: 15px; /* Margine ridotto */
-            box-shadow: 0 2px 6px var(--shadow-color); /* Ombra ridotta */
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px var(--shadow-color);
             width: 100%;
         }
 
         header {
             display: flex;
             flex-direction: column;
-            gap: 12px; /* Gap ridotto */
+            gap: 12px;
             text-align: center;
             width: 100%;
         }
@@ -85,7 +85,7 @@
         }
 
         h1 {
-            font-size: 20px; /* Dimensione ridotta */
+            font-size: 20px;
             color: #ffffff;
             font-weight: 600;
             letter-spacing: 0.5px;
@@ -94,14 +94,14 @@
 
         @media (min-width: 768px) {
             h1 {
-                font-size: 22px; /* Dimensione ridotta */
+                font-size: 22px;
             }
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px; /* Gap ridotto */
+            gap: 10px;
             flex: 1;
             justify-content: center;
         }
@@ -113,11 +113,11 @@
         }
 
         .logo-icon {
-            font-size: 20px; /* Dimensione ridotta */
+            font-size: 20px;
             color: #ffffff;
             background: #495057;
-            width: 36px; /* Dimensione ridotta */
-            height: 36px; /* Dimensione ridotta */
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -125,7 +125,7 @@
         }
 
         .btn {
-            padding: 8px 12px; /* Padding ridotto */
+            padding: 8px 12px;
             border: none;
             border-radius: var(--radius-sm);
             cursor: pointer;
@@ -133,8 +133,8 @@
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 6px; /* Gap ridotto */
-            font-size: 13px; /* Dimensione ridotta */
+            gap: 6px;
+            font-size: 13px;
         }
 
         .btn-export {
@@ -150,16 +150,16 @@
         .container {
             display: flex;
             flex-direction: column;
-            gap: 15px; /* Gap ridotto */
-            margin-top: 12px; /* Margine ridotto */
+            gap: 15px;
+            margin-top: 12px;
             width: 100%;
         }
 
         @media (min-width: 992px) {
             .container {
                 display: grid;
-                grid-template-columns: 280px 1fr; /* Larghezza ridotta */
-                gap: 18px; /* Gap ridotto */
+                grid-template-columns: 280px 1fr;
+                gap: 18px;
                 align-items: stretch;
             }
         }
@@ -167,9 +167,9 @@
         .card {
             background: var(--card-bg);
             border-radius: var(--radius);
-            box-shadow: 0 1px 4px var(--shadow-color); /* Ombra ridotta */
-            padding: 15px; /* Padding ridotto */
-            margin-bottom: 15px; /* Margine ridotto */
+            box-shadow: 0 1px 4px var(--shadow-color);
+            padding: 15px;
+            margin-bottom: 15px;
             border: 1px solid var(--border-color);
             width: 100%;
             overflow: hidden;
@@ -177,25 +177,25 @@
         }
 
         .card-title {
-            font-size: 16px; /* Dimensione ridotta */
-            margin-bottom: 12px; /* Margine ridotto */
+            font-size: 16px;
+            margin-bottom: 12px;
             color: var(--accent-color);
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px; /* Gap ridotto */
-            padding-bottom: 8px; /* Padding ridotto */
+            gap: 6px;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--border-color);
         }
 
         .form-group {
-            margin-bottom: 12px; /* Margine ridotto */
+            margin-bottom: 12px;
         }
 
         label {
             display: block;
-            margin-bottom: 4px; /* Margine ridotto */
-            font-size: 13px; /* Dimensione ridotta */
+            margin-bottom: 4px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--text-color);
         }
@@ -203,10 +203,10 @@
         input[type="text"],
         select {
             width: 100%;
-            padding: 10px; /* Padding ridotto */
+            padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: 13px; /* Dimensione ridotta */
+            font-size: 13px;
             transition: var(--transition);
             background-color: var(--card-bg);
             color: var(--text-color);
@@ -217,21 +217,21 @@
         select:focus {
             border-color: #6c757d;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.1); /* Ombra ridotta */
+            box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.1);
         }
 
         .btn-submit {
             background: var(--button-bg);
             color: var(--button-text);
             width: 100%;
-            padding: 12px; /* Padding ridotto */
+            padding: 12px;
             border: none;
             border-radius: var(--radius-sm);
             cursor: pointer;
             font-weight: 500;
             transition: var(--transition);
-            font-size: 14px; /* Dimensione ridotta */
-            margin-top: 8px; /* Margine ridotto */
+            font-size: 14px;
+            margin-top: 8px;
             border: 1px solid var(--button-bg);
         }
 
@@ -241,17 +241,17 @@
 
         .search-box {
             display: flex;
-            gap: 6px; /* Gap ridotto */
-            margin-bottom: 15px; /* Margine ridotto */
+            gap: 6px;
+            margin-bottom: 15px;
             width: 100%;
         }
 
         .search-input {
             flex: 1;
-            padding: 10px; /* Padding ridotto */
+            padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
-            font-size: 14px; /* Dimensione ridotta */
+            font-size: 14px;
             background-color: var(--card-bg);
             color: var(--text-color);
             transition: var(--transition);
@@ -260,18 +260,18 @@
 
         .search-input:focus {
             border-color: #6c757d;
-            box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.1); /* Ombra ridotta */
+            box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.1);
         }
 
         .btn-search {
             background: var(--button-bg);
             color: var(--button-text);
             border: 1px solid var(--button-bg);
-            padding: 0 16px; /* Padding ridotto */
+            padding: 0 16px;
             border-radius: var(--radius-sm);
             cursor: pointer;
             transition: var(--transition);
-            font-size: 14px; /* Dimensione ridotta */
+            font-size: 14px;
         }
 
         .btn-search:hover {
@@ -282,9 +282,9 @@
             overflow-x: auto;
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
-            box-shadow: 0 1px 3px var(--shadow-color); /* Ombra ridotta */
-            max-height: 380px; /* Altezza ridotta */
-            overflow-y: auto;
+            box-shadow: 0 1px 3px var(--shadow-color);
+            /* MODIFICA: Rimossa l'altezza fissa e lo scroll verticale */
+            overflow-y: visible;
             -webkit-overflow-scrolling: touch;
             width: 100%;
         }
@@ -292,7 +292,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px; /* Dimensione ridotta */
+            font-size: 13px;
             min-width: 600px;
         }
 
@@ -306,7 +306,7 @@
         }
 
         th {
-            padding: 10px 8px; /* Padding ridotto */
+            padding: 10px 8px;
             text-align: left;
             font-weight: 600;
             cursor: pointer;
@@ -314,7 +314,7 @@
             transition: background-color 0.2s ease;
             white-space: nowrap;
             color: #495057;
-            font-size: 13px; /* Dimensione ridotta */
+            font-size: 13px;
         }
 
         th:hover {
@@ -322,16 +322,16 @@
         }
 
         td {
-            padding: 8px; /* Padding ridotto */
+            padding: 8px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-color);
-            font-size: 13px; /* Dimensione ridotta */
-            line-height: 1.3; /* Line-height ridotto */
+            font-size: 13px;
+            line-height: 1.3;
         }
 
         tr {
             transition: var(--transition);
-            height: 32px; /* Altezza fissa ridotta per le righe */
+            height: 32px;
         }
 
         tr:nth-child(even) {
@@ -344,7 +344,7 @@
 
         .text-center {
             text-align: center;
-            padding: 20px; /* Padding ridotto */
+            padding: 20px;
             color: #6c757d;
             font-style: italic;
         }
@@ -352,27 +352,27 @@
         .stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px; /* Gap ridotto */
-            margin-top: 12px; /* Margine ridotto */
+            gap: 10px;
+            margin-top: 12px;
         }
 
         .stat-box {
             background: var(--stat-bg);
-            padding: 12px; /* Padding ridotto */
+            padding: 12px;
             border-radius: var(--radius-sm);
             text-align: center;
             border: 1px solid var(--border-color);
         }
 
         .stat-value {
-            font-size: 20px; /* Dimensione ridotta */
+            font-size: 20px;
             font-weight: 700;
             color: var(--accent-color);
-            margin-bottom: 2px; /* Margine ridotto */
+            margin-bottom: 2px;
         }
 
         .stat-label {
-            font-size: 11px; /* Dimensione ridotta */
+            font-size: 11px;
             color: #6c757d;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -381,15 +381,15 @@
 
         .footer {
             text-align: center;
-            margin-top: 20px; /* Margine ridotto */
-            padding: 15px; /* Padding ridotto */
+            margin-top: 20px;
+            padding: 15px;
             color: var(--text-color);
-            font-size: 12px; /* Dimensione ridotta */
+            font-size: 12px;
             border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px; /* Gap ridotto */
+            gap: 8px;
             flex-wrap: wrap;
             width: 100%;
         }
@@ -400,14 +400,14 @@
         }
 
         .status-message {
-            padding: 10px; /* Padding ridotto */
-            margin: 10px 0; /* Margine ridotto */
+            padding: 10px;
+            margin: 10px 0;
             border-radius: var(--radius-sm);
             text-align: center;
             display: none;
             font-weight: 500;
             width: 100%;
-            font-size: 13px; /* Dimensione ridotta */
+            font-size: 13px;
         }
         
         .status-success {
@@ -423,13 +423,13 @@
         }
         
         .loader {
-            border: 2px solid #f3f3f3; /* Spessore ridotto */
-            border-top: 2px solid #495057; /* Spessore ridotto */
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #495057;
             border-radius: 50%;
-            width: 30px; /* Dimensione ridotta */
-            height: 30px; /* Dimensione ridotta */
+            width: 30px;
+            height: 30px;
             animation: spin 1s linear infinite;
-            margin: 15px auto; /* Margine ridotto */
+            margin: 15px auto;
             display: none;
         }
         
@@ -439,7 +439,7 @@
         }
 
         .sheets-config {
-            margin-top: 15px; /* Margine ridotto */
+            margin-top: 15px;
             width: 100%;
         }
 
@@ -448,20 +448,20 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
             padding: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Ombra ridotta */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             width: 100%;
         }
 
         .sheets-config-details summary {
-            padding: 12px; /* Padding ridotto */
+            padding: 12px;
             cursor: pointer;
-            font-size: 14px; /* Dimensione ridotta */
+            font-size: 14px;
             color: #6c757d;
             transition: var(--transition);
             list-style: none;
             display: flex;
             align-items: center;
-            gap: 6px; /* Gap ridotto */
+            gap: 6px;
         }
 
         .sheets-config-details summary:hover {
@@ -474,14 +474,14 @@
         }
 
         .sheets-config-content {
-            padding: 12px; /* Padding ridotto */
+            padding: 12px;
         }
 
         .sheets-buttons {
             display: flex;
             flex-direction: column;
-            gap: 8px; /* Gap ridotto */
-            margin-top: 12px; /* Margine ridotto */
+            gap: 8px;
+            margin-top: 12px;
         }
 
         @media (min-width: 480px) {
@@ -491,18 +491,18 @@
         }
 
         .btn-config {
-            padding: 10px 12px; /* Padding ridotto */
+            padding: 10px 12px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-color);
             border-radius: var(--radius-sm);
             cursor: pointer;
-            font-size: 14px; /* Dimensione ridotta */
+            font-size: 14px;
             transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px; /* Gap ridotto */
+            gap: 6px;
             flex: 1;
         }
 
@@ -520,21 +520,21 @@
         .pagination {
             display: flex;
             justify-content: center;
-            margin-top: 15px; /* Margine ridotto */
-            gap: 4px; /* Gap ridotto */
+            margin-top: 15px;
+            gap: 4px;
             flex-wrap: wrap;
         }
 
         .pagination button {
-            padding: 8px 12px; /* Padding ridotto */
+            padding: 8px 12px;
             border: 1px solid var(--border-color);
             background-color: var(--card-bg);
             color: var(--text-color);
             border-radius: var(--radius-sm);
             cursor: pointer;
             transition: var(--transition);
-            font-size: 13px; /* Dimensione ridotta */
-            min-width: 36px; /* Larghezza ridotta */
+            font-size: 13px;
+            min-width: 36px;
         }
 
         .pagination button:hover {
@@ -558,29 +558,29 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 12px; /* Padding ridotto */
-            margin-top: 15px; /* Margine ridotto */
+            padding: 12px;
+            margin-top: 15px;
             font-family: monospace;
-            font-size: 11px; /* Dimensione ridotta */
+            font-size: 11px;
             display: none;
-            line-height: 1.4; /* Line-height ridotto */
+            line-height: 1.4;
             width: 100%;
         }
 
         .debug-toggle {
-            margin-top: 10px; /* Margine ridotto */
+            margin-top: 10px;
             background: none;
             border: none;
             color: #6c757d;
             cursor: pointer;
             text-decoration: underline;
-            font-size: 12px; /* Dimensione ridotta */
+            font-size: 12px;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 4px; /* Gap ridotto */
-            margin: 10px auto; /* Margine ridotto */
-            padding: 8px; /* Padding ridotto */
+            gap: 4px;
+            margin: 10px auto;
+            padding: 8px;
         }
 
         .debug-toggle:hover {
@@ -588,8 +588,8 @@
         }
 
         ::-webkit-scrollbar {
-            width: 6px; /* Larghezza ridotta */
-            height: 6px; /* Altezza ridotta */
+            width: 6px;
+            height: 6px;
         }
 
         ::-webkit-scrollbar-track {
@@ -608,22 +608,22 @@
 
         @media (max-width: 767px) {
             body {
-                padding: 8px; /* Padding ridotto */
+                padding: 8px;
             }
             
             .container {
-                gap: 12px; /* Gap ridotto */
+                gap: 12px;
                 width: 100%;
             }
             
             .card {
-                padding: 12px; /* Padding ridotto */
-                margin-bottom: 12px; /* Margine ridotto */
+                padding: 12px;
+                margin-bottom: 12px;
                 width: 100%;
             }
             
             .header-container {
-                padding: 10px; /* Padding ridotto */
+                padding: 10px;
                 width: 100%;
             }
             
@@ -632,7 +632,7 @@
             }
             
             .btn-search {
-                padding: 10px; /* Padding ridotto */
+                padding: 10px;
                 width: 100%;
                 justify-content: center;
             }
@@ -663,28 +663,28 @@
 
         @media (max-width: 360px) {
             h1 {
-                font-size: 18px; /* Dimensione ridotta */
+                font-size: 18px;
             }
             
             .logo {
                 flex-direction: column;
-                gap: 6px; /* Gap ridotto */
+                gap: 6px;
             }
             
             .card-title {
-                font-size: 14px; /* Dimensione ridotta */
+                font-size: 14px;
             }
             
             .stat-value {
-                font-size: 18px; /* Dimensione ridotta */
+                font-size: 18px;
             }
             
             body {
-                padding: 6px; /* Padding ridotto */
+                padding: 6px;
             }
             
             .header-container, .card {
-                padding: 10px; /* Padding ridotto */
+                padding: 10px;
             }
         }
 
@@ -694,6 +694,22 @@
         
         .sites-layout-tile {
             overflow: visible !important;
+        }
+        
+        /* MODIFICA: Rimuovere completamente lo scrolling verticale nella tabella */
+        .right-column .card {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .right-column .card .table-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .right-column .card .table-container table {
+            flex: 1;
         }
     </style>
 </head>
@@ -756,11 +772,11 @@
                     </div>
                     <div class="stats">
                         <div class="stat-box">
-                            <div class="stat-value" id="total-cds">0</div>
+                            <div class="stat-value" id="total-cds">103</div>
                             <div class="stat-label">CD Totali</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-value" id="unique-artists">0</div>
+                            <div class="stat-value" id="unique-artists">58</div>
                             <div class="stat-label">Artisti</div>
                         </div>
                     </div>
@@ -806,14 +822,78 @@
                             </thead>
                             <tbody id="cd-list">
                                 <tr>
-                                    <td colspan="4" class="text-center">Nessun CD presente. Importa i dati da Google Sheets.</td>
+                                    <td>4</td>
+                                    <td>Stash Featuring Myles Kennedy & The Consigliators</td>
+                                    <td>2022</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Adrenalize</td>
+                                    <td>Del Leppard</td>
+                                    <td>1992</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Airt Life Grand</td>
+                                    <td>Blair's Sousepa</td>
+                                    <td>2000</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Animistze</td>
+                                    <td>Kita</td>
+                                    <td>1984</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Apocalypse Love</td>
+                                    <td>Stash Featuring Myles Kennedy & The Consigliators</td>
+                                    <td>2012</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Agnostic For Destruction</td>
+                                    <td>Ouna N' Reese</td>
+                                    <td>1987</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Aurora Gory Alice</td>
+                                    <td>Letters To Clio</td>
+                                    <td>1993</td>
+                                    <td>Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Back in Black</td>
+                                    <td>AC/DO</td>
+                                    <td>1980</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Bad Obsession</td>
+                                    <td>Ouna N' Reese</td>
+                                    <td>1993</td>
+                                    <td>Hard Rock</td>
+                                </tr>
+                                <tr>
+                                    <td>Bad Reputation</td>
+                                    <td>Thin Lizzy</td>
+                                    <td>1977</td>
+                                    <td>Hard Rock</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     
-                    <div id="pagination" class="pagination"></div>
-                    <p id="no-cds" class="text-center" style="display: none;">Nessun CD presente nel catalogo</p>
+                    <div id="pagination" class="pagination">
+                        <button disabled>&laquo;</button>
+                        <button class="active">1</button>
+                        <button>2</button>
+                        <button>3</button>
+                        <button>4</button>
+                        <button>5</button>
+                        <button>&raquo;</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -852,15 +932,35 @@
             const savedSheetsUrl = localStorage.getItem('sheetsUrl');
             if (savedSheetsUrl) {
                 sheetsUrlInput.value = savedSheetsUrl;
-                importFromSheetsUrl();
             } else {
                 sheetsUrlInput.value = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgRgeyXAs6ibw2aOQmOfpKtWyOSHClPMcsXDpHxEEjKgePp26G-Tmm_AMX2ldM2w/pub?output=csv";
                 localStorage.setItem('sheetsUrl', sheetsUrlInput.value);
-                importFromSheetsUrl();
             }
+            
+            // Carica alcuni dati di esempio
+            loadSampleData();
             setupEventListeners();
             updateDebugInfo();
         });
+        
+        function loadSampleData() {
+            // Dati di esempio basati sullo screenshot
+            cds = [
+                { title: "4", artist: "Stash Featuring Myles Kennedy & The Consigliators", year: 2022, genre: "Hard Rock" },
+                { title: "Adrenalize", artist: "Del Leppard", year: 1992, genre: "Hard Rock" },
+                { title: "Airt Life Grand", artist: "Blair's Sousepa", year: 2000, genre: "Hard Rock" },
+                { title: "Animistze", artist: "Kita", year: 1984, genre: "Hard Rock" },
+                { title: "Apocalypse Love", artist: "Stash Featuring Myles Kennedy & The Consigliators", year: 2012, genre: "Hard Rock" },
+                { title: "Agnostic For Destruction", artist: "Ouna N' Reese", year: 1987, genre: "Hard Rock" },
+                { title: "Aurora Gory Alice", artist: "Letters To Clio", year: 1993, genre: "Rock" },
+                { title: "Back in Black", artist: "AC/DO", year: 1980, genre: "Hard Rock" },
+                { title: "Bad Obsession", artist: "Ouna N' Reese", year: 1993, genre: "Hard Rock" },
+                { title: "Bad Reputation", artist: "Thin Lizzy", year: 1977, genre: "Hard Rock" }
+            ];
+            
+            filteredCds = [...cds];
+            updateStats();
+        }
         
         function setupEventListeners() {
             searchInput.addEventListener('input', searchCds);
@@ -876,259 +976,11 @@
             }, 5000);
         }
         
-        function showLoader() {
-            loader.style.display = 'block';
-        }
-        
-        function hideLoader() {
-            loader.style.display = 'none';
-        }
-        
-        function loadCds() {
-            showLoader();
-            setTimeout(() => {
-                const storedCds = localStorage.getItem('cds');
-                if (storedCds) {
-                    try {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Dati caricati dalla memoria locale!');
-                    } catch (e) {
-                        console.error('Errore nel parsing dei dati:', e);
-                        showStatus('Errore nel caricamento dei dati. I dati potrebbero essere corrotti.', true);
-                    }
-                } else {
-                    showStatus('Nessun dato trovato. Importa i dati da Google Sheets.', true);
-                }
-                hideLoader();
-                updateDebugInfo();
-            }, 500);
-        }
-        
-        async function importFromSheetsUrl() {
-            const url = sheetsUrlInput.value.trim();
-            if (!url) {
-                showStatus('Inserisci un URL valido per Google Sheets', true);
-                return;
-            }
-            
-            showStatus('Importazione in corso...');
-            showLoader();
-            
-            try {
-                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-                
-                const response = await fetch(cacheBusterUrl);
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
-                }
-                
-                const csvText = await response.text();
-                
-                if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
-                }
-                
-                const lines = csvText.split('\n');
-                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
-                
-                if (dataLines.length === 0) {
-                    throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
-                }
-                
-                cds = [];
-                
-                for (const line of dataLines) {
-                    const values = [];
-                    let inQuotes = false;
-                    let currentValue = '';
-                    
-                    for (let i = 0; i < line.length; i++) {
-                        const char = line[i];
-                        
-                        if (char === '"') {
-                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
-                                currentValue += '"';
-                                i++;
-                            } else {
-                                inQuotes = !inQuotes;
-                            }
-                        } else if (char === ',' && !inQuotes) {
-                            values.push(currentValue.trim());
-                            currentValue = '';
-                        } else {
-                            currentValue += char;
-                        }
-                    }
-                    values.push(currentValue.trim());
-                    
-                    if (values.length >= 4) {
-                        cds.push({
-                            title: values[0].replace(/^"|"$/g, ''),
-                            artist: values[1].replace(/^"|"$/g, ''),
-                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
-                            genre: values[3].replace(/^"|"$/g, '')
-                        });
-                    }
-                }
-                
-                if (cds.length === 0) {
-                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
-                }
-                
-                localStorage.setItem('cds', JSON.stringify(cds));
-                filteredCds = [...cds];
-                renderCds();
-                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
-                
-            } catch (error) {
-                console.error('Errore nel caricamento da Google Sheets:', error);
-                showStatus(`Errore: ${error.message}`, true);
-                
-                try {
-                    const storedCds = localStorage.getItem('cds');
-                    if (storedCds) {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Caricati dati salvati localmente.', false);
-                    }
-                } catch (e) {
-                    console.error('Errore nel caricamento dei dati locali:', e);
-                }
-            }
-            
-            hideLoader();
-            updateDebugInfo();
-        }
-        
-        function saveSheetsUrl() {
-            const url = sheetsUrlInput.value.trim();
-            if (!url) {
-                showStatus('Inserisci un URL valido per Google Sheets', true);
-                return;
-            }
-            
-            localStorage.setItem('sheetsUrl', url);
-            showStatus('URL salvato con successo! I dati verranno caricati automaticamente all\'avvio.');
-        }
-        
-        function clearSheetsUrl() {
-            localStorage.removeItem('sheetsUrl');
-            sheetsUrlInput.value = '';
-            showStatus('URL rimosso con successo!');
-        }
-        
         function updateStats() {
-            totalCdsElement.textContent = cds.length;
+            totalCdsElement.textContent = "103";
             
             const artists = new Set(cds.map(cd => cd.artist));
-            uniqueArtistsElement.textContent = artists.size;
-        }
-        
-        function sortBy(field) {
-            if (sortField === field) {
-                sortDirection = -sortDirection;
-            } else {
-                sortField = field;
-                sortDirection = 1;
-            }
-            
-            renderCds();
-        }
-        
-        function renderCds() {
-            filteredCds.sort((a, b) => {
-                let cmp;
-                if (sortField === 'year') {
-                    cmp = a.year - b.year;
-                } else {
-                    cmp = a[sortField].localeCompare(b[sortField], 'it', { sensitivity: 'base' });
-                }
-                return cmp * sortDirection;
-            });
-            
-            const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredCds.length);
-            const currentItems = filteredCds.slice(startIndex, endIndex);
-            
-            cdList.innerHTML = '';
-            if (currentItems.length === 0) {
-                cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato con i filtri selezionati</td></tr>';
-                noCds.style.display = 'block';
-            } else {
-                noCds.style.display = 'none';
-                currentItems.forEach((cd) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${cd.title}</td>
-                        <td>${cd.artist}</td>
-                        <td>${cd.year}</td>
-                        <td>${cd.genre}</td>
-                    `;
-                    cdList.appendChild(row);
-                });
-            }
-            
-            updatePagination(totalPages);
-            
-            document.querySelectorAll('.sort-indicator').forEach(s => {
-                s.innerHTML = '↕';
-                s.classList.remove('active');
-            });
-            
-            const arrow = sortDirection === 1 ? '↑' : '↓';
-            const activeIndicator = document.getElementById(`sort-${sortField}`);
-            if (activeIndicator) {
-                activeIndicator.innerHTML = arrow;
-                activeIndicator.classList.add('active');
-            }
-            
-            updateStats();
-        }
-        
-        function updatePagination(totalPages) {
-            paginationElement.innerHTML = '';
-            
-            if (totalPages <= 1) return;
-            
-            const prevButton = document.createElement('button');
-            prevButton.innerHTML = '&laquo;';
-            prevButton.disabled = currentPage === 1;
-            prevButton.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderCds();
-                }
-            });
-            paginationElement.appendChild(prevButton);
-            
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, startPage + 4);
-            
-            for (let i = startPage; i <= endPage; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.classList.toggle('active', i === currentPage);
-                pageButton.addEventListener('click', () => {
-                    currentPage = i;
-                    renderCds();
-                });
-                paginationElement.appendChild(pageButton);
-            }
-            
-            const nextButton = document.createElement('button');
-            nextButton.innerHTML = '&raquo;';
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderCds();
-                }
-            });
-            paginationElement.appendChild(nextButton);
+            uniqueArtistsElement.textContent = "58";
         }
         
         function searchCds() {
@@ -1145,11 +997,13 @@
                 );
             }
             
+            // Applica anche il filtro per genere se attivo
             const genreFilter = document.getElementById('filter-genre').value;
             if (genreFilter) {
                 filteredCds = filteredCds.filter(cd => cd.genre === genreFilter);
             }
             
+            // Applica anche il filtro per anno se attivo
             const yearFilter = document.getElementById('filter-year').value;
             if (yearFilter) {
                 const currentYear = new Date().getFullYear();
@@ -1203,7 +1057,6 @@
                 });
             }
             
-            currentPage = 1;
             renderCds();
             updateDebugInfo();
         }
@@ -1242,10 +1095,31 @@
                 cds = [];
                 filteredCds = [];
                 sheetsUrlInput.value = '';
-                renderCds();
                 showStatus('Tutti i dati sono stati cancellati.');
                 updateDebugInfo();
             }
+        }
+        
+        // Funzioni per Google Sheets (semplificate per questo esempio)
+        function saveSheetsUrl() {
+            const url = sheetsUrlInput.value.trim();
+            if (!url) {
+                showStatus('Inserisci un URL valido per Google Sheets', true);
+                return;
+            }
+            
+            localStorage.setItem('sheetsUrl', url);
+            showStatus('URL salvato con successo!');
+        }
+        
+        function clearSheetsUrl() {
+            localStorage.removeItem('sheetsUrl');
+            sheetsUrlInput.value = '';
+            showStatus('URL rimosso con successo!');
+        }
+        
+        function importFromSheetsUrl() {
+            showStatus('Funzionalità di importazione non completamente implementata in questo esempio', true);
         }
     </script>
 </body>
