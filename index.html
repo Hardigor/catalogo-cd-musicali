@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Il CSS rimane invariato */
         :root {
             --primary-bg: #f8f9fa;
             --card-bg: #ffffff;
@@ -27,6 +26,25 @@
             --radius-sm: 3px;
             --transition: all 0.2s ease;
         }
+
+        /* Dark mode variables */
+        .dark-mode {
+            --primary-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #6ab7ff;
+            --border-color: #333;
+            --button-bg: #555;
+            --button-hover: #777;
+            --button-text: #ffffff;
+            --header-bg: #1a1a1a;
+            --stat-bg: #2d2d2d;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.4);
+            --success-color: #4caf50;
+            --warning-color: #f44336;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -37,10 +55,11 @@
             height: 100%;
             overflow-x: hidden;
             font-size: 14px;
-        }
-        body {
             background-color: var(--primary-bg);
             color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body {
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.4;
             padding: 10px;
@@ -271,6 +290,9 @@
             z-index: 10;
             border-bottom: 2px solid var(--border-color);
         }
+        .dark-mode thead {
+            background: #2d2d2d;
+        }
         th {
             padding: 10px 8px;
             text-align: left;
@@ -282,8 +304,14 @@
             color: #495057;
             font-size: 13px;
         }
+        .dark-mode th {
+            color: #e0e0e0;
+        }
         th:hover {
             background-color: #e9ecef;
+        }
+        .dark-mode th:hover {
+            background-color: #3d3d3d;
         }
         td {
             padding: 8px;
@@ -299,14 +327,23 @@
         tr:nth-child(even) {
             background-color: #f8f9fa;
         }
+        .dark-mode tr:nth-child(even) {
+            background-color: #2a2a2a;
+        }
         tr:hover {
             background-color: #e9ecef;
+        }
+        .dark-mode tr:hover {
+            background-color: #3d3d3d;
         }
         .text-center {
             text-align: center;
             padding: 20px;
             color: #6c757d;
             font-style: italic;
+        }
+        .dark-mode .text-center {
+            color: #a0a0a0;
         }
         .stats {
             display: grid;
@@ -333,6 +370,9 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 500;
+        }
+        .dark-mode .stat-label {
+            color: #a0a0a0;
         }
         .footer {
             text-align: center;
@@ -382,11 +422,21 @@
             color: #155724;
             border: 1px solid #c3e6cb;
         }
+        .dark-mode .status-success {
+            background-color: #2d4a32;
+            color: #4caf50;
+            border: 1px solid #3d5e41;
+        }
         
         .status-error {
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+        .dark-mode .status-error {
+            background-color: #4a2d2f;
+            color: #f44336;
+            border: 1px solid #5e3d3f;
         }
         
         .loader {
@@ -398,6 +448,10 @@
             animation: spin 1s linear infinite;
             margin: 15px auto;
             display: none;
+        }
+        .dark-mode .loader {
+            border: 2px solid #2d2d2d;
+            border-top: 2px solid #6ab7ff;
         }
         
         @keyframes spin {
@@ -427,6 +481,9 @@
             display: flex;
             align-items: center;
             gap: 6px;
+        }
+        .dark-mode .sheets-config-details summary {
+            color: #a0a0a0;
         }
         .sheets-config-details summary:hover {
             color: var(--text-color);
@@ -474,6 +531,10 @@
         .btn-config.btn-remove:hover {
             background: #dc3545;
             border-color: #dc3545;
+        }
+        .dark-mode .btn-config.btn-remove:hover {
+            background: #f44336;
+            border-color: #f44336;
         }
         .pagination {
             display: flex;
@@ -535,6 +596,9 @@
             margin: 10px auto;
             padding: 8px;
         }
+        .dark-mode .debug-toggle {
+            color: #a0a0a0;
+        }
         .debug-toggle:hover {
             color: var(--text-color);
         }
@@ -546,12 +610,21 @@
             background: #f1f1f1;
             border-radius: 8px;
         }
+        .dark-mode ::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
         ::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 8px;
         }
+        .dark-mode ::-webkit-scrollbar-thumb {
+            background: #555;
+        }
         ::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
+        }
+        .dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #777;
         }
         @media (max-width: 767px) {
             body {
@@ -718,11 +791,18 @@
             right: 15px;
             cursor: pointer;
         }
+        .dark-mode .close {
+            color: #a0a0a0;
+        }
         
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
+        }
+        .dark-mode .close:hover,
+        .dark-mode .close:focus {
+            color: white;
         }
         
         .footer-button {
@@ -738,6 +818,9 @@
             gap: 4px;
             padding: 8px;
             font-family: 'Inter', sans-serif;
+        }
+        .dark-mode .footer-button {
+            color: #a0a0a0;
         }
         
         .footer-button:hover {
@@ -759,6 +842,69 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+        .dark-mode .auto-load-indicator {
+            background-color: #1a3c5a;
+            border-left: 4px solid #4d94db;
+            color: #e0e0e0;
+        }
+
+        /* Toggle switch per dark mode */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .theme-toggle-label {
+            font-size: 12px;
+            color: var(--text-color);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
         }
     </style>
 </head>
@@ -875,6 +1021,15 @@
                 <i class="fas fa-cog"></i> Configurazione Google Sheets
             </button>
         </div>
+
+        <!-- Toggle per dark mode -->
+        <div class="theme-toggle">
+            <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle">
+                <span class="slider"></span>
+            </label>
+            <span class="theme-toggle-label">Modalità Scura</span>
+        </div>
     </div>
     <!-- Modale per informazioni di debug -->
     <div id="debug-modal" class="modal">
@@ -929,6 +1084,7 @@
         const filterGenre = document.getElementById('filter-genre');
         const filterYear = document.getElementById('filter-year');
         const autoLoadMessage = document.getElementById('auto-load-message');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
         
         // Elementi per i modali
         const debugModal = document.getElementById('debug-modal');
@@ -957,6 +1113,13 @@
             } else {
                 // Se non c'è un URL salvato, carica i dati dal localStorage
                 loadCds();
+            }
+            
+            // Carica la preferenza del tema
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.checked = true;
             }
             
             // Imposta i gestori degli eventi
@@ -1000,6 +1163,9 @@
                 configModal.style.display = 'none';
             });
             
+            // Toggle dark mode
+            darkModeToggle.addEventListener('change', toggleDarkMode);
+            
             // Chiudi i modali cliccando fuori da essi
             window.addEventListener('click', (event) => {
                 if (event.target === debugModal) {
@@ -1009,6 +1175,17 @@
                     configModal.style.display = 'none';
                 }
             });
+        }
+        
+        // Funzione per attivare/disattivare la dark mode
+        function toggleDarkMode() {
+            if (darkModeToggle.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'true');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'false');
+            }
         }
         
         function showStatus(message, isError = false) {
@@ -1497,6 +1674,7 @@
                     Elementi per pagina: ${itemsPerPage}<br>
                     Dimensione localStorage: ${localStorage.getItem('cds') ? Math.ceil(localStorage.getItem('cds').length / 1024) : 0} KB<br>
                     URL Google Sheets salvato: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br>
+                    Dark mode attiva: ${localStorage.getItem('darkMode') === 'true' ? 'Sì' : 'No'}<br>
                     Browser: ${navigator.userAgent}<br>
                     <button onclick="clearLocalStorage()">Cancella tutti i dati</button>
                 `;
@@ -1507,9 +1685,12 @@
             if (confirm('Sei sicuro di voler cancellare tutti i dati? Questa operazione non può essere annullata.')) {
                 localStorage.removeItem('cds');
                 localStorage.removeItem('sheetsUrl');
+                localStorage.removeItem('darkMode');
                 cds = [];
                 filteredCds = [];
                 inlineSheetsUrlInput.value = '';
+                document.body.classList.remove('dark-mode');
+                darkModeToggle.checked = false;
                 renderCds();
                 showStatus('Tutti i dati sono stati cancellati.');
                 updateDebugInfo();
