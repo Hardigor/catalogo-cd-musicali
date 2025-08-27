@@ -1110,9 +1110,6 @@
             document.querySelectorAll('th').forEach(th => {
                 th.style.color = '#495057';
             });
-            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
-                tr.style.backgroundColor = '#f1f3f4';
-            });
             document.querySelectorAll('.text-center').forEach(el => {
                 el.style.color = '#6c757d';
             });
@@ -1126,6 +1123,9 @@
             if (closeEl) {
                 closeEl.style.color = '#aaa';
             }
+            
+            // Applica i colori corretti alle righe
+            applyRowStyles();
         }
         
         // Funzione per disattivare la light mode (tornare a dark mode)
@@ -1152,9 +1152,6 @@
             document.querySelectorAll('th').forEach(th => {
                 th.style.color = '#e0e0e0';
             });
-            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
-                tr.style.backgroundColor = '#2a2a2a';
-            });
             document.querySelectorAll('.text-center').forEach(el => {
                 el.style.color = '#a0a0a0';
             });
@@ -1168,6 +1165,9 @@
             if (closeEl) {
                 closeEl.style.color = '#a0a0a0';
             }
+            
+            // Applica i colori corretti alle righe
+            applyRowStyles();
         }
         
         // Funzione per attivare/disattivare la light mode
@@ -1514,6 +1514,9 @@
                 });
             }
             
+            // Applica gli stili delle righe alternate dopo aver creato le nuove righe
+            applyRowStyles();
+            
             // Aggiorna la paginazione
             updatePagination(totalPages);
             
@@ -1532,6 +1535,18 @@
             
             updateStats();
             updateDebugInfo();
+        }
+        
+        // Nuova funzione per applicare gli stili delle righe
+        function applyRowStyles() {
+            const isLightMode = localStorage.getItem('lightMode') === 'true';
+            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
+                if (isLightMode) {
+                    tr.style.backgroundColor = '#f1f3f4';
+                } else {
+                    tr.style.backgroundColor = '#2a2a2a';
+                }
+            });
         }
         
         function updatePagination(totalPages) {
