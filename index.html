@@ -1,4 +1,819 @@
-<!DOCTYPE html>
+<div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-value" id="total-cds">0</div>
+                            <div class="stat-label">CD Totali</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="unique-artists">0</div>
+                            <div class="stat-label">Artisti</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco CD</h2>
+                    
+                    <div class="table-container">
+                        <table id="cd-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="title">Titolo <span class="sort-indicator" id="sort-title">↕</span></th>
+                                    <th data-sort="artist">Artista <span class="sort-indicator" id="sort-artist">↕</span></th>
+                                    <th data-sort="year">Anno <span class="sort-indicator" id="sort-year">↕</span></th>
+                                    <th data-sort="genre">Genere <span class="sort-indicator" id="sort-genre">↕</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cd-list">
+                                <tr>
+                                    <td colspan="4" class="text-center">Nessun CD presente. Importa i dati da Google Sheets.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="pagination" class="pagination"></div>
+                    <p id="no-cds" class="text-center" style="display: none;">Nessun CD presente nel catalogo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="footer-content">
+            <p>Catalogo CD © 2025 - Developed by Hardigor - <span class="highlight">Integrazione Google Sheets</span></p>
+        </div>
+        
+        <div class="footer-buttons">
+            <button class="footer-button" id="debug-toggle-button">
+                <i class="fas fa-bug"></i> Mostra informazioni di debug
+            </button>
+            <button class="footer-button" id="config-toggle-button">
+                <i class="fas fa-cog"></i> Configurazione Google Sheets
+            </button>
+        </div>
+
+        <!-- Toggle per light mode -->
+        <div class="theme-toggle">
+            <label class="switch">
+                <input type="checkbox" id="light-mode-toggle">
+                <span class="slider"></span>
+            </label>
+            <span class="theme-toggle-label">Modalità Chiara</span>
+        </div>
+    </div>
+    <!-- Modale per informazioni di debug -->
+    <div id="debug-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-debug">&times;</span>
+            <h2><i class="fas fa-bug"></i> Informazioni di Debug</h2>
+            <div id="debug-info" class="debug-info"></div>
+        </div>
+    </div>
+    <!-- Modale per configurazione Google Sheets -->
+    <div id="config-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-config">&times;</span>
+            <h2><i class="fas fa-cog"></i> Configurazione Google Sheets</h2>
+            <div class="form-group">
+                <label for="inline-sheets-url">URL Google Sheet:</label>
+                <input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+            </div>
+            <div class="sheets-buttons">
+                <button class="btn-config" id="inline-save-sheets-url">
+                    <i class="fas fa-save"></i> Salva
+                </button>
+                <button class="btn-config" id="inline-import-sheets">
+                    <i class="fas fa-download"></i> Importa
+                </button>
+                <button class="btn-config btn-remove" id="inline-remove-sheets-url">
+                    <i class="fas fa-trash"></i> Rimuovi
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Dati e configurazione
+        let cds = [];
+        let filteredCds = [];
+        let sortField = 'title';
+        let sortDirection = 1; // 1 = ascendente, -1 = discendente
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        
+        // Elementi DOM
+        const cdList = document.getElementById('cd-list');
+        const noCds = document.getElementById('no-cds');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const totalCdsElement = document.getElementById('total-cds');
+        const uniqueArtistsElement = document.getElementById('unique-artists');
+        const statusMessage = document.getElementById('status-message');
+        const loader = document.getElementById('loader');
+        const paginationElement = document.getElementById('pagination');
+        const debugInfo = document.getElementById('debug-info');
+        const filterGenre = document.getElementById('filter-genre');
+        const filterYear = document.getElementById('filter-year');
+        const autoLoadMessage = document.getElementById('auto-load-message');
+        const lightModeToggle = document.getElementById('light-mode-toggle');
+        
+        // Elementi per i modali
+        const debugModal = document.getElementById('debug-modal');
+        const configModal = document.getElementById('config-modal');
+        const debugToggleButton = document.getElementById('debug-toggle-button');
+        const configToggleButton = document.getElementById('config-toggle-button');
+        const closeDebug = document.getElementById('close-debug');
+        const closeConfig = document.getElementById('close-config');
+        
+        // Nuovi elementi per la configurazione inline
+        const inlineSheetsUrlInput = document.getElementById('inline-sheets-url');
+        const inlineSaveSheetsUrlBtn = document.getElementById('inline-save-sheets-url');
+        const inlineImportSheetsBtn = document.getElementById('inline-import-sheets');
+        const inlineRemoveSheetsUrlBtn = document.getElementById('inline-remove-sheets-url');
+        
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carica l'URL del Google Sheet se salvato in precedenza
+            const savedSheetsUrl = localStorage.getItem('sheetsUrl');
+            if (savedSheetsUrl) {
+                inlineSheetsUrlInput.value = savedSheetsUrl;
+                // Esegui l'importazione automatica all'avvio
+                setTimeout(() => {
+                    autoImportFromSheetsUrl();
+                }, 1000);
+            } else {
+                // Se non c'è un URL salvato, carica i dati dal localStorage
+                loadCds();
+            }
+            
+            // Carica la preferenza del tema
+            const lightModeEnabled = localStorage.getItem('lightMode') === 'true';
+            if (lightModeEnabled) {
+                enableLightMode();
+                lightModeToggle.checked = true;
+            }
+            
+            // Imposta i gestori degli eventi
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // Ricerca
+            searchButton.addEventListener('click', searchCds);
+            searchInput.addEventListener('input', searchCds);
+            
+            // Filtri
+            filterGenre.addEventListener('change', searchCds);
+            filterYear.addEventListener('change', searchCds);
+            
+            // Ordinamento
+            document.querySelectorAll('th[data-sort]').forEach(th => {
+                th.addEventListener('click', () => sortBy(th.getAttribute('data-sort')));
+            });
+            
+            // Configurazione Google Sheets
+            inlineSaveSheetsUrlBtn.addEventListener('click', saveSheetsUrl);
+            inlineImportSheetsBtn.addEventListener('click', importFromSheetsUrl);
+            inlineRemoveSheetsUrlBtn.addEventListener('click', clearSheetsUrl);
+            
+            // Modali
+            debugToggleButton.addEventListener('click', () => {
+                updateDebugInfo();
+                debugModal.style.display = 'flex';
+            });
+            
+            configToggleButton.addEventListener('click', () => {
+                configModal.style.display = 'flex';
+            });
+            
+            closeDebug.addEventListener('click', () => {
+                debugModal.style.display = 'none';
+            });
+            
+            closeConfig.addEventListener('click', () => {
+                configModal.style.display = 'none';
+            });
+            
+            // Toggle light mode
+            lightModeToggle.addEventListener('change', toggleLightMode);
+            
+            // Chiudi i modali cliccando fuori da essi
+            window.addEventListener('click', (event) => {
+                if (event.target === debugModal) {
+                    debugModal.style.display = 'none';
+                }
+                if (event.target === configModal) {
+                    configModal.style.display = 'none';
+                }
+            });
+        }
+        
+        // Funzione per attivare la light mode
+        function enableLightMode() {
+            document.documentElement.style.setProperty('--primary-bg', '#f8f9fa');
+            document.documentElement.style.setProperty('--card-bg', '#ffffff');
+            document.documentElement.style.setProperty('--text-color', '#212529');
+            document.documentElement.style.setProperty('--accent-color', '#2c3e50');
+            document.documentElement.style.setProperty('--border-color', '#dee2e6');
+            document.documentElement.style.setProperty('--button-bg', '#495057');
+            document.documentElement.style.setProperty('--button-hover', '#343a40');
+            document.documentElement.style.setProperty('--stat-bg', '#e9ecef');
+            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.08)');
+            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.12)');
+            document.documentElement.style.setProperty('--success-color', '#28a745');
+            document.documentElement.style.setProperty('--warning-color', '#dc3545');
+            
+            // Aggiorna stili specifici per la light mode
+            document.querySelector('thead').style.backgroundColor = '#f8f9fa';
+            document.querySelector('thead').style.color = '#212529';
+            document.querySelectorAll('th').forEach(th => {
+                th.style.color = '#495057';
+            });
+            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
+                tr.style.backgroundColor = '#f1f3f4';
+            });
+            document.querySelectorAll('.text-center').forEach(el => {
+                el.style.color = '#6c757d';
+            });
+            document.querySelectorAll('.stat-label').forEach(el => {
+                el.style.color = '#6c757d';
+            });
+            document.querySelectorAll('.sheets-config-details summary').forEach(el => {
+                el.style.color = '#6c757d';
+            });
+            document.querySelectorAll('.debug-toggle').forEach(el => {
+                el.style.color = '#6c757d';
+            });
+            document.querySelectorAll('.footer-button').forEach(el => {
+                el.style.color = '#6c757d';
+            });
+            document.querySelector('.close').style.color = '#aaa';
+        }
+        
+        // Funzione per disattivare la light mode (tornare a dark mode)
+        function disableLightMode() {
+            document.documentElement.style.setProperty('--primary-bg', '#121212');
+            document.documentElement.style.setProperty('--card-bg', '#1e1e1e');
+            document.documentElement.style.setProperty('--text-color', '#e0e0e0');
+            document.documentElement.style.setProperty('--accent-color', '#6ab7ff');
+            document.documentElement.style.setProperty('--border-color', '#333');
+            document.documentElement.style.setProperty('--button-bg', '#555');
+            document.documentElement.style.setProperty('--button-hover', '#777');
+            document.documentElement.style.setProperty('--stat-bg', '#2d2d2d');
+            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.3)');
+            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.4)');
+            document.documentElement.style.setProperty('--success-color', '#4caf50');
+            document.documentElement.style.setProperty('--warning-color', '#f44336');
+            
+            // Aggiorna stili specifici per la dark mode
+            document.querySelector('thead').style.backgroundColor = '#2d2d2d';
+            document.querySelector('thead').style.color = '#e0e0e0';
+            document.querySelectorAll('th').forEach(th => {
+                th.style.color = '#e0e0e0';
+            });
+            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
+                tr.style.backgroundColor = '#2a2a2a';
+            });
+            document.querySelectorAll('.text-center').forEach(el => {
+                el.style.color = '#a0a0a0';
+            });
+            document.querySelectorAll('.stat-label').forEach(el => {
+                el.style.color = '#a0a0a0';
+            });
+            document.querySelectorAll('.sheets-config-details summary').forEach(el => {
+                el.style.color = '#a0a0a0';
+            });
+            document.querySelectorAll('.debug-toggle').forEach(el => {
+                el.style.color = '#a0a0a0';
+            });
+            document.querySelectorAll('.footer-button').forEach(el => {
+                el.style.color = '#a0a0a0';
+            });
+            document.querySelector('.close').style.color = '#a0a0a0';
+        }
+        
+        // Funzione per attivare/disattivare la light mode
+        function toggleLightMode() {
+            if (lightModeToggle.checked) {
+                enableLightMode();
+                localStorage.setItem('lightMode', 'true');
+            } else {
+                disableLightMode();
+                localStorage.setItem('lightMode', 'false');
+            }
+        }
+        
+        function showStatus(message, isError = false) {
+            const icon = isError ? '<i class="fas fa-exclamation-triangle"></i>' : '<i class="fas fa-check-circle"></i>';
+            statusMessage.innerHTML = icon + message;
+            statusMessage.className = isError ? 'status-message status-error' : 'status-message status-success';
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoader() {
+            loader.style.display = 'block';
+        }
+        
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+        
+        function showAutoLoadMessage() {
+            autoLoadMessage.style.display = 'flex';
+        }
+        
+        function hideAutoLoadMessage() {
+            autoLoadMessage.style.display = 'none';
+        }
+        
+        function loadCds() {
+            showLoader();
+            setTimeout(() => {
+                const storedCds = localStorage.getItem('cds');
+                if (storedCds) {
+                    try {
+                        cds = JSON.parse(storedCds);
+                        filteredCds = [...cds];
+                        renderCds();
+                        showStatus('Dati caricati dalla memoria locale!');
+                    } catch (e) {
+                        console.error('Errore nel parsing dei dati:', e);
+                        showStatus('Errore nel caricamento dei dati. I dati potrebbero essere corrotti.', true);
+                    }
+                } else {
+                    showStatus('Nessun dato trovato. Importa i dati da Google Sheets.', true);
+                }
+                hideLoader();
+                updateDebugInfo();
+            }, 500);
+        }
+        
+        // Funzione per import automatico all'avvio
+        async function autoImportFromSheetsUrl() {
+            const url = inlineSheetsUrlInput.value.trim();
+            if (!url) {
+                loadCds();
+                return;
+            }
+            
+            showAutoLoadMessage();
+            
+            try {
+                // Aggiungi un timestamp per evitare caching
+                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+                
+                const response = await fetch(cacheBusterUrl);
+                if (!response.ok) {
+                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
+                }
+                
+                const csvText = await response.text();
+                
+                if (!csvText || csvText.trim().length === 0) {
+                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
+                }
+                
+                // Parsing del CSV
+                const lines = csvText.split('\n');
+                
+                // Rimuovi la prima riga (intestazioni) e righe vuote
+                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
+                
+                if (dataLines.length === 0) {
+                    throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
+                }
+                
+                cds = [];
+                
+                for (const line of dataLines) {
+                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
+                    const values = [];
+                    let inQuotes = false;
+                    let currentValue = '';
+                    
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        
+                        if (char === '"') {
+                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
+                                currentValue += '"';
+                                i++; // Salta il prossimo "
+                            } else {
+                                inQuotes = !inQuotes;
+                            }
+                        } else if (char === ',' && !inQuotes) {
+                            values.push(currentValue.trim());
+                            currentValue = '';
+                        } else {
+                            currentValue += char;
+                        }
+                    }
+                    values.push(currentValue.trim());
+                    
+                    if (values.length >= 4) {
+                        cds.push({
+                            title: values[0].replace(/^"|"$/g, ''),
+                            artist: values[1].replace(/^"|"$/g, ''),
+                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
+                            genre: values[3].replace(/^"|"$/g, '')
+                        });
+                    }
+                }
+                
+                if (cds.length === 0) {
+                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
+                }
+                
+                // Salva i dati e aggiorna l'interfaccia
+                localStorage.setItem('cds', JSON.stringify(cds));
+                filteredCds = [...cds];
+                renderCds();
+                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
+                
+            } catch (error) {
+                console.error('Errore nel caricamento da Google Sheets:', error);
+                showStatus(`Errore: ${error.message}`, true);
+                
+                // Tentativo di caricare dati locali come fallback
+                try {
+                    const storedCds = localStorage.getItem('cds');
+                    if (storedCds) {
+                        cds = JSON.parse(storedCds);
+                        filteredCds = [...cds];
+                        renderCds();
+                        showStatus('Caricati dati salvati localmente.', false);
+                    }
+                } catch (e) {
+                    console.error('Errore nel caricamento dei dati locali:', e);
+                }
+            }
+            
+            hideAutoLoadMessage();
+            updateDebugInfo();
+        }
+        
+        // Funzione principale per importare i dati da Google Sheets (manuale)
+        async function importFromSheetsUrl() {
+            const url = inlineSheetsUrlInput.value.trim();
+            if (!url) {
+                showStatus('Inserisci un URL valido per Google Sheets', true);
+                return;
+            }
+            
+            showStatus('Importazione in corso...');
+            showLoader();
+            
+            try {
+                // Aggiungi un timestamp per evitare caching
+                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+                
+                const response = await fetch(cacheBusterUrl);
+                if (!response.ok) {
+                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
+                }
+                
+                const csvText = await response.text();
+                
+                if (!csvText || csvText.trim().length === 0) {
+                    throw new Error('Il foglio sembra essere vuoto or non accessibile.');
+                }
+                
+                // Parsing del CSV
+                const lines = csvText.split('\n');
+                
+                // Rimuovi la prima riga (intestazioni) e righe vuote
+                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
+                
+                if (dataLines.length === 0) {
+                    throw new Error('Nessun dato trovato nel foglio. Verifica that ci siano dati oltre alle intestazioni.');
+                }
+                
+                cds = [];
+                
+                for (const line of dataLines) {
+                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
+                    const values = [];
+                    let inQuotes = false;
+                    let currentValue = '';
+                    
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        
+                        if (char === '"') {
+                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
+                                currentValue += '"';
+                                i++; // Salta il prossimo "
+                            } else {
+                                inQuotes = !inQuotes;
+                            }
+                        } else if (char === ',' && !inQuotes) {
+                            values.push(currentValue.trim());
+                            currentValue = '';
+                        } else {
+                            currentValue += char;
+                        }
+                    }
+                    values.push(currentValue.trim());
+                    
+                    if (values.length >= 4) {
+                        cds.push({
+                            title: values[0].replace(/^"|"$/g, ''),
+                            artist: values[1].replace(/^"|"$/g, ''),
+                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
+                            genre: values[3].replace(/^"|"$/g, '')
+                        });
+                    }
+                }
+                
+                if (cds.length === 0) {
+                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
+                }
+                
+                // Salva i dati e aggiorna l'interfaccia
+                localStorage.setItem('cds', JSON.stringify(cds));
+                filteredCds = [...cds];
+                renderCds();
+                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
+                
+            } catch (error) {
+                console.error('Errore nel caricamento da Google Sheets:', error);
+                showStatus(`Errore: ${error.message}`, true);
+                
+                // Tentativo di caricare dati locali come fallback
+                try {
+                    const storedCds = localStorage.getItem('cds');
+                    if (storedCds) {
+                        cds = JSON.parse(storedCds);
+                        filteredCds = [...cds];
+                        renderCds();
+                        showStatus('Caricati dati salvati localmente.', false);
+                    }
+                } catch (e) {
+                    console.error('Errore nel caricamento dei dati locali:', e);
+                }
+            }
+            
+            hideLoader();
+            updateDebugInfo();
+        }
+        
+        // Salva l'URL del Google Sheets per importazioni future
+        function saveSheetsUrl() {
+            const url = inlineSheetsUrlInput.value.trim();
+            if (!url) {
+                showStatus('Inserisci un URL valido per Google Sheets', true);
+                return;
+            }
+            
+            localStorage.setItem('sheetsUrl', url);
+            showStatus('URL salvato con successo! I dati verranno caricati automaticamente all\'avvio.');
+            configModal.style.display = 'none';
+        }
+        
+        // Rimuovi l'URL salvato
+        function clearSheetsUrl() {
+            localStorage.removeItem('sheetsUrl');
+            inlineSheetsUrlInput.value = '';
+            showStatus('URL rimosso con successo!');
+        }
+        
+        function updateStats() {
+            totalCdsElement.textContent = cds.length;
+            
+            const artists = new Set(cds.map(cd => cd.artist));
+            uniqueArtistsElement.textContent = artists.size;
+        }
+        
+        function sortBy(field) {
+            if (sortField === field) {
+                sortDirection = -sortDirection;
+            } else {
+                sortField = field;
+                sortDirection = 1;
+            }
+            
+            renderCds();
+        }
+        
+        function renderCds() {
+            // Applica l'ordinamento
+            filteredCds.sort((a, b) => {
+                let cmp;
+                if (sortField === 'year') {
+                    cmp = a.year - b.year;
+                } else {
+                    cmp = a[sortField].localeCompare(b[sortField], 'it', { sensitivity: 'base' });
+                }
+                return cmp * sortDirection;
+            });
+            
+            // Paginazione
+            const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredCds.length);
+            const currentItems = filteredCds.slice(startIndex, endIndex);
+            
+            // Renderizza la tabella
+            cdList.innerHTML = '';
+            if (currentItems.length === 0) {
+                cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato con i filtri selezionati</td></tr>';
+                noCds.style.display = 'block';
+            } else {
+                noCds.style.display = 'none';
+                currentItems.forEach((cd) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${cd.title}</td>
+                        <td>${cd.artist}</td>
+                        <td>${cd.year}</td>
+                        <td>${cd.genre}</td>
+                    `;
+                    cdList.appendChild(row);
+                });
+            }
+            
+            // Aggiorna la paginazione
+            updatePagination(totalPages);
+            
+            // Aggiorna le freccette nelle intestazioni
+            document.querySelectorAll('.sort-indicator').forEach(s => {
+                s.innerHTML = '↕';
+                s.classList.remove('active');
+            });
+            
+            const arrow = sortDirection === 1 ? '↑' : '↓';
+            const activeIndicator = document.getElementById(`sort-${sortField}`);
+            if (activeIndicator) {
+                activeIndicator.innerHTML = arrow;
+                activeIndicator.classList.add('active');
+            }
+            
+            updateStats();
+            updateDebugInfo();
+        }
+        
+        function updatePagination(totalPages) {
+            paginationElement.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // Pulsante Indietro
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&laquo;';
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderCds();
+                }
+            });
+            paginationElement.appendChild(prevButton);
+            
+            // Pulsanti pagina
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.classList.toggle('active', i === currentPage);
+                pageButton.addEventListener('click', () => {
+                    currentPage = i;
+                    renderCds();
+                });
+                paginationElement.appendChild(pageButton);
+            }
+            
+            // Pulsante Avanti
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&raquo;';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderCds();
+                }
+            });
+            paginationElement.appendChild(nextButton);
+        }
+        
+        function searchCds() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (!searchTerm) {
+                filteredCds = [...cds];
+            } else {
+                filteredCds = cds.filter(cd => 
+                    cd.title.toLowerCase().includes(searchTerm) ||
+                    cd.artist.toLowerCase().includes(searchTerm) ||
+                    cd.year.toString().includes(searchTerm) ||
+                    cd.genre.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Applica anche il filtro per genere se attivo
+            const genreFilter = filterGenre.value;
+            if (genreFilter) {
+                filteredCds = filteredCds.filter(cd => cd.genre === genreFilter);
+            }
+            
+            // Applica anche il filtro per anno se attivo
+            const yearFilter = filterYear.value;
+            if (yearFilter) {
+                const currentYear = new Date().getFullYear();
+                let startYear, endYear;
+                
+                switch(yearFilter) {
+                    case '2020s':
+                        startYear = 2020;
+                        endYear = currentYear;
+                        break;
+                    case '2010s':
+                        startYear = 2010;
+                        endYear = 2019;
+                        break;
+                    case '2000s':
+                        startYear = 2000;
+                        endYear = 2009;
+                        break;
+                    case '1990s':
+                        startYear = 1990;
+                        endYear = 1999;
+                        break;
+                    case '1980s':
+                        startYear = 1980;
+                        endYear = 1989;
+                        break;
+                    case '1970s':
+                        startYear = 1970;
+                        endYear = 1979;
+                        break;
+                    case '1960s':
+                        startYear = 1960;
+                        endYear = 1969;
+                        break;
+                    case '1950s':
+                        startYear = 1950;
+                        endYear = 1959;
+                        break;
+                    case 'pre1950':
+                        startYear = 0;
+                        endYear = 1449;
+                        break;
+                }
+                
+                filteredCds = filteredCds.filter(cd => {
+                    if (yearFilter === 'pre1950') {
+                        return cd.year < 1950;
+                    } else {
+                        return cd.year >= startYear && cd.year <= endYear;
+                    }
+                });
+            }
+            
+            currentPage = 1;
+            renderCds();
+        }
+        
+        function updateDebugInfo() {
+            const debugElement = document.getElementById('debug-info');
+            if (debugElement) {
+                debugElement.innerHTML = `
+                    <strong>Informazioni di Debug:</strong><br>
+                    CD totali: ${cds.length}<br>
+                    CD filtrati: ${filteredCds.length}<br>
+                    Pagina corrente: ${currentPage}<br>
+                    Elementi per pagina: ${itemsPerPage}<br>
+                    Dimensione localStorage: ${localStorage.getItem('cds') ? Math.ceil(localStorage.getItem('cds').length / 1024) : 0} KB<br>
+                    URL Google Sheets salvato: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br>
+                    Light mode attiva: ${localStorage.getItem('lightMode') === 'true' ? 'Sì' : 'No'}<br>
+                    Browser: ${navigator.userAgent}<br>
+                    <button onclick="clearLocalStorage()">Cancella tutti i dati</button>
+                `;
+            }
+        }
+        
+        function clearLocalStorage() {
+            if (confirm('Sei sicuro di voler cancellare tutti i dati? Questa operazione non può essere annullata.')) {
+                localStorage.removeItem('cds');
+                localStorage.removeItem('sheetsUrl');
+                localStorage.removeItem('lightMode');
+                cds = [];
+                filteredCds = [];
+                inlineSheetsUrlInput.value = '';
+                disableLightMode();
+                lightModeToggle.checked = false;
+                renderCds();
+                showStatus('Tutti i dati sono stati cancellati.');
+                updateDebugInfo();
+            }
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -965,818 +1780,3 @@
                         </select>
                     </div>
                     <div class="stats">
-                        <div class="stat-box">
-                            <div class="stat-value" id="total-cds">0</div>
-                            <div class="stat-label">CD Totali</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="unique-artists">0</div>
-                            <div class="stat-label">Artisti</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="right-column">
-                <div class="card">
-                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco CD</h2>
-                    
-                    <div class="table-container">
-                        <table id="cd-table">
-                            <thead>
-                                <tr>
-                                    <th data-sort="title">Titolo <span class="sort-indicator" id="sort-title">↕</span></th>
-                                    <th data-sort="artist">Artista <span class="sort-indicator" id="sort-artist">↕</span></th>
-                                    <th data-sort="year">Anno <span class="sort-indicator" id="sort-year">↕</span></th>
-                                    <th data-sort="genre">Genere <span class="sort-indicator" id="sort-genre">↕</span></th>
-                                </tr>
-                            </thead>
-                            <tbody id="cd-list">
-                                <tr>
-                                    <td colspan="4" class="text-center">Nessun CD presente. Importa i dati da Google Sheets.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div id="pagination" class="pagination"></div>
-                    <p id="no-cds" class="text-center" style="display: none;">Nessun CD presente nel catalogo</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="footer">
-        <div class="footer-content">
-            <p>Catalogo CD © 2025 - Developed by Hardigor - <span class="highlight">Integrazione Google Sheets</span></p>
-        </div>
-        
-        <div class="footer-buttons">
-            <button class="footer-button" id="debug-toggle-button">
-                <i class="fas fa-bug"></i> Mostra informazioni di debug
-            </button>
-            <button class="footer-button" id="config-toggle-button">
-                <i class="fas fa-cog"></i> Configurazione Google Sheets
-            </button>
-        </div>
-
-        <!-- Toggle per light mode -->
-        <div class="theme-toggle">
-            <label class="switch">
-                <input type="checkbox" id="light-mode-toggle">
-                <span class="slider"></span>
-            </label>
-            <span class="theme-toggle-label">Modalità Chiara</span>
-        </div>
-    </div>
-    <!-- Modale per informazioni di debug -->
-    <div id="debug-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="close-debug">&times;</span>
-            <h2><i class="fas fa-bug"></i> Informazioni di Debug</h2>
-            <div id="debug-info" class="debug-info"></div>
-        </div>
-    </div>
-    <!-- Modale per configurazione Google Sheets -->
-    <div id="config-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="close-config">&times;</span>
-            <h2><i class="fas fa-cog"></i> Configurazione Google Sheets</h2>
-            <div class="form-group">
-                <label for="inline-sheets-url">URL Google Sheet:</label>
-                <input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
-            </div>
-            <div class="sheets-buttons">
-                <button class="btn-config" id="inline-save-sheets-url">
-                    <i class="fas fa-save"></i> Salva
-                </button>
-                <button class="btn-config" id="inline-import-sheets">
-                    <i class="fas fa-download"></i> Importa
-                </button>
-                <button class="btn-config btn-remove" id="inline-remove-sheets-url">
-                    <i class="fas fa-trash"></i> Rimuovi
-                </button>
-            </div>
-        </div>
-    </div>
-    <script>
-        // Dati e configurazione
-        let cds = [];
-        let filteredCds = [];
-        let sortField = 'title';
-        let sortDirection = 1; // 1 = ascendente, -1 = discendente
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        
-        // Elementi DOM
-        const cdList = document.getElementById('cd-list');
-        const noCds = document.getElementById('no-cds');
-        const searchInput = document.getElementById('search-input');
-        const searchButton = document.getElementById('search-button');
-        const totalCdsElement = document.getElementById('total-cds');
-        const uniqueArtistsElement = document.getElementById('unique-artists');
-        const statusMessage = document.getElementById('status-message');
-        const loader = document.getElementById('loader');
-        const paginationElement = document.getElementById('pagination');
-        const debugInfo = document.getElementById('debug-info');
-        const filterGenre = document.getElementById('filter-genre');
-        const filterYear = document.getElementById('filter-year');
-        const autoLoadMessage = document.getElementById('auto-load-message');
-        const lightModeToggle = document.getElementById('light-mode-toggle');
-        
-        // Elementi per i modali
-        const debugModal = document.getElementById('debug-modal');
-        const configModal = document.getElementById('config-modal');
-        const debugToggleButton = document.getElementById('debug-toggle-button');
-        const configToggleButton = document.getElementById('config-toggle-button');
-        const closeDebug = document.getElementById('close-debug');
-        const closeConfig = document.getElementById('close-config');
-        
-        // Nuovi elementi per la configurazione inline
-        const inlineSheetsUrlInput = document.getElementById('inline-sheets-url');
-        const inlineSaveSheetsUrlBtn = document.getElementById('inline-save-sheets-url');
-        const inlineImportSheetsBtn = document.getElementById('inline-import-sheets');
-        const inlineRemoveSheetsUrlBtn = document.getElementById('inline-remove-sheets-url');
-        
-        // Inizializzazione
-        document.addEventListener('DOMContentLoaded', function() {
-            // Carica l'URL del Google Sheet se salvato in precedenza
-            const savedSheetsUrl = localStorage.getItem('sheetsUrl');
-            if (savedSheetsUrl) {
-                inlineSheetsUrlInput.value = savedSheetsUrl;
-                // Esegui l'importazione automatica all'avvio
-                setTimeout(() => {
-                    autoImportFromSheetsUrl();
-                }, 1000);
-            } else {
-                // Se non c'è un URL salvato, carica i dati dal localStorage
-                loadCds();
-            }
-            
-            // Carica la preferenza del tema
-            const lightModeEnabled = localStorage.getItem('lightMode') === 'true';
-            if (lightModeEnabled) {
-                enableLightMode();
-                lightModeToggle.checked = true;
-            }
-            
-            // Imposta i gestori degli eventi
-            setupEventListeners();
-        });
-        
-        function setupEventListeners() {
-            // Ricerca
-            searchButton.addEventListener('click', searchCds);
-            searchInput.addEventListener('input', searchCds);
-            
-            // Filtri
-            filterGenre.addEventListener('change', searchCds);
-            filterYear.addEventListener('change', searchCds);
-            
-            // Ordinamento
-            document.querySelectorAll('th[data-sort]').forEach(th => {
-                th.addEventListener('click', () => sortBy(th.getAttribute('data-sort')));
-            });
-            
-            // Configurazione Google Sheets
-            inlineSaveSheetsUrlBtn.addEventListener('click', saveSheetsUrl);
-            inlineImportSheetsBtn.addEventListener('click', importFromSheetsUrl);
-            inlineRemoveSheetsUrlBtn.addEventListener('click', clearSheetsUrl);
-            
-            // Modali
-            debugToggleButton.addEventListener('click', () => {
-                updateDebugInfo();
-                debugModal.style.display = 'flex';
-            });
-            
-            configToggleButton.addEventListener('click', () => {
-                configModal.style.display = 'flex';
-            });
-            
-            closeDebug.addEventListener('click', () => {
-                debugModal.style.display = 'none';
-            });
-            
-            closeConfig.addEventListener('click', () => {
-                configModal.style.display = 'none';
-            });
-            
-            // Toggle light mode
-            lightModeToggle.addEventListener('change', toggleLightMode);
-            
-            // Chiudi i modali cliccando fuori da essi
-            window.addEventListener('click', (event) => {
-                if (event.target === debugModal) {
-                    debugModal.style.display = 'none';
-                }
-                if (event.target === configModal) {
-                    configModal.style.display = 'none';
-                }
-            });
-        }
-        
-        // Funzione per attivare la light mode
-        function enableLightMode() {
-            document.documentElement.style.setProperty('--primary-bg', '#f8f9fa');
-            document.documentElement.style.setProperty('--card-bg', '#ffffff');
-            document.documentElement.style.setProperty('--text-color', '#212529');
-            document.documentElement.style.setProperty('--accent-color', '#2c3e50');
-            document.documentElement.style.setProperty('--border-color', '#dee2e6');
-            document.documentElement.style.setProperty('--button-bg', '#495057');
-            document.documentElement.style.setProperty('--button-hover', '#343a40');
-            document.documentElement.style.setProperty('--stat-bg', '#e9ecef');
-            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.08)');
-            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.12)');
-            document.documentElement.style.setProperty('--success-color', '#28a745');
-            document.documentElement.style.setProperty('--warning-color', '#dc3545');
-            
-            // Aggiorna stili specifici per la light mode
-            document.querySelector('thead').style.backgroundColor = '#f8f9fa';
-            document.querySelector('thead').style.color = '#212529';
-            document.querySelectorAll('th').forEach(th => {
-                th.style.color = '#495057';
-            });
-            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
-                tr.style.backgroundColor = '#f8f9fa';
-            });
-            document.querySelectorAll('.text-center').forEach(el => {
-                el.style.color = '#6c757d';
-            });
-            document.querySelectorAll('.stat-label').forEach(el => {
-                el.style.color = '#6c757d';
-            });
-            document.querySelectorAll('.sheets-config-details summary').forEach(el => {
-                el.style.color = '#6c757d';
-            });
-            document.querySelectorAll('.debug-toggle').forEach(el => {
-                el.style.color = '#6c757d';
-            });
-            document.querySelectorAll('.footer-button').forEach(el => {
-                el.style.color = '#6c757d';
-            });
-            document.querySelector('.close').style.color = '#aaa';
-        }
-        
-        // Funzione per disattivare la light mode (tornare a dark mode)
-        function disableLightMode() {
-            document.documentElement.style.setProperty('--primary-bg', '#121212');
-            document.documentElement.style.setProperty('--card-bg', '#1e1e1e');
-            document.documentElement.style.setProperty('--text-color', '#e0e0e0');
-            document.documentElement.style.setProperty('--accent-color', '#6ab7ff');
-            document.documentElement.style.setProperty('--border-color', '#333');
-            document.documentElement.style.setProperty('--button-bg', '#555');
-            document.documentElement.style.setProperty('--button-hover', '#777');
-            document.documentElement.style.setProperty('--stat-bg', '#2d2d2d');
-            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.3)');
-            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.4)');
-            document.documentElement.style.setProperty('--success-color', '#4caf50');
-            document.documentElement.style.setProperty('--warning-color', '#f44336');
-            
-            // Aggiorna stili specifici per la dark mode
-            document.querySelector('thead').style.backgroundColor = '#2d2d2d';
-            document.querySelector('thead').style.color = '#e0e0e0';
-            document.querySelectorAll('th').forEach(th => {
-                th.style.color = '#e0e0e0';
-            });
-            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
-                tr.style.backgroundColor = '#2a2a2a';
-            });
-            document.querySelectorAll('.text-center').forEach(el => {
-                el.style.color = '#a0a0a0';
-            });
-            document.querySelectorAll('.stat-label').forEach(el => {
-                el.style.color = '#a0a0a0';
-            });
-            document.querySelectorAll('.sheets-config-details summary').forEach(el => {
-                el.style.color = '#a0a0a0';
-            });
-            document.querySelectorAll('.debug-toggle').forEach(el => {
-                el.style.color = '#a0a0a0';
-            });
-            document.querySelectorAll('.footer-button').forEach(el => {
-                el.style.color = '#a0a0a0';
-            });
-            document.querySelector('.close').style.color = '#a0a0a0';
-        }
-        
-        // Funzione per attivare/disattivare la light mode
-        function toggleLightMode() {
-            if (lightModeToggle.checked) {
-                enableLightMode();
-                localStorage.setItem('lightMode', 'true');
-            } else {
-                disableLightMode();
-                localStorage.setItem('lightMode', 'false');
-            }
-        }
-        
-        function showStatus(message, isError = false) {
-            const icon = isError ? '<i class="fas fa-exclamation-triangle"></i>' : '<i class="fas fa-check-circle"></i>';
-            statusMessage.innerHTML = icon + message;
-            statusMessage.className = isError ? 'status-message status-error' : 'status-message status-success';
-            statusMessage.style.display = 'block';
-            
-            setTimeout(() => {
-                statusMessage.style.display = 'none';
-            }, 5000);
-        }
-        
-        function showLoader() {
-            loader.style.display = 'block';
-        }
-        
-        function hideLoader() {
-            loader.style.display = 'none';
-        }
-        
-        function showAutoLoadMessage() {
-            autoLoadMessage.style.display = 'flex';
-        }
-        
-        function hideAutoLoadMessage() {
-            autoLoadMessage.style.display = 'none';
-        }
-        
-        function loadCds() {
-            showLoader();
-            setTimeout(() => {
-                const storedCds = localStorage.getItem('cds');
-                if (storedCds) {
-                    try {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Dati caricati dalla memoria locale!');
-                    } catch (e) {
-                        console.error('Errore nel parsing dei dati:', e);
-                        showStatus('Errore nel caricamento dei dati. I dati potrebbero essere corrotti.', true);
-                    }
-                } else {
-                    showStatus('Nessun dato trovato. Importa i dati da Google Sheets.', true);
-                }
-                hideLoader();
-                updateDebugInfo();
-            }, 500);
-        }
-        
-        // Funzione per import automatico all'avvio
-        async function autoImportFromSheetsUrl() {
-            const url = inlineSheetsUrlInput.value.trim();
-            if (!url) {
-                loadCds();
-                return;
-            }
-            
-            showAutoLoadMessage();
-            
-            try {
-                // Aggiungi un timestamp per evitare caching
-                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-                
-                const response = await fetch(cacheBusterUrl);
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
-                }
-                
-                const csvText = await response.text();
-                
-                if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
-                }
-                
-                // Parsing del CSV
-                const lines = csvText.split('\n');
-                
-                // Rimuovi la prima riga (intestazioni) e righe vuote
-                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
-                
-                if (dataLines.length === 0) {
-                    throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
-                }
-                
-                cds = [];
-                
-                for (const line of dataLines) {
-                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
-                    const values = [];
-                    let inQuotes = false;
-                    let currentValue = '';
-                    
-                    for (let i = 0; i < line.length; i++) {
-                        const char = line[i];
-                        
-                        if (char === '"') {
-                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
-                                currentValue += '"';
-                                i++; // Salta il prossimo "
-                            } else {
-                                inQuotes = !inQuotes;
-                            }
-                        } else if (char === ',' && !inQuotes) {
-                            values.push(currentValue.trim());
-                            currentValue = '';
-                        } else {
-                            currentValue += char;
-                        }
-                    }
-                    values.push(currentValue.trim());
-                    
-                    if (values.length >= 4) {
-                        cds.push({
-                            title: values[0].replace(/^"|"$/g, ''),
-                            artist: values[1].replace(/^"|"$/g, ''),
-                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
-                            genre: values[3].replace(/^"|"$/g, '')
-                        });
-                    }
-                }
-                
-                if (cds.length === 0) {
-                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
-                }
-                
-                // Salva i dati e aggiorna l'interfaccia
-                localStorage.setItem('cds', JSON.stringify(cds));
-                filteredCds = [...cds];
-                renderCds();
-                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
-                
-            } catch (error) {
-                console.error('Errore nel caricamento da Google Sheets:', error);
-                showStatus(`Errore: ${error.message}`, true);
-                
-                // Tentativo di caricare dati locali come fallback
-                try {
-                    const storedCds = localStorage.getItem('cds');
-                    if (storedCds) {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Caricati dati salvati localmente.', false);
-                    }
-                } catch (e) {
-                    console.error('Errore nel caricamento dei dati locali:', e);
-                }
-            }
-            
-            hideAutoLoadMessage();
-            updateDebugInfo();
-        }
-        
-        // Funzione principale per importare i dati da Google Sheets (manuale)
-        async function importFromSheetsUrl() {
-            const url = inlineSheetsUrlInput.value.trim();
-            if (!url) {
-                showStatus('Inserisci un URL valido per Google Sheets', true);
-                return;
-            }
-            
-            showStatus('Importazione in corso...');
-            showLoader();
-            
-            try {
-                // Aggiungi un timestamp per evitare caching
-                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-                
-                const response = await fetch(cacheBusterUrl);
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
-                }
-                
-                const csvText = await response.text();
-                
-                if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Il foglio sembra essere vuoto or non accessibile.');
-                }
-                
-                // Parsing del CSV
-                const lines = csvText.split('\n');
-                
-                // Rimuovi la prima riga (intestazioni) e righe vuote
-                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
-                
-                if (dataLines.length === 0) {
-                    throw new Error('Nessun dato trovato nel foglio. Verifica that ci siano dati oltre alle intestazioni.');
-                }
-                
-                cds = [];
-                
-                for (const line of dataLines) {
-                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
-                    const values = [];
-                    let inQuotes = false;
-                    let currentValue = '';
-                    
-                    for (let i = 0; i < line.length; i++) {
-                        const char = line[i];
-                        
-                        if (char === '"') {
-                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
-                                currentValue += '"';
-                                i++; // Salta il prossimo "
-                            } else {
-                                inQuotes = !inQuotes;
-                            }
-                        } else if (char === ',' && !inQuotes) {
-                            values.push(currentValue.trim());
-                            currentValue = '';
-                        } else {
-                            currentValue += char;
-                        }
-                    }
-                    values.push(currentValue.trim());
-                    
-                    if (values.length >= 4) {
-                        cds.push({
-                            title: values[0].replace(/^"|"$/g, ''),
-                            artist: values[1].replace(/^"|"$/g, ''),
-                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
-                            genre: values[3].replace(/^"|"$/g, '')
-                        });
-                    }
-                }
-                
-                if (cds.length === 0) {
-                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
-                }
-                
-                // Salva i dati e aggiorna l'interfaccia
-                localStorage.setItem('cds', JSON.stringify(cds));
-                filteredCds = [...cds];
-                renderCds();
-                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
-                
-            } catch (error) {
-                console.error('Errore nel caricamento da Google Sheets:', error);
-                showStatus(`Errore: ${error.message}`, true);
-                
-                // Tentativo di caricare dati locali come fallback
-                try {
-                    const storedCds = localStorage.getItem('cds');
-                    if (storedCds) {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Caricati dati salvati localmente.', false);
-                    }
-                } catch (e) {
-                    console.error('Errore nel caricamento dei dati locali:', e);
-                }
-            }
-            
-            hideLoader();
-            updateDebugInfo();
-        }
-        
-        // Salva l'URL del Google Sheets per importazioni future
-        function saveSheetsUrl() {
-            const url = inlineSheetsUrlInput.value.trim();
-            if (!url) {
-                showStatus('Inserisci un URL valido per Google Sheets', true);
-                return;
-            }
-            
-            localStorage.setItem('sheetsUrl', url);
-            showStatus('URL salvato con successo! I dati verranno caricati automaticamente all\'avvio.');
-            configModal.style.display = 'none';
-        }
-        
-        // Rimuovi l'URL salvato
-        function clearSheetsUrl() {
-            localStorage.removeItem('sheetsUrl');
-            inlineSheetsUrlInput.value = '';
-            showStatus('URL rimosso con successo!');
-        }
-        
-        function updateStats() {
-            totalCdsElement.textContent = cds.length;
-            
-            const artists = new Set(cds.map(cd => cd.artist));
-            uniqueArtistsElement.textContent = artists.size;
-        }
-        
-        function sortBy(field) {
-            if (sortField === field) {
-                sortDirection = -sortDirection;
-            } else {
-                sortField = field;
-                sortDirection = 1;
-            }
-            
-            renderCds();
-        }
-        
-        function renderCds() {
-            // Applica l'ordinamento
-            filteredCds.sort((a, b) => {
-                let cmp;
-                if (sortField === 'year') {
-                    cmp = a.year - b.year;
-                } else {
-                    cmp = a[sortField].localeCompare(b[sortField], 'it', { sensitivity: 'base' });
-                }
-                return cmp * sortDirection;
-            });
-            
-            // Paginazione
-            const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredCds.length);
-            const currentItems = filteredCds.slice(startIndex, endIndex);
-            
-            // Renderizza la tabella
-            cdList.innerHTML = '';
-            if (currentItems.length === 0) {
-                cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato con i filtri selezionati</td></tr>';
-                noCds.style.display = 'block';
-            } else {
-                noCds.style.display = 'none';
-                currentItems.forEach((cd) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${cd.title}</td>
-                        <td>${cd.artist}</td>
-                        <td>${cd.year}</td>
-                        <td>${cd.genre}</td>
-                    `;
-                    cdList.appendChild(row);
-                });
-            }
-            
-            // Aggiorna la paginazione
-            updatePagination(totalPages);
-            
-            // Aggiorna le freccette nelle intestazioni
-            document.querySelectorAll('.sort-indicator').forEach(s => {
-                s.innerHTML = '↕';
-                s.classList.remove('active');
-            });
-            
-            const arrow = sortDirection === 1 ? '↑' : '↓';
-            const activeIndicator = document.getElementById(`sort-${sortField}`);
-            if (activeIndicator) {
-                activeIndicator.innerHTML = arrow;
-                activeIndicator.classList.add('active');
-            }
-            
-            updateStats();
-            updateDebugInfo();
-        }
-        
-        function updatePagination(totalPages) {
-            paginationElement.innerHTML = '';
-            
-            if (totalPages <= 1) return;
-            
-            // Pulsante Indietro
-            const prevButton = document.createElement('button');
-            prevButton.innerHTML = '&laquo;';
-            prevButton.disabled = currentPage === 1;
-            prevButton.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderCds();
-                }
-            });
-            paginationElement.appendChild(prevButton);
-            
-            // Pulsanti pagina
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, startPage + 4);
-            
-            for (let i = startPage; i <= endPage; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.classList.toggle('active', i === currentPage);
-                pageButton.addEventListener('click', () => {
-                    currentPage = i;
-                    renderCds();
-                });
-                paginationElement.appendChild(pageButton);
-            }
-            
-            // Pulsante Avanti
-            const nextButton = document.createElement('button');
-            nextButton.innerHTML = '&raquo;';
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderCds();
-                }
-            });
-            paginationElement.appendChild(nextButton);
-        }
-        
-        function searchCds() {
-            const searchTerm = searchInput.value.toLowerCase();
-            
-            if (!searchTerm) {
-                filteredCds = [...cds];
-            } else {
-                filteredCds = cds.filter(cd => 
-                    cd.title.toLowerCase().includes(searchTerm) ||
-                    cd.artist.toLowerCase().includes(searchTerm) ||
-                    cd.year.toString().includes(searchTerm) ||
-                    cd.genre.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            // Applica anche il filtro per genere se attivo
-            const genreFilter = filterGenre.value;
-            if (genreFilter) {
-                filteredCds = filteredCds.filter(cd => cd.genre === genreFilter);
-            }
-            
-            // Applica anche il filtro per anno se attivo
-            const yearFilter = filterYear.value;
-            if (yearFilter) {
-                const currentYear = new Date().getFullYear();
-                let startYear, endYear;
-                
-                switch(yearFilter) {
-                    case '2020s':
-                        startYear = 2020;
-                        endYear = currentYear;
-                        break;
-                    case '2010s':
-                        startYear = 2010;
-                        endYear = 2019;
-                        break;
-                    case '2000s':
-                        startYear = 2000;
-                        endYear = 2009;
-                        break;
-                    case '1990s':
-                        startYear = 1990;
-                        endYear = 1999;
-                        break;
-                    case '1980s':
-                        startYear = 1980;
-                        endYear = 1989;
-                        break;
-                    case '1970s':
-                        startYear = 1970;
-                        endYear = 1979;
-                        break;
-                    case '1960s':
-                        startYear = 1960;
-                        endYear = 1969;
-                        break;
-                    case '1950s':
-                        startYear = 1950;
-                        endYear = 1959;
-                        break;
-                    case 'pre1950':
-                        startYear = 0;
-                        endYear = 1949;
-                        break;
-                }
-                
-                filteredCds = filteredCds.filter(cd => {
-                    if (yearFilter === 'pre1950') {
-                        return cd.year < 1950;
-                    } else {
-                        return cd.year >= startYear && cd.year <= endYear;
-                    }
-                });
-            }
-            
-            currentPage = 1;
-            renderCds();
-        }
-        
-        function updateDebugInfo() {
-            const debugElement = document.getElementById('debug-info');
-            if (debugElement) {
-                debugElement.innerHTML = `
-                    <strong>Informazioni di Debug:</strong><br>
-                    CD totali: ${cds.length}<br>
-                    CD filtrati: ${filteredCds.length}<br>
-                    Pagina corrente: ${currentPage}<br>
-                    Elementi per pagina: ${itemsPerPage}<br>
-                    Dimensione localStorage: ${localStorage.getItem('cds') ? Math.ceil(localStorage.getItem('cds').length / 1024) : 0} KB<br>
-                    URL Google Sheets salvato: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br>
-                    Light mode attiva: ${localStorage.getItem('lightMode') === 'true' ? 'Sì' : 'No'}<br>
-                    Browser: ${navigator.userAgent}<br>
-                    <button onclick="clearLocalStorage()">Cancella tutti i dati</button>
-                `;
-            }
-        }
-        
-        function clearLocalStorage() {
-            if (confirm('Sei sicuro di voler cancellare tutti i dati? Questa operazione non può essere annullata.')) {
-                localStorage.removeItem('cds');
-                localStorage.removeItem('sheetsUrl');
-                localStorage.removeItem('lightMode');
-                cds = [];
-                filteredCds = [];
-                inlineSheetsUrlInput.value = '';
-                disableLightMode();
-                lightModeToggle.checked = false;
-                renderCds();
-                showStatus('Tutti i dati sono stati cancellati.');
-                updateDebugInfo();
-            }
-        }
-    </script>
-</body>
-</html>
