@@ -1540,7 +1540,14 @@
         // Nuova funzione per applicare gli stili delle righe
         function applyRowStyles() {
             const isLightMode = localStorage.getItem('lightMode') === 'true';
-            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
+            
+            // Rimuovi tutti gli stili inline precedenti dalle righe
+            document.querySelectorAll('tbody tr').forEach(tr => {
+                tr.style.backgroundColor = '';
+            });
+            
+            // Applica i nuovi stili alle righe pari
+            document.querySelectorAll('tbody tr:nth-child(even)').forEach(tr => {
                 if (isLightMode) {
                     tr.style.backgroundColor = '#f1f3f4';
                 } else {
