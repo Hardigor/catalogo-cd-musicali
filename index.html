@@ -1152,6 +1152,9 @@
             document.querySelectorAll('th').forEach(th => {
                 th.style.color = '#e0e0e0';
             });
+            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
+                tr.style.backgroundColor = '#2a2a2a';
+            });
             document.querySelectorAll('.text-center').forEach(el => {
                 el.style.color = '#a0a0a0';
             });
@@ -1165,9 +1168,6 @@
             if (closeEl) {
                 closeEl.style.color = '#a0a0a0';
             }
-            
-            // Applica i colori corretti alle righe
-            applyRowStyles();
         }
         
         // Funzione per attivare/disattivare la light mode
