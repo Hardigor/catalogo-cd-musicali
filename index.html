@@ -22,6 +22,7 @@
             --shadow-hover: rgba(0, 0, 0, 0.4);
             --success-color: #4caf50;
             --warning-color: #f44336;
+            --row-even-bg: #2a2a2a;
             --radius: 6px;
             --radius-sm: 3px;
             --transition: all 0.2s ease;
@@ -291,7 +292,7 @@
         }
         
         tr:nth-child(even) {
-            background-color: #2a2a2a;
+            background-color: var(--row-even-bg);
         }
         
         tr:hover {
@@ -1100,32 +1101,7 @@
             document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.12)');
             document.documentElement.style.setProperty('--success-color', '#28a745');
             document.documentElement.style.setProperty('--warning-color', '#dc3545');
-            
-            // Aggiorna stili specifici per la light mode
-            const thead = document.querySelector('thead');
-            if (thead) {
-                thead.style.backgroundColor = '#f8f9fa';
-                thead.style.color = '#212529';
-            }
-            document.querySelectorAll('th').forEach(th => {
-                th.style.color = '#495057';
-            });
-            document.querySelectorAll('.text-center').forEach(el => {
-                el.style.color = '#6c757d';
-            });
-            document.querySelectorAll('.stat-label').forEach(el => {
-                el.style.color = '#6c757d';
-            });
-            document.querySelectorAll('.footer-button').forEach(el => {
-                el.style.color = '#6c757d';
-            });
-            const closeEl = document.querySelector('.close');
-            if (closeEl) {
-                closeEl.style.color = '#aaa';
-            }
-            
-            // Applica i colori corretti alle righe
-            applyRowStyles();
+            document.documentElement.style.setProperty('--row-even-bg', '#f1f3f4');
         }
         
         // Funzione per disattivare la light mode (tornare a dark mode)
@@ -1142,35 +1118,7 @@
             document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.4)');
             document.documentElement.style.setProperty('--success-color', '#4caf50');
             document.documentElement.style.setProperty('--warning-color', '#f44336');
-            
-            // Aggiorna stili specifici per la dark mode
-            const thead = document.querySelector('thead');
-            if (thead) {
-                thead.style.backgroundColor = '#2d2d2d';
-                thead.style.color = '#e0e0e0';
-            }
-            document.querySelectorAll('th').forEach(th => {
-                th.style.color = '#e0e0e0';
-            });
-            document.querySelectorAll('tr:nth-child(even)').forEach(tr => {
-                tr.style.backgroundColor = '#2a2a2a';
-            });
-            document.querySelectorAll('.text-center').forEach(el => {
-                el.style.color = '#a0a0a0';
-            });
-            document.querySelectorAll('.stat-label').forEach(el => {
-                el.style.color = '#a0a0a0';
-            });
-            document.querySelectorAll('.footer-button').forEach(el => {
-                el.style.color = '#a0a0a0';
-            });
-            const closeEl = document.querySelector('.close');
-            if (closeEl) {
-                closeEl.style.color = '#a0a0a0';
-            }
-            
-            // Applica i colori corretti alle righe
-            applyRowStyles();
+            document.documentElement.style.setProperty('--row-even-bg', '#2a2a2a');
         }
         
         // Funzione per attivare/disattivare la light mode
@@ -1517,9 +1465,6 @@
                 });
             }
             
-            // Applica gli stili delle righe alternate dopo aver creato le nuove righe
-            applyRowStyles();
-            
             // Aggiorna la paginazione
             updatePagination(totalPages);
             
@@ -1538,25 +1483,6 @@
             
             updateStats();
             updateDebugInfo();
-        }
-        
-        // Nuova funzione per applicare gli stili delle righe
-        function applyRowStyles() {
-            const isLightMode = localStorage.getItem('lightMode') === 'true';
-            
-            // Rimuovi tutti gli stili inline precedenti dalle righe
-            document.querySelectorAll('tbody tr').forEach(tr => {
-                tr.style.backgroundColor = '';
-            });
-            
-            // Applica i nuovi stili alle righe pari
-            document.querySelectorAll('tbody tr:nth-child(even)').forEach(tr => {
-                if (isLightMode) {
-                    tr.style.backgroundColor = '#f1f3f4';
-                } else {
-                    tr.style.backgroundColor = '#2a2a2a';
-                }
-            });
         }
         
         function updatePagination(totalPages) {
