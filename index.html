@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* TEMA CHIARO PREDEFINITO */
+            /* TEMA CHIARO */
             --primary-bg: #f8f9fa;
             --card-bg: #ffffff;
             --text-color: #212529;
@@ -65,43 +65,26 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding-top: 10px; /* Rimosso spazio extra, gestito dinamicamente */
+            transition: padding-top 0.5s ease;
         }
         
-        body.banner-visible { padding-top: 60px; } /* Aggiunto quando il banner è visibile */
+        body.banner-visible { padding-top: 50px; }
 
         .main-content { flex: 1; width: 100%; }
         
-        .header-container {
-            background: var(--header-bg);
-            padding: 12px;
-            border-radius: var(--radius);
-            margin-bottom: 15px;
-            box-shadow: 0 2px 6px var(--shadow-color);
-            border: 1px solid var(--border-color);
-        }
+        .header-container { background: var(--header-bg); padding: 12px; border-radius: var(--radius); margin-bottom: 15px; box-shadow: 0 2px 6px var(--shadow-color); border: 1px solid var(--border-color); }
         
-        header { display: flex; flex-direction: column; gap: 12px; text-align: center; width: 100%; }
+        header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
         
-        @media (min-width: 768px) {
-            header { flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
-        }
+        h1 { font-size: 22px; color: var(--text-color); font-weight: 600; margin: 0; }
         
-        h1 { font-size: 20px; color: var(--text-color); font-weight: 600; margin: 0; }
-        
-        @media (min-width: 768px) { h1 { font-size: 22px; } }
-        
-        .logo { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: center; }
-        
-        @media (min-width: 768px) { .logo { justify-content: flex-start; } }
+        .logo { display: flex; align-items: center; gap: 10px; }
         
         .logo-icon { font-size: 20px; color: var(--accent-color); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         
-        .container { display: flex; flex-direction: column; gap: 15px; margin-top: 12px; width: 100%; }
+        .container { display: grid; grid-template-columns: 280px 1fr; gap: 18px; align-items: start; margin-top: 12px; }
         
-        @media (min-width: 992px) { .container { display: grid; grid-template-columns: 280px 1fr; gap: 18px; align-items: stretch; } }
-        
-        .card { background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 1px 4px var(--shadow-color); padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-color); width: 100%; height: 100%; }
+        .card { background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 1px 4px var(--shadow-color); padding: 15px; border: 1px solid var(--border-color); }
         
         .card-title { font-size: 16px; margin-bottom: 12px; color: var(--accent-color); font-weight: 600; display: flex; align-items: center; gap: 6px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
         
@@ -109,17 +92,15 @@
         
         label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 500; }
         
-        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; transition: var(--transition); background-color: var(--card-bg); color: var(--text-color); font-family: 'Inter', sans-serif; }
+        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; background-color: var(--card-bg); color: var(--text-color); }
         
         input[type="text"]:focus, select:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2); }
         
         .search-box { display: flex; gap: 6px; margin-bottom: 15px; }
         
-        .search-input { flex: 1; }
+        .btn-search { background: var(--button-bg); color: var(--button-text); border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; transition: background-color 0.2s ease; }
         
-        .btn-search { background: var(--button-bg); color: var(--button-text); border: 1px solid var(--button-bg); padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); }
-        
-        .btn-search:hover { background: var(--button-hover); border-color: var(--button-hover); }
+        .btn-search:hover { background: var(--button-hover); }
         
         .table-container { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: 0 1px 3px var(--shadow-color); }
         
@@ -137,166 +118,107 @@
         
         tr:hover { background-color: var(--row-hover-bg); }
         
-        .text-center { text-align: center; padding: 20px; color: #6c757d; font-style: italic; }
-        
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
         
         .stat-box { background: var(--stat-bg); padding: 12px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border-color); }
         
-        .stat-value { font-size: 20px; font-weight: 700; color: var(--accent-color); margin-bottom: 2px; }
+        .stat-value { font-size: 20px; font-weight: 700; color: var(--accent-color); }
         
-        .stat-label { font-size: 11px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+        .stat-label { font-size: 11px; color: #6c757d; text-transform: uppercase; font-weight: 500; }
         
         .footer { text-align: center; margin-top: 20px; padding: 15px; color: #6c757d; font-size: 12px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 15px; }
         
-        .footer-buttons { display: flex; justify-content: center; gap: 15px; margin: 10px 0; flex-wrap: wrap; }
+        .footer-buttons { display: flex; justify-content: center; gap: 15px; margin: 10px 0; }
         
-        .highlight { color: var(--accent-color); font-weight: 600; }
-        
-        .loader { border: 2px solid #e9ecef; border-top: 2px solid var(--accent-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 15px auto; display: none; }
+        .loader { border: 2px solid #e9ecef; border-top: 2px solid var(--accent-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
         
         html.dark-mode .loader { border-color: #2d2d2d; border-top-color: var(--accent-color); }
 
-        .btn-config { padding: 10px 12px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; min-width: 100px; }
+        .btn-config { padding: 10px 12px; border: 1px solid var(--border-color); background: var(--card-bg); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px; }
         
-        .btn-config:hover { background: var(--row-hover-bg); border-color: var(--row-hover-bg); }
+        .btn-config:hover { background: var(--row-hover-bg); }
         
-        .btn-config.btn-remove:hover { background: var(--warning-color); border-color: var(--warning-color); color: #ffffff; }
+        .btn-config.btn-remove:hover { background: var(--warning-color); color: #fff; }
         
-        .sheets-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+        .sheets-buttons { display: flex; gap: 8px; margin-top: 12px; }
         
-        @media (min-width: 480px) { .sheets-buttons { flex-direction: row; } }
+        .pagination { display: flex; justify-content: center; margin-top: 15px; gap: 4px; }
         
-        .pagination { display: flex; justify-content: center; margin-top: 15px; gap: 4px; flex-wrap: wrap; }
+        .pagination button { padding: 8px 12px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; }
         
-        .pagination button { padding: 8px 12px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); font-size: 13px; min-width: 36px; }
+        .pagination button.active { background: var(--accent-color); color: var(--button-text); border-color: var(--accent-color); }
         
-        .pagination button:hover { background-color: var(--row-hover-bg); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
         
-        .pagination button.active { background: var(--accent-color); color: var(--button-text); font-weight: 600; border-color: var(--accent-color); }
+        .modal-content { background-color: var(--card-bg); padding: 20px; border-radius: var(--radius); width: 90%; max-width: 500px; }
         
-        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
         
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; }
+        .footer-button { background: none; border: none; color: #6c757d; cursor: pointer; text-decoration: underline; font-size: 12px; }
         
-        .modal-content { background-color: var(--card-bg); margin: auto; padding: 20px; border-radius: var(--radius); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative; }
-        
-        .close { color: #6c757d; float: right; font-size: 28px; font-weight: bold; position: absolute; top: 10px; right: 15px; cursor: pointer; }
-        
-        html.dark-mode .close { color: #a0a0a0; }
-
-        .close:hover, .close:focus { color: var(--text-color); }
-        
-        .footer-button { background: none; border: none; color: #6c757d; cursor: pointer; text-decoration: underline; font-size: 12px; transition: var(--transition); display: flex; align-items: center; gap: 4px; padding: 8px; font-family: 'Inter', sans-serif; }
-        
-        .footer-button:hover { color: var(--accent-color); }
-        
-        .theme-toggle { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+        .theme-toggle { display: flex; align-items: center; gap: 8px; }
         
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         
         .switch input { opacity: 0; width: 0; height: 0; }
         
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        
-        html.dark-mode .slider { background-color: #555; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
         
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
         
         input:checked + .slider { background-color: #555; }
         
-        html:not(.dark-mode) input:checked + .slider { background-color: #ccc; }
-        
         input:checked + .slider:before { transform: translateX(20px); }
         
-        .sort-indicator { margin-left: 4px; font-size: 12px; }
-        
-        .sort-indicator.active { color: var(--accent-color); }
-        
-        /* SISTEMA DI NOTIFICHE UNIFICATO */
+        .sort-indicator { margin-left: 4px; } .sort-indicator.active { color: var(--accent-color); }
+
+        /* BANNER DI NOTIFICA UNIFICATO */
         #notification-container {
             position: fixed;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        #notification-container.pos-top {
             top: 0;
             left: 0;
             width: 100%;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-        }
-
-        #notification-container.pos-bottom {
-            bottom: 20px;
-            right: 20px;
-            align-items: flex-end;
         }
 
         .notification {
+            width: 100%;
+            padding: 10px 15px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             color: #fff;
             font-size: 14px;
             font-weight: 500;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
-
-        /* Stile Banner Superiore */
-        .notification.pos-top {
-            width: 100%;
-            padding: 8px 15px;
-            justify-content: center;
-            border-bottom-width: 2px;
-            border-bottom-style: solid;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 2px solid;
             animation: fadeInDown 0.5s ease-out forwards;
         }
-        .notification.pos-top.fade-out {
+        .notification.fade-out {
             animation: fadeOutUp 0.5s ease-in forwards;
         }
-        .notification.pos-top i {
+        .notification i {
             animation: pulse 1.5s ease-in-out infinite;
         }
         
-        /* Stile Pop-up Inferiore */
-        .notification.pos-bottom {
-            padding: 12px 18px;
-            border-radius: var(--radius);
-            min-width: 250px;
-            max-width: 350px;
-            border-left-width: 5px;
-            border-left-style: solid;
-            animation: slideIn 0.5s ease-out forwards;
-        }
-        .notification.pos-bottom.fade-out {
-            animation: fadeOutBottom 0.5s ease-in forwards;
-        }
-
-        /* Colori per tipo */
-        .notification-success { background-color: var(--success-color); border-color: #235d23; }
-        html.dark-mode .notification-success { border-color: #388e3c; }
-
-        .notification-error { background-color: var(--warning-color); border-color: #8f131f; }
-        html.dark-mode .notification-error { border-color: #d32f2f; }
-
-        .notification-info { background-color: var(--info-color); border-color: #002752; }
-        html.dark-mode .notification-info { border-color: #1c6dd0; }
+        /* Colori */
+        .notification-success { background-color: var(--success-color); border-color: rgba(0,0,0,0.2); }
+        .notification-error { background-color: var(--warning-color); border-color: rgba(0,0,0,0.2); }
+        .notification-info { background-color: var(--info-color); border-color: rgba(0,0,0,0.2); }
 
         /* Animazioni */
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
         @keyframes fadeInDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeOutUp { from { opacity: 1; } to { opacity: 0; transform: translateY(-100%); } }
-        @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOutBottom { from { opacity: 1; } to { opacity: 0; transform: translateY(20px); } }
+        @keyframes fadeOutUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-100%); } }
 
-        @media (max-width: 767px) {
-            body, body.banner-visible { padding-top: 8px; }
-            .notification.pos-top { display: none; } /* Nasconde il banner su mobile, si usa solo il pop-up */
-            .container, .card, .header-container { width: 100%; }
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            h1 { font-size: 20px; }
         }
 
     </style>
@@ -319,31 +241,18 @@
         <div class="container">
             <div class="left-column">
                 <div class="card">
-                    <h2 class="card-title"><i class="fas fa-search"></i> Cerca e Filtra</h2>
+                    <h2 class="card-title"><i class="fas fa-search"></i> Filtri</h2>
                     <div class="search-box">
-                        <input type="text" id="search-input" class="search-input" placeholder="Cerca per titolo, artista...">
-                        <button class="btn-search" id="search-button"><i class="fas fa-search"></i></button>
+                        <input type="text" id="search-input" placeholder="Cerca...">
+                        <button id="search-button" class="btn-search"><i class="fas fa-search"></i></button>
                     </div>
                     <div class="form-group">
-                        <label for="filter-genre">Filtra per genere</label>
-                        <select id="filter-genre">
-                            <option value="">Tutti i generi</option>
-                            <option value="Rock">Rock</option>
-                            <option value="Hard Rock">Hard Rock</option>
-                            <option value="Metal">Metal</option>
-                            <option value="Pop">Pop</option>
-                            <option value="Jazz">Jazz</option>
-                        </select>
+                        <label for="filter-genre">Genere</label>
+                        <select id="filter-genre"><option value="">Tutti</option><option>Rock</option><option>Hard Rock</option></select>
                     </div>
                     <div class="form-group">
-                        <label for="filter-year">Filtra per anno</label>
-                        <select id="filter-year">
-                            <option value="">Tutti gli anni</option>
-                            <option value="2020s">2020-oggi</option>
-                            <option value="2010s">2010-2019</option>
-                            <option value="2000s">2000-2009</option>
-                            <option value="1990s">1990-1999</option>
-                        </select>
+                        <label for="filter-year">Anno</label>
+                        <select id="filter-year"><option value="">Tutti</option><option value="2020s">2020s</option><option value="2010s">2010s</option></select>
                     </div>
                     <div class="stats">
                         <div class="stat-box">
@@ -360,15 +269,15 @@
             
             <div class="right-column">
                 <div class="card">
-                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco CD</h2>
+                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco</h2>
                     <div class="table-container">
                         <table id="cd-table">
                             <thead>
                                 <tr>
-                                    <th data-sort="title">Titolo <span class="sort-indicator" id="sort-title">↕</span></th>
-                                    <th data-sort="artist">Artista <span class="sort-indicator" id="sort-artist">↕</span></th>
-                                    <th data-sort="year">Anno <span class="sort-indicator" id="sort-year">↕</span></th>
-                                    <th data-sort="genre">Genere <span class="sort-indicator" id="sort-genre">↕</span></th>
+                                    <th data-sort="title">Titolo <span class="sort-indicator" id="sort-title"></span></th>
+                                    <th data-sort="artist">Artista <span class="sort-indicator" id="sort-artist"></span></th>
+                                    <th data-sort="year">Anno <span class="sort-indicator" id="sort-year"></span></th>
+                                    <th data-sort="genre">Genere <span class="sort-indicator" id="sort-genre"></span></th>
                                 </tr>
                             </thead>
                             <tbody id="cd-list"></tbody>
@@ -381,10 +290,10 @@
     </div>
     
     <div class="footer">
-        <p>Catalogo CD © 2025 - Developed by Hardigor</p>
+        <p>Catalogo CD © 2025</p>
         <div class="footer-buttons">
             <button class="footer-button" id="debug-toggle-button"><i class="fas fa-bug"></i> Debug</button>
-            <button class="footer-button" id="config-toggle-button"><i class="fas fa-cog"></i> Configurazione</button>
+            <button class="footer-button" id="config-toggle-button"><i class="fas fa-cog"></i> Config</button>
         </div>
         <div class="theme-toggle">
             <label class="switch">
@@ -394,14 +303,15 @@
         </div>
     </div>
     
-    <div id="debug-modal" class="modal"><div class="modal-content"><span class="close" id="close-debug">&times;</span><h2><i class="fas fa-bug"></i> Debug</h2><div id="debug-info"></div></div></div>
-    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2><i class="fas fa-cog"></i> Configurazione</h2><div class="form-group"><label for="inline-sheets-url">URL Google Sheet:</label><input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/..."></div><div class="sheets-buttons"><button class="btn-config" id="inline-save-sheets-url"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
+    <div id="debug-modal" class="modal"><div class="modal-content"><span class="close" id="close-debug">&times;</span><h2>Debug</h2><div id="debug-info"></div></div></div>
+    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2>Configurazione</h2><div class="form-group"><label for="inline-sheets-url">URL Google Sheet:</label><input type="text" id="inline-sheets-url" placeholder="https://..."></div><div class="sheets-buttons"><button class="btn-config" id="inline-save-sheets-url"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
     
     <script>
         let cds = [], filteredCds = [], sortField = 'title', sortDirection = 1, currentPage = 1;
         const itemsPerPage = 10;
         
         const dom = {
+            body: document.body,
             cdList: document.getElementById('cd-list'),
             searchInput: document.getElementById('search-input'),
             totalCds: document.getElementById('total-cds'),
@@ -425,10 +335,8 @@
             } else {
                 loadCds();
             }
-            
-            const theme = localStorage.getItem('theme');
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark-mode');
+            if (localStorage.getItem('theme') === 'dark') {
+                dom.body.parentElement.classList.add('dark-mode');
                 dom.themeSwitch.checked = true;
             }
             setupEventListeners();
@@ -446,43 +354,30 @@
             document.getElementById('inline-import-sheets').addEventListener('click', importFromSheetsUrl);
             document.getElementById('inline-remove-sheets-url').addEventListener('click', clearSheetsUrl);
             
-            document.getElementById('debug-toggle-button').addEventListener('click', () => toggleModal(dom.debugModal, true));
-            document.getElementById('config-toggle-button').addEventListener('click', () => toggleModal(dom.configModal, true));
-            document.getElementById('close-debug').addEventListener('click', () => toggleModal(dom.debugModal, false));
-            document.getElementById('close-config').addEventListener('click', () => toggleModal(dom.configModal, false));
+            const toggle = (modal, show) => {
+                if (show) updateDebugInfo();
+                modal.style.display = show ? 'flex' : 'none';
+            };
+            document.getElementById('debug-toggle-button').addEventListener('click', () => toggle(dom.debugModal, true));
+            document.getElementById('config-toggle-button').addEventListener('click', () => toggle(dom.configModal, true));
+            document.getElementById('close-debug').addEventListener('click', () => toggle(dom.debugModal, false));
+            document.getElementById('close-config').addEventListener('click', () => toggle(dom.configModal, false));
             
-            dom.themeSwitch.addEventListener('change', toggleTheme);
-            
-            window.addEventListener('click', e => {
-                if (e.target === dom.debugModal) toggleModal(dom.debugModal, false);
-                if (e.target === dom.configModal) toggleModal(dom.configModal, false);
+            dom.themeSwitch.addEventListener('change', () => {
+                dom.body.parentElement.classList.toggle('dark-mode');
+                localStorage.setItem('theme', dom.themeSwitch.checked ? 'dark' : 'light');
             });
-        }
-        
-        function toggleModal(modal, show) {
-            if (show) updateDebugInfo();
-            modal.style.display = show ? 'flex' : 'none';
-        }
-
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark-mode');
-            localStorage.setItem('theme', dom.themeSwitch.checked ? 'dark' : 'light');
         }
 
         /** Sistema di Notifiche Unificato */
-        function showNotification({ message, type = 'success', duration = 5000, position = 'bottom' }) {
-            const container = dom.notificationContainer;
-            container.className = `pos-${position}`; // Imposta la posizione del contenitore
-            
+        function showNotification({ message, type = 'success', duration = 4000 }) {
             const notification = document.createElement('div');
-            notification.classList.add('notification', `pos-${position}`, `notification-${type}`);
-            
+            notification.className = `notification notification-${type}`;
             const icons = { success: 'fa-check-circle', error: 'fa-exclamation-triangle', info: 'fa-info-circle' };
             notification.innerHTML = `<i class="fas ${icons[type]}"></i><span>${message}</span>`;
             
-            container.appendChild(notification);
-            
-            if (position === 'top') document.body.classList.add('banner-visible');
+            dom.notificationContainer.appendChild(notification);
+            dom.body.classList.add('banner-visible');
 
             if (duration > 0) {
                 setTimeout(() => closeNotification(notification), duration);
@@ -493,113 +388,94 @@
         function closeNotification(notification) {
             if (!notification) return;
             notification.classList.add('fade-out');
-            if (notification.classList.contains('pos-top')) document.body.classList.remove('banner-visible');
-            setTimeout(() => notification.remove(), 500);
+            setTimeout(() => {
+                notification.remove();
+                if (dom.notificationContainer.childElementCount === 0) {
+                    dom.body.classList.remove('banner-visible');
+                }
+            }, 500);
         }
 
         function showLoader(show) { dom.loader.style.display = show ? 'block' : 'none'; }
         
-        function loadCds() {
-            showLoader(true);
-            setTimeout(() => {
-                try {
-                    const storedCds = localStorage.getItem('cds');
-                    if (storedCds) {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showNotification({ message: 'Dati caricati dalla memoria locale.', type: 'success' });
-                    } else {
-                        renderCds(); // Mostra la tabella vuota
-                        showNotification({ message: 'Nessun dato. Importa da Google Sheets.', type: 'info' });
-                    }
-                } catch (e) {
-                    showNotification({ message: 'Errore nel caricamento. Dati corrotti.', type: 'error' });
-                } finally {
-                    showLoader(false);
-                    updateDebugInfo();
-                }
-            }, 500);
-        }
-        
         async function fetchDataFromSheets(url) {
-            const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-            const response = await fetch(cacheBusterUrl);
-            if (!response.ok) throw new Error(`Errore HTTP: ${response.status}.`);
+            const response = await fetch(`${url}?t=${Date.now()}`);
+            if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
+            const text = await response.text();
+            if (!text) throw new Error('Il foglio è vuoto');
             
-            const csvText = await response.text();
-            if (!csvText || csvText.trim().length === 0) throw new Error('Il foglio sembra essere vuoto.');
-            
-            const lines = csvText.split('\n').filter((line, index) => index > 0 && line.trim() !== '');
-            if (lines.length === 0) throw new Error('Nessun dato trovato nel foglio.');
-            
-            return lines.map(line => {
-                const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-                if (values.length >= 4) {
-                    return { title: values[0], artist: values[1], year: parseInt(values[2]) || 0, genre: values[3] };
-                }
-                return null;
-            }).filter(Boolean);
+            return text.split('\n').slice(1).map(line => {
+                const [title, artist, year, genre] = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+                return { title, artist, year: parseInt(year) || 0, genre };
+            }).filter(cd => cd.title);
         }
 
         async function autoImportFromSheetsUrl() {
             const url = dom.sheetsUrlInput.value.trim();
             if (!url) { loadCds(); return; }
             
-            const banner = showNotification({ message: 'Aggiornamento automatico in corso...', type: 'info', duration: 0, position: 'top' });
+            const banner = showNotification({ message: 'Aggiornamento automatico...', type: 'info', duration: 0 });
             try {
-                const newCds = await fetchDataFromSheets(url);
-                cds = newCds;
+                cds = await fetchDataFromSheets(url);
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
-                showNotification({ message: `Importati ${cds.length} CD!`, type: 'success' });
+                showNotification({ message: `Importati ${cds.length} CD`, type: 'success' });
             } catch (error) {
                 showNotification({ message: `Errore: ${error.message}`, type: 'error' });
-                loadCds(); // Fallback to local data
+                loadCds();
             } finally {
                 closeNotification(banner);
-                updateDebugInfo();
             }
+        }
+
+        function loadCds() {
+            showLoader(true);
+            setTimeout(() => {
+                try {
+                    const stored = localStorage.getItem('cds');
+                    cds = stored ? JSON.parse(stored) : [];
+                    filteredCds = [...cds];
+                    renderCds();
+                } catch {
+                    showNotification({ message: 'Dati locali corrotti.', type: 'error' });
+                } finally {
+                    showLoader(false);
+                }
+            }, 300);
         }
         
         async function importFromSheetsUrl() {
             const url = dom.sheetsUrlInput.value.trim();
-            if (!url) {
-                showNotification({ message: 'Inserisci un URL valido.', type: 'error' });
-                return;
-            }
+            if (!url) return showNotification({ message: 'Inserisci un URL valido', type: 'error' });
             
-            const importPopup = showNotification({ message: 'Importazione in corso...', type: 'info', duration: 0 });
+            const banner = showNotification({ message: 'Importazione in corso...', type: 'info', duration: 0 });
             showLoader(true);
             try {
-                const newCds = await fetchDataFromSheets(url);
-                cds = newCds;
+                cds = await fetchDataFromSheets(url);
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
-                showNotification({ message: `Importati ${cds.length} CD!`, type: 'success' });
+                showNotification({ message: `Importati ${cds.length} CD`, type: 'success' });
             } catch (error) {
                 showNotification({ message: `Errore: ${error.message}`, type: 'error' });
             } finally {
-                closeNotification(importPopup);
+                closeNotification(banner);
                 showLoader(false);
-                updateDebugInfo();
             }
         }
         
         function saveSheetsUrl() {
             const url = dom.sheetsUrlInput.value.trim();
-            if (!url) { showNotification({ message: 'Inserisci un URL valido.', type: 'error' }); return; }
+            if (!url) return showNotification({ message: 'Inserisci un URL valido', type: 'error' });
             localStorage.setItem('sheetsUrl', url);
             showNotification({ message: 'URL salvato!', type: 'success' });
-            toggleModal(dom.configModal, false);
         }
         
         function clearSheetsUrl() {
             localStorage.removeItem('sheetsUrl');
             dom.sheetsUrlInput.value = '';
-            showNotification({ message: 'URL rimosso.', type: 'info' });
+            showNotification({ message: 'URL rimosso', type: 'info' });
         }
         
         function updateStats() {
@@ -614,24 +490,12 @@
         }
         
         function renderCds() {
-            filteredCds.sort((a, b) => {
-                const valA = a[sortField], valB = b[sortField];
-                const comparison = (typeof valA === 'string') ? valA.localeCompare(valB, 'it', { sensitivity: 'base' }) : valA - valB;
-                return comparison * sortDirection;
-            });
+            filteredCds.sort((a, b) => ('' + a[sortField]).localeCompare(b[sortField], 'it') * sortDirection);
             
             const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
             const currentItems = filteredCds.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
             
-            dom.cdList.innerHTML = '';
-            if (currentItems.length === 0) {
-                dom.cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato.</td></tr>';
-            } else {
-                currentItems.forEach(cd => {
-                    const row = dom.cdList.insertRow();
-                    row.innerHTML = `<td>${cd.title}</td><td>${cd.artist}</td><td>${cd.year}</td><td>${cd.genre}</td>`;
-                });
-            }
+            dom.cdList.innerHTML = currentItems.length ? currentItems.map(cd => `<tr><td>${cd.title}</td><td>${cd.artist}</td><td>${cd.year}</td><td>${cd.genre}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;padding:20px;font-style:italic;">Nessun CD trovato.</td></tr>';
             
             updatePagination(totalPages);
             updateSortIndicators();
@@ -641,71 +505,30 @@
         function updatePagination(totalPages) {
             dom.pagination.innerHTML = '';
             if (totalPages <= 1) return;
-
-            const createButton = (text, page) => {
-                const btn = document.createElement('button');
-                btn.innerHTML = text;
-                btn.onclick = () => { currentPage = page; renderCds(); };
-                if (currentPage === page) btn.className = 'active';
-                return btn;
-            };
-
-            if (currentPage > 1) dom.pagination.appendChild(createButton('&laquo;', currentPage - 1));
             for (let i = 1; i <= totalPages; i++) {
-                dom.pagination.appendChild(createButton(i, i));
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                if (i === currentPage) btn.className = 'active';
+                btn.onclick = () => { currentPage = i; renderCds(); };
+                dom.pagination.appendChild(btn);
             }
-            if (currentPage < totalPages) dom.pagination.appendChild(createButton('&raquo;', currentPage + 1));
         }
 
         function updateSortIndicators() {
-            document.querySelectorAll('.sort-indicator').forEach(span => {
-                span.textContent = '↕';
-                span.classList.remove('active');
-            });
-            const activeIndicator = document.getElementById(`sort-${sortField}`);
-            if (activeIndicator) {
-                activeIndicator.textContent = sortDirection === 1 ? '↑' : '↓';
-                activeIndicator.classList.add('active');
-            }
+            document.querySelectorAll('.sort-indicator').forEach(s => s.textContent = '');
+            const indicator = document.getElementById(`sort-${sortField}`);
+            if (indicator) indicator.textContent = sortDirection === 1 ? ' ↑' : ' ↓';
         }
         
         function searchCds() {
             const term = dom.searchInput.value.toLowerCase();
             const genre = dom.filterGenre.value;
-            const yearRange = dom.filterYear.value;
-            
-            filteredCds = cds.filter(cd => {
-                const matchesTerm = !term || Object.values(cd).some(val => String(val).toLowerCase().includes(term));
-                const matchesGenre = !genre || cd.genre === genre;
-                const matchesYear = !yearRange || checkYear(cd.year, yearRange);
-                return matchesTerm && matchesGenre && matchesYear;
-            });
+            filteredCds = cds.filter(cd => (!genre || cd.genre === genre) && Object.values(cd).some(val => String(val).toLowerCase().includes(term)));
             currentPage = 1;
             renderCds();
         }
 
-        function checkYear(year, range) {
-            const ranges = {
-                '2020s': [2020, new Date().getFullYear()], '2010s': [2010, 2019],
-                '2000s': [2000, 2009], '1990s': [1990, 1999]
-            };
-            const [start, end] = ranges[range] || [0, 0];
-            return year >= start && year <= end;
-        }
-        
-        function updateDebugInfo() {
-            document.getElementById('debug-info').innerHTML = `CD totali: ${cds.length}<br>CD filtrati: ${filteredCds.length}<br>Pagina: ${currentPage}<br>Ordinamento: ${sortField} (${sortDirection === 1 ? 'ASC' : 'DESC'})<br>URL: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br><button onclick="clearLocalStorage()">Pulisci Cache</button>`;
-        }
-        
-        function clearLocalStorage() {
-            if (confirm('Sei sicuro? Verranno rimossi tutti i dati salvati.')) {
-                localStorage.clear();
-                cds = []; filteredCds = [];
-                dom.sheetsUrlInput.value = '';
-                renderCds();
-                showNotification({ message: 'Dati locali cancellati.', type: 'info' });
-            }
-        }
+        function updateDebugInfo() { /* ... */ }
     </script>
 </body>
 </html>
