@@ -31,7 +31,7 @@
         }
 
         /* Override per il TEMA SCURO */
-        body.dark-mode {
+        html.dark-mode {
             --primary-bg: #121212;
             --card-bg: #1e1e1e;
             --text-color: #e0e0e0;
@@ -48,7 +48,6 @@
             --warning-color: #f44336;
             --row-even-bg: #2a2a2a;
             --row-hover-bg: #3d3d3d;
-            background-color: var(--primary-bg);
         }
 
         * {
@@ -57,23 +56,20 @@
             padding: 0;
         }
         
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-            font-size: 14px;
-            /* Modifica qui: usa primary-bg per tutto lo sfondo */
-            background-color: var(--primary-bg); 
-            color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
+        html {
+            background-color: var(--primary-bg); /* Applica lo sfondo all'intera pagina */
+            transition: background-color 0.3s ease;
         }
         
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.4;
-            padding: 10px;
+            width: 100%;
             max-width: 1400px;
             margin: 0 auto;
+            padding: 10px;
+            font-size: 14px;
+            color: var(--text-color);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -418,7 +414,7 @@
             overflow: hidden;
         }
         
-        .dark-mode .status-success {
+        html.dark-mode .status-success {
              background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
              color: #2e7d2e;
              border: 1px solid #b8e6b8;
@@ -466,7 +462,7 @@
             overflow: hidden;
         }
 
-        .dark-mode .status-error {
+        html.dark-mode .status-error {
             background: linear-gradient(135deg, #4a2d2f 0%, #3e2528 100%);
             color: #f44336;
             border: 1px solid #5e3d3f;
@@ -505,7 +501,7 @@
             display: none;
         }
         
-        .dark-mode .loader {
+        html.dark-mode .loader {
             border: 2px solid #2d2d2d;
             border-top: 2px solid var(--accent-color);
         }
@@ -644,7 +640,7 @@
             cursor: pointer;
         }
         
-        .dark-mode .close {
+        html.dark-mode .close {
             color: #a0a0a0;
         }
 
@@ -689,7 +685,7 @@
             color: var(--accent-color);
         }
 
-        .dark-mode .auto-load-indicator {
+        html.dark-mode .auto-load-indicator {
             background-color: #1a3c5a;
             border-left: 4px solid #4d94db;
             color: #e0e0e0;
@@ -707,7 +703,7 @@
             color: #6c757d;
         }
 
-        .dark-mode .theme-toggle-label {
+        html.dark-mode .theme-toggle-label {
             color: var(--text-color);
         }
         
@@ -736,8 +732,7 @@
             border-radius: 34px;
         }
 
-        /* Colore slider per il tema scuro */
-        .dark-mode .slider {
+        html.dark-mode .slider {
             background-color: #555;
         }
         
@@ -753,41 +748,16 @@
             border-radius: 50%;
         }
         
-        /* Spostamento e colore del pallino quando il tema scuro è attivo */
-        .dark-mode input:checked + .slider {
-            background-color: var(--accent-color); /* Blu acceso per lo sfondo dello slider in dark mode attivo */
-        }
-        
-        .dark-mode input:checked + .slider:before {
-            transform: translateX(20px);
-            background-color: white; /* Pallino bianco in dark mode */
+        input:checked + .slider {
+            background-color: #555;
         }
 
-        /* Stato normale dello slider in light mode */
-        body:not(.dark-mode) input:checked + .slider {
-            background-color: #ccc; /* Il pallino checked è sul lato destro, ma lo sfondo è quello non-checked del tema chiaro */
-        }
-
-        /* Pallino in light mode (non attivo/dark mode) */
-        body:not(.dark-mode) .slider:before {
-            background-color: white;
-            transform: translateX(0); /* Assicurati che il pallino sia a sinistra */
-        }
-        
-        /* Pallino in light mode (attivo/dark mode) */
-        body:not(.dark-mode) input:checked + .slider:before {
-            transform: translateX(20px);
-            background-color: var(--accent-color); /* Blu scuro per il pallino quando il tema chiaro è attivo */
-        }
-
-        /* Correzione per il colore dello slider quando la dark mode NON è attiva e il pallino è a sinistra (quindi siamo in light mode) */
-        body:not(.dark-mode) .slider {
+        html:not(.dark-mode) input:checked + .slider {
             background-color: #ccc;
         }
-
-        /* Correzione per il colore dello sfondo dello slider quando la dark mode NON è attiva e il pallino è a destra (significa che lo switch è "spento" in dark mode, ma siamo in light mode) */
-        body:not(.dark-mode) input:checked + .slider {
-            background-color: var(--accent-color); /* Blu scuro per lo sfondo dello slider quando il tema chiaro è attivo */
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
         }
         
         .sort-indicator {
@@ -1021,54 +991,40 @@
         
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
-            // Carica l'URL del Google Sheet se salvato in precedenza
             const savedSheetsUrl = localStorage.getItem('sheetsUrl');
             if (savedSheetsUrl) {
                 inlineSheetsUrlInput.value = savedSheetsUrl;
-                // Esegui l'importazione automatica all'avvio
-                setTimeout(() => {
-                    autoImportFromSheetsUrl();
-                }, 1000);
+                setTimeout(() => autoImportFromSheetsUrl(), 1000);
             } else {
-                // Se non c'è un URL salvato, carica i dati dal localStorage
                 loadCds();
             }
             
-            // Carica la preferenza del tema
             const theme = localStorage.getItem('theme');
             if (theme === 'dark') {
                 enableDarkMode();
                 themeToggleSwitch.checked = true;
             } else {
-                // Assicurati che il tema predefinito (light) sia sempre attivo all'avvio se non è dark
                 disableDarkMode(); 
                 themeToggleSwitch.checked = false;
             }
             
-            // Imposta i gestori degli eventi
             setupEventListeners();
         });
         
         function setupEventListeners() {
-            // Ricerca
             searchButton.addEventListener('click', searchCds);
             searchInput.addEventListener('input', searchCds);
-            
-            // Filtri
             filterGenre.addEventListener('change', searchCds);
             filterYear.addEventListener('change', searchCds);
             
-            // Ordinamento
             document.querySelectorAll('th[data-sort]').forEach(th => {
                 th.addEventListener('click', () => sortBy(th.getAttribute('data-sort')));
             });
             
-            // Configurazione Google Sheets
             inlineSaveSheetsUrlBtn.addEventListener('click', saveSheetsUrl);
             inlineImportSheetsBtn.addEventListener('click', importFromSheetsUrl);
             inlineRemoveSheetsUrlBtn.addEventListener('click', clearSheetsUrl);
             
-            // Modali
             debugToggleButton.addEventListener('click', () => {
                 updateDebugInfo();
                 debugModal.style.display = 'flex';
@@ -1086,10 +1042,8 @@
                 configModal.style.display = 'none';
             });
             
-            // Toggle tema
             themeToggleSwitch.addEventListener('change', toggleTheme);
             
-            // Chiudi i modali cliccando fuori da essi
             window.addEventListener('click', (event) => {
                 if (event.target === debugModal) {
                     debugModal.style.display = 'none';
@@ -1100,17 +1054,14 @@
             });
         }
         
-        // Funzione per attivare la dark mode
         function enableDarkMode() {
-            document.body.classList.add('dark-mode');
+            document.documentElement.classList.add('dark-mode');
         }
         
-        // Funzione per disattivare la dark mode (tornare a light mode)
         function disableDarkMode() {
-            document.body.classList.remove('dark-mode');
+            document.documentElement.classList.remove('dark-mode');
         }
         
-        // Funzione per attivare/disattivare il tema
         function toggleTheme() {
             if (themeToggleSwitch.checked) {
                 enableDarkMode();
@@ -1126,27 +1077,15 @@
             statusMessage.innerHTML = icon + message;
             statusMessage.className = isError ? 'status-message status-error' : 'status-message status-success';
             statusMessage.style.display = 'block';
-            
             setTimeout(() => {
                 statusMessage.style.display = 'none';
             }, 5000);
         }
         
-        function showLoader() {
-            loader.style.display = 'block';
-        }
-        
-        function hideLoader() {
-            loader.style.display = 'none';
-        }
-        
-        function showAutoLoadMessage() {
-            autoLoadMessage.style.display = 'flex';
-        }
-        
-        function hideAutoLoadMessage() {
-            autoLoadMessage.style.display = 'none';
-        }
+        function showLoader() { loader.style.display = 'block'; }
+        function hideLoader() { loader.style.display = 'none'; }
+        function showAutoLoadMessage() { autoLoadMessage.style.display = 'flex'; }
+        function hideAutoLoadMessage() { autoLoadMessage.style.display = 'none'; }
         
         function loadCds() {
             showLoader();
@@ -1170,55 +1109,37 @@
             }, 500);
         }
         
-        // Funzione per import automatico all'avvio
         async function autoImportFromSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
-            if (!url) {
-                loadCds();
-                return;
-            }
+            if (!url) { loadCds(); return; }
             
             showAutoLoadMessage();
-            
             try {
                 const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
                 const response = await fetch(cacheBusterUrl);
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
-                }
+                if (!response.ok) throw new Error(`Errore HTTP: ${response.status}.`);
                 
                 const csvText = await response.text();
-                if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
-                }
+                if (!csvText || csvText.trim().length === 0) throw new Error('Il foglio sembra essere vuoto.');
                 
                 const lines = csvText.split('\n');
                 const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
-                if (dataLines.length === 0) {
-                    throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
-                }
+                if (dataLines.length === 0) throw new Error('Nessun dato trovato nel foglio.');
                 
                 cds = [];
                 for (const line of dataLines) {
                     const values = [];
                     let inQuotes = false;
                     let currentValue = '';
-                    
                     for (let i = 0; i < line.length; i++) {
                         const char = line[i];
                         if (char === '"') {
                             if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
-                                currentValue += '"';
-                                i++;
-                            } else {
-                                inQuotes = !inQuotes;
-                            }
+                                currentValue += '"'; i++;
+                            } else { inQuotes = !inQuotes; }
                         } else if (char === ',' && !inQuotes) {
-                            values.push(currentValue.trim());
-                            currentValue = '';
-                        } else {
-                            currentValue += char;
-                        }
+                            values.push(currentValue.trim()); currentValue = '';
+                        } else { currentValue += char; }
                     }
                     values.push(currentValue.trim());
                     
@@ -1232,85 +1153,54 @@
                     }
                 }
                 
-                if (cds.length === 0) {
-                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
-                }
+                if (cds.length === 0) throw new Error('Nessun CD valido trovato.');
                 
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
                 showStatus(`Importati ${cds.length} CD da Google Sheets!`);
-                
             } catch (error) {
                 console.error('Errore nel caricamento da Google Sheets:', error);
                 showStatus(`Errore: ${error.message}`, true);
-                
-                try {
-                    const storedCds = localStorage.getItem('cds');
-                    if (storedCds) {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Caricati dati salvati localmente.', false);
-                    }
-                } catch (e) {
-                    console.error('Errore nel caricamento dei dati locali:', e);
-                }
+                loadCds(); // Fallback to local data
+            } finally {
+                hideAutoLoadMessage();
+                updateDebugInfo();
             }
-            
-            hideAutoLoadMessage();
-            updateDebugInfo();
         }
         
         async function importFromSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
-            if (!url) {
-                showStatus('Inserisci un URL valido per Google Sheets', true);
-                return;
-            }
+            if (!url) { showStatus('Inserisci un URL valido per Google Sheets', true); return; }
             
             showStatus('Importazione in corso...');
             showLoader();
-            
             try {
                 const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
                 const response = await fetch(cacheBusterUrl);
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
-                }
+                if (!response.ok) throw new Error(`Errore HTTP: ${response.status}.`);
                 
                 const csvText = await response.text();
-                if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Il foglio sembra essere vuoto o non accessibile.');
-                }
+                if (!csvText || csvText.trim().length === 0) throw new Error('Il foglio sembra essere vuoto.');
                 
                 const lines = csvText.split('\n');
                 const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
-                if (dataLines.length === 0) {
-                    throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
-                }
+                if (dataLines.length === 0) throw new Error('Nessun dato trovato nel foglio.');
                 
                 cds = [];
                 for (const line of dataLines) {
                     const values = [];
                     let inQuotes = false;
                     let currentValue = '';
-                    
                     for (let i = 0; i < line.length; i++) {
                         const char = line[i];
                         if (char === '"') {
                             if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
-                                currentValue += '"';
-                                i++;
-                            } else {
-                                inQuotes = !inQuotes;
-                            }
+                                currentValue += '"'; i++;
+                            } else { inQuotes = !inQuotes; }
                         } else if (char === ',' && !inQuotes) {
-                            values.push(currentValue.trim());
-                            currentValue = '';
-                        } else {
-                            currentValue += char;
-                        }
+                            values.push(currentValue.trim()); currentValue = '';
+                        } else { currentValue += char; }
                     }
                     values.push(currentValue.trim());
                     
@@ -1324,45 +1214,27 @@
                     }
                 }
                 
-                if (cds.length === 0) {
-                    throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
-                }
+                if (cds.length === 0) throw new Error('Nessun CD valido trovato.');
                 
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
                 showStatus(`Importati ${cds.length} CD da Google Sheets!`);
-                
             } catch (error) {
                 console.error('Errore nel caricamento da Google Sheets:', error);
                 showStatus(`Errore: ${error.message}`, true);
-                
-                try {
-                    const storedCds = localStorage.getItem('cds');
-                    if (storedCds) {
-                        cds = JSON.parse(storedCds);
-                        filteredCds = [...cds];
-                        renderCds();
-                        showStatus('Caricati dati salvati localmente.', false);
-                    }
-                } catch (e) {
-                    console.error('Errore nel caricamento dei dati locali:', e);
-                }
+                loadCds();
+            } finally {
+                hideLoader();
+                updateDebugInfo();
             }
-            
-            hideLoader();
-            updateDebugInfo();
         }
         
         function saveSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
-            if (!url) {
-                showStatus('Inserisci un URL valido per Google Sheets', true);
-                return;
-            }
-            
+            if (!url) { showStatus('Inserisci un URL valido per Google Sheets', true); return; }
             localStorage.setItem('sheetsUrl', url);
-            showStatus('URL salvato con successo! I dati verranno caricati automaticamente all\'avvio.');
+            showStatus('URL salvato con successo!');
             configModal.style.display = 'none';
         }
         
@@ -1406,18 +1278,13 @@
             
             cdList.innerHTML = '';
             if (currentItems.length === 0) {
-                cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato con i filtri selezionati</td></tr>';
+                cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato</td></tr>';
                 noCds.style.display = 'block';
             } else {
                 noCds.style.display = 'none';
                 currentItems.forEach((cd) => {
                     const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${cd.title}</td>
-                        <td>${cd.artist}</td>
-                        <td>${cd.year}</td>
-                        <td>${cd.genre}</td>
-                    `;
+                    row.innerHTML = `<td>${cd.title}</td><td>${cd.artist}</td><td>${cd.year}</td><td>${cd.genre}</td>`;
                     cdList.appendChild(row);
                 });
             }
@@ -1447,12 +1314,7 @@
             const prevButton = document.createElement('button');
             prevButton.innerHTML = '&laquo;';
             prevButton.disabled = currentPage === 1;
-            prevButton.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderCds();
-                }
-            });
+            prevButton.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderCds(); } });
             paginationElement.appendChild(prevButton);
             
             const startPage = Math.max(1, currentPage - 2);
@@ -1462,22 +1324,14 @@
                 const pageButton = document.createElement('button');
                 pageButton.textContent = i;
                 pageButton.classList.toggle('active', i === currentPage);
-                pageButton.addEventListener('click', () => {
-                    currentPage = i;
-                    renderCds();
-                });
+                pageButton.addEventListener('click', () => { currentPage = i; renderCds(); });
                 paginationElement.appendChild(pageButton);
             }
             
             const nextButton = document.createElement('button');
             nextButton.innerHTML = '&raquo;';
             nextButton.disabled = currentPage === totalPages;
-            nextButton.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderCds();
-                }
-            });
+            nextButton.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderCds(); } });
             paginationElement.appendChild(nextButton);
         }
         
