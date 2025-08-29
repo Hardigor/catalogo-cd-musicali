@@ -360,26 +360,21 @@
         }
         
         .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        html.dark-mode .status-success {
-            background-color: #2e7d2e;
-            color: #e8f5e8;
-            border-color: #388e3c;
+            background-color: var(--success-color);
+            color: white;
+            border: 1px solid rgba(0,0,0,0.1);
         }
         
         .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background-color: var(--warning-color);
+            color: white;
+            border: 1px solid rgba(0,0,0,0.1);
         }
-        html.dark-mode .status-error {
-            background-color: #c82333;
-            color: #f8d7da;
-            border-color: #bd2130;
+
+        .status-loading {
+            background-color: var(--stat-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
         }
 
         .loader {
@@ -450,8 +445,6 @@
         .close { color: #6c757d; float: right; font-size: 28px; font-weight: bold; position: absolute; top: 10px; right: 15px; cursor: pointer; }
         .footer-button { background: none; border: none; color: #6c757d; cursor: pointer; text-decoration: underline; font-size: 12px; transition: var(--transition); display: flex; align-items: center; gap: 4px; padding: 8px; font-family: 'Inter', sans-serif; }
         .footer-button:hover { color: var(--accent-color); }
-        .auto-load-indicator { background-color: #e6f2ff; border-left: 4px solid var(--accent-color); padding: 10px 15px; margin: 10px 0; border-radius: var(--radius-sm); font-size: 13px; display: none; align-items: center; gap: 8px; color: var(--accent-color); }
-        html.dark-mode .auto-load-indicator { background-color: #1a3c5a; border-left-color: #4d94db; color: #e0e0e0; }
         .sort-indicator { margin-left: 4px; font-size: 12px; }
         .sort-indicator.active { color: var(--accent-color); }
         
@@ -481,11 +474,6 @@
         </div>
         
         <div id="status-message" class="status-message"></div>
-
-        <div id="auto-load-message" class="auto-load-indicator">
-            <i class="fas fa-sync fa-spin"></i>
-            <span>Aggiornamento automatico dei dati in corso...</span>
-        </div>
         <div id="loader" class="loader"></div>
         
         <div class="container">
@@ -614,7 +602,6 @@
             pagination: document.getElementById('pagination'),
             filterGenre: document.getElementById('filter-genre'),
             filterYear: document.getElementById('filter-year'),
-            autoLoadMessage: document.getElementById('auto-load-message'),
             themeToggleButton: document.getElementById('theme-toggle-button'),
             resetFiltersButton: document.getElementById('reset-filters-button'),
             configModal: document.getElementById('config-modal'),
@@ -627,19 +614,35 @@
         };
 
         // --- FUNZIONI ---
-        const showStatus = (message, isError = false) => {
+        /**
+         * Mostra una notifica.
+         * @param {string} message - Il testo del messaggio.
+         * @param {string} type - Tipo di messaggio: 'success', 'error', o 'loading'.
+         * @param {number|null} duration - Durata in ms. Se null, il messaggio è persistente.
+         */
+        const showStatus = (message, type = 'success', duration = 5000) => {
             clearTimeout(statusTimeout);
-            dom.statusMessage.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${message}`;
-            dom.statusMessage.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
             
-            // Aggiungi la classe 'show' per attivare l'animazione di entrata
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-triangle',
+                loading: 'fa-sync fa-spin'
+            };
+            
+            dom.statusMessage.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
+            dom.statusMessage.className = `status-message status-${type}`;
             dom.statusMessage.classList.add('show');
 
-            // Imposta un timeout per rimuovere la classe 'show' e far scomparire il messaggio
-            statusTimeout = setTimeout(() => {
-                dom.statusMessage.classList.remove('show');
-            }, 5000);
+            if (duration !== null) {
+                statusTimeout = setTimeout(() => {
+                    dom.statusMessage.classList.remove('show');
+                }, duration);
+            }
         };
+
+        const hideStatus = () => {
+             dom.statusMessage.classList.remove('show');
+        }
 
         const debounce = (func, delay) => {
             let timeout;
@@ -761,9 +764,11 @@
 
         const importFromUrl = async (isAuto = false) => {
             const url = dom.sheetsUrlInput.value.trim();
-            if (!url) { if (!isAuto) showStatus('Inserisci un URL valido.', true); return; }
+            if (!url) { if (!isAuto) showStatus('Inserisci un URL valido.', 'error'); return; }
+            
+            const loadingMessage = isAuto ? 'Aggiornamento automatico in corso...' : 'Importazione in corso...';
+            showStatus(loadingMessage, 'loading', null); // Messaggio persistente
             dom.loader.style.display = 'block';
-            if(isAuto) dom.autoLoadMessage.style.display = 'flex';
 
             try {
                 const response = await fetch(url + `&t=${Date.now()}`);
@@ -772,13 +777,12 @@
                 cds = parseCsv(csvText);
                 localStorage.setItem('cds', JSON.stringify(cds));
                 applyFiltersAndSearch();
-                showStatus(`Importati ${cds.length} CD con successo!`);
+                showStatus(`Importati ${cds.length} CD con successo!`, 'success');
             } catch (error) {
-                showStatus(`Errore importazione: ${error.message}`, true);
+                showStatus(`Errore importazione: ${error.message}`, 'error');
                 loadFromStorage();
             } finally {
                 dom.loader.style.display = 'none';
-                if(isAuto) dom.autoLoadMessage.style.display = 'none';
             }
         };
 
@@ -788,7 +792,7 @@
                 cds = storedCds ? JSON.parse(storedCds) : [];
                 applyFiltersAndSearch();
             } catch {
-                showStatus('Dati locali corrotti.', true);
+                showStatus('Dati locali corrotti.', 'error');
                 cds = [];
                 applyFiltersAndSearch();
             }
@@ -814,8 +818,12 @@
         document.querySelectorAll('th[data-sort]').forEach(th => {
             th.addEventListener('click', () => {
                 const field = th.dataset.sort;
-                sortState.field = field;
-                sortState.direction = sortState.field === field ? sortState.direction * -1 : 1;
+                if(sortState.field === field) {
+                   sortState.direction *= -1;
+                } else {
+                   sortState.field = field;
+                   sortState.direction = 1;
+                }
                 renderCds();
             });
         });
@@ -824,7 +832,7 @@
         dom.closeConfig.addEventListener('click', () => dom.configModal.style.display = 'none');
         dom.saveUrlBtn.addEventListener('click', () => {
             localStorage.setItem('sheetsUrl', dom.sheetsUrlInput.value);
-            showStatus('URL salvato!');
+            showStatus('URL salvato!', 'success');
             dom.configModal.style.display = 'none';
         });
         dom.removeUrlBtn.addEventListener('click', () => {
