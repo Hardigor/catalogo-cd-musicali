@@ -68,6 +68,7 @@
             margin-bottom: 15px;
             box-shadow: 0 2px 6px var(--shadow-color);
             width: 100%;
+            border: 1px solid var(--border-color);
         }
         
         header {
@@ -89,7 +90,7 @@
         
         h1 {
             font-size: 20px;
-            color: #ffffff;
+            color: var(--text-color);
             font-weight: 600;
             letter-spacing: 0.5px;
             margin: 0;
@@ -117,8 +118,8 @@
         
         .logo-icon {
             font-size: 20px;
-            color: #ffffff;
-            background: #495057;
+            color: var(--accent-color);
+            background: none;
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -193,9 +194,9 @@
         }
         
         input[type="text"]:focus, select:focus {
-            border-color: #6c757d;
+            border-color: var(--accent-color);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.1);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
         }
         
         .search-box {
@@ -218,14 +219,14 @@
         }
         
         .search-input:focus {
-            border-color: #6c757d;
-            box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
         }
         
         .btn-search {
-            background: var(--button-bg);
+            background: var(--accent-color);
             color: var(--button-text);
-            border: 1px solid var(--button-bg);
+            border: 1px solid var(--accent-color);
             padding: 0 16px;
             border-radius: var(--radius-sm);
             cursor: pointer;
@@ -235,6 +236,7 @@
         
         .btn-search:hover {
             background: var(--button-hover);
+            border-color: var(--button-hover);
         }
         
         .table-container {
@@ -255,7 +257,7 @@
         }
         
         thead {
-            background: #2d2d2d;
+            background: var(--stat-bg);
             color: var(--text-color);
             position: sticky;
             top: 0;
@@ -271,12 +273,12 @@
             position: relative;
             transition: background-color 0.2s ease;
             white-space: nowrap;
-            color: #e0e0e0;
+            color: var(--text-color);
             font-size: 13px;
         }
         
         th:hover {
-            background-color: #3d3d3d;
+            background-color: #dee2e6;
         }
         
         td {
@@ -303,7 +305,7 @@
         .text-center {
             text-align: center;
             padding: 20px;
-            color: #a0a0a0;
+            color: #6c757d;
             font-style: italic;
         }
         
@@ -331,7 +333,7 @@
         
         .stat-label {
             font-size: 11px;
-            color: #a0a0a0;
+            color: #6c757d;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 500;
@@ -341,7 +343,7 @@
             text-align: center;
             margin-top: 20px;
             padding: 15px;
-            color: var(--text-color);
+            color: #6c757d;
             font-size: 12px;
             border-top: 1px solid var(--border-color);
             display: flex;
@@ -478,8 +480,8 @@
         }
         
         .loader {
-            border: 2px solid #2d2d2d;
-            border-top: 2px solid #6ab7ff;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
             border-radius: 50%;
             width: 30px;
             height: 30px;
@@ -511,14 +513,14 @@
         }
         
         .btn-config:hover {
-            background: var(--button-bg);
-            color: var(--button-text);
-            border-color: var(--button-bg);
+            background: #e9ecef;
+            border-color: #dee2e6;
         }
         
         .btn-config.btn-remove:hover {
-            background: #f44336;
-            border-color: #f44336;
+            background: #dc3545;
+            border-color: #dc3545;
+            color: #ffffff;
         }
         
         .sheets-buttons {
@@ -556,14 +558,14 @@
         }
         
         .pagination button:hover {
-            background-color: var(--button-bg);
+            background-color: #e9ecef;
         }
         
         .pagination button.active {
-            background: var(--button-bg);
+            background: var(--accent-color);
             color: var(--button-text);
             font-weight: 600;
-            border: 1px solid var(--button-bg);
+            border: 1px solid var(--accent-color);
         }
         
         .pagination button:disabled {
@@ -612,7 +614,7 @@
         }
         
         .close {
-            color: #a0a0a0;
+            color: #6c757d;
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -623,14 +625,14 @@
         }
         
         .close:hover, .close:focus {
-            color: white;
+            color: #212529;
             text-decoration: none;
         }
         
         .footer-button {
             background: none;
             border: none;
-            color: #a0a0a0;
+            color: #6c757d;
             cursor: pointer;
             text-decoration: underline;
             font-size: 12px;
@@ -643,7 +645,7 @@
         }
         
         .footer-button:hover {
-            color: var(--text-color);
+            color: var(--accent-color);
         }
         
         .footer-button i {
@@ -651,8 +653,8 @@
         }
         
         .auto-load-indicator {
-            background-color: #1a3c5a;
-            border-left: 4px solid #4d94db;
+            background-color: #e6f2ff;
+            border-left: 4px solid #007bff;
             padding: 10px 15px;
             margin: 10px 0;
             border-radius: var(--radius-sm);
@@ -660,7 +662,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #e0e0e0;
+            color: #004085;
         }
         
         .theme-toggle {
@@ -672,7 +674,7 @@
         
         .theme-toggle-label {
             font-size: 12px;
-            color: var(--text-color);
+            color: #6c757d;
         }
         
         .switch {
@@ -695,7 +697,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #555;
+            background-color: #ccc;
             transition: .4s;
             border-radius: 34px;
         }
@@ -1087,28 +1089,29 @@
             });
         }
         
-        // Funzione perattivare la light mode (ALTO CONTRASTO con blu scuro e grigi più scuri)
+        // Funzione per attivare la light mode (Stile "Moderno e Vivace")
         function enableLightMode() {
-            document.documentElement.style.setProperty('--primary-bg', '#f8f9fa');
-            document.documentElement.style.setProperty('--card-bg', '#ffffff');
-            document.documentElement.style.setProperty('--text-color', '#1a1a1a');
-            document.documentElement.style.setProperty('--accent-color', '#001f4d'); // Blu molto scuro
-            document.documentElement.style.setProperty('--border-color', '#adb5bd');
-            document.documentElement.style.setProperty('--button-bg', '#343a40'); // Grigio scuro
-            document.documentElement.style.setProperty('--button-hover', '#23272b'); // Hover più scuro
-            document.documentElement.style.setProperty('--stat-bg', '#e9ecef');
-            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.15)');
-            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.2)');
-            document.documentElement.style.setProperty('--success-color', '#218838');
-            document.documentElement.style.setProperty('--warning-color', '#c82333');
-            document.documentElement.style.setProperty('--row-even-bg', '#f0f2f5');
-            document.documentElement.style.setProperty('--row-hover-bg', '#dee2e6');
-            document.documentElement.style.setProperty('--header-bg', '#e9ecef');
-            document.documentElement.style.setProperty('--logo-icon-bg', '#495057');
+            document.documentElement.style.setProperty('--primary-bg', '#f4f6f9'); // Grigio molto chiaro, quasi azzurrino
+            document.documentElement.style.setProperty('--card-bg', '#ffffff'); // Card bianche
+            document.documentElement.style.setProperty('--text-color', '#212529'); // Testo nero standard
+            document.documentElement.style.setProperty('--accent-color', '#007bff'); // Blu brillante
+            document.documentElement.style.setProperty('--border-color', '#dee2e6'); // Bordo grigio chiaro
+            document.documentElement.style.setProperty('--button-bg', '#007bff'); // Bottoni con colore primario
+            document.documentElement.style.setProperty('--button-hover', '#0056b3'); // Hover del bottone più scuro
+            document.documentElement.style.setProperty('--button-text', '#ffffff'); // Testo dei bottoni bianco
+            document.documentElement.style.setProperty('--header-bg', '#ffffff'); // Header bianco come le card
+            document.documentElement.style.setProperty('--stat-bg', '#f8f9fa'); // Sfondo statistiche e righe tabella
+            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.05)'); // Ombra molto leggera
+            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.1)');
+            document.documentElement.style.setProperty('--success-color', '#28a745');
+            document.documentElement.style.setProperty('--warning-color', '#dc3545');
+            document.documentElement.style.setProperty('--row-even-bg', '#f8f9fa'); // Riga pari della tabella
+            document.documentElement.style.setProperty('--row-hover-bg', '#e9ecef'); // Hover righe della tabella
         }
         
         // Funzione per disattivare la light mode (tornare a dark mode)
         function disableLightMode() {
+            // Ripristina i valori originali del tema scuro
             document.documentElement.style.setProperty('--primary-bg', '#121212');
             document.documentElement.style.setProperty('--card-bg', '#1e1e1e');
             document.documentElement.style.setProperty('--text-color', '#e0e0e0');
@@ -1116,6 +1119,8 @@
             document.documentElement.style.setProperty('--border-color', '#333');
             document.documentElement.style.setProperty('--button-bg', '#555');
             document.documentElement.style.setProperty('--button-hover', '#777');
+            document.documentElement.style.setProperty('--button-text', '#ffffff');
+            document.documentElement.style.setProperty('--header-bg', '#1a1a1a');
             document.documentElement.style.setProperty('--stat-bg', '#2d2d2d');
             document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.3)');
             document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.4)');
@@ -1123,8 +1128,6 @@
             document.documentElement.style.setProperty('--warning-color', '#f44336');
             document.documentElement.style.setProperty('--row-even-bg', '#2a2a2a');
             document.documentElement.style.setProperty('--row-hover-bg', '#3d3d3d');
-            document.documentElement.style.setProperty('--header-bg', '#1a1a1a');
-            document.documentElement.style.setProperty('--logo-icon-bg', '#495057');
         }
         
         // Funzione per attivare/disattivare la light mode
