@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogo CD Musicali - No Scroll UI</title>
+    <title>Catalogo CD Musicali - Compact UI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             /* TEMA CHIARO */
-            --primary-bg: #f8f9fa;
+            --primary-bg: #f4f7fa;
             --card-bg: #ffffff;
             --text-color: #212529;
             --accent-color: #001f4d;
@@ -19,12 +19,14 @@
             --button-text: #ffffff;
             --header-bg: #ffffff;
             --stat-bg: #e9ecef;
-            --shadow-color: rgba(0, 0, 0, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.07);
             --success-color: #2e7d2e;
             --warning-color: #c82333;
             --info-color: #004085;
             --row-even-bg: #f8f9fa;
             --row-hover-bg: #e9ecef;
+            --scrollbar-bg: #f1f1f1;
+            --scrollbar-thumb: #ccc;
             --radius: 8px;
             --radius-sm: 4px;
         }
@@ -46,6 +48,8 @@
             --info-color: #1e90ff;
             --row-even-bg: #2a2a2a;
             --row-hover-bg: #3d3d3d;
+            --scrollbar-bg: #2d2d2d;
+            --scrollbar-thumb: #555;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +58,7 @@
         
         body {
             width: 100%;
-            height: 100vh; /* Occupa il 100% dell'altezza del viewport */
+            height: 100vh;
             max-width: 1600px;
             margin: 0 auto;
             padding: 15px;
@@ -63,32 +67,25 @@
             font-family: 'Inter', 'Segoe UI', sans-serif;
             line-height: 1.5;
             display: flex;
-            flex-direction: column; /* Organizza gli elementi in colonna */
+            flex-direction: column;
             gap: 15px;
             transition: padding-top 0.5s ease;
-            overflow: hidden; /* Impedisce lo scroll del body */
+            overflow: hidden;
         }
         
-        body.banner-visible { padding-top: 60px; height: calc(100vh - 45px); }
+        body.banner-visible { padding-top: 55px; height: calc(100vh - 40px); }
 
         .header-container { background: var(--header-bg); padding: 10px 15px; border-radius: var(--radius); box-shadow: 0 4px 12px var(--shadow-color); border: 1px solid var(--border-color); flex-shrink: 0; }
         
         header { display: flex; align-items: center; justify-content: space-between; }
         
-        h1 { font-size: 20px; color: var(--text-color); font-weight: 600; }
+        h1 { font-size: 20px; }
         
         .logo { display: flex; align-items: center; gap: 12px; }
         
         .logo-icon { font-size: 22px; color: var(--accent-color); }
         
-        .container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 15px;
-            align-items: start;
-            flex-grow: 1; /* Fa sì che il container occupi tutto lo spazio verticale rimanente */
-            overflow: hidden; /* Nasconde l'overflow per sicurezza */
-        }
+        .container { display: grid; grid-template-columns: 280px 1fr; gap: 15px; flex-grow: 1; overflow: hidden; }
         
         .card { background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 4px 12px var(--shadow-color); border: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; }
         
@@ -104,20 +101,19 @@
         
         .search-box { display: flex; gap: 8px; margin-bottom: 15px; }
         
-        .btn-search { background: var(--button-bg); color: var(--button-text); border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; transition: background-color 0.2s ease; }
+        .btn-search { background: var(--button-bg); color: var(--button-text); border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; }
         
         .table-container {
-            flex-grow: 1; /* Occupa lo spazio rimanente nella card */
-            overflow-y: auto; /* Abilita lo scroll verticale SOLO per la tabella */
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
+            flex-grow: 1;
+            overflow-y: auto;
+            border-bottom: 1px solid var(--border-color);
         }
         
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
         
         thead { background: var(--stat-bg); position: sticky; top: 0; z-index: 1; }
         
-        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
         
         th { font-weight: 600; cursor: pointer; }
         
@@ -129,23 +125,23 @@
         
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         
-        .stat-box { background: var(--stat-bg); padding: 12px; border-radius: var(--radius); text-align: center; }
+        .stat-box { background: var(--stat-bg); padding: 10px; border-radius: var(--radius); text-align: center; }
         
-        .stat-value { font-size: 22px; font-weight: 700; color: var(--accent-color); }
+        .stat-value { font-size: 20px; font-weight: 700; color: var(--accent-color); }
         
-        .stat-label { font-size: 12px; color: #6c757d; }
+        .stat-label { font-size: 11px; color: #6c757d; }
         
         .footer { text-align: center; padding-top: 15px; color: #6c757d; font-size: 13px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
         
         .footer-buttons { display: flex; justify-content: center; gap: 20px; }
         
-        .loader { border: 3px solid var(--stat-bg); border-top: 3px solid var(--accent-color); border-radius: 50%; width: 32px; height: 32px; animation: spin 1s linear infinite; margin: 25px auto; display: none; }
+        .loader { border: 3px solid var(--stat-bg); border-top: 3px solid var(--accent-color); border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
         
-        .btn-config { padding: 10px 15px; border: 1px solid var(--border-color); background: var(--card-bg); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; }
+        .btn-config { padding: 10px 15px; border: 1px solid var(--border-color); background: var(--card-bg); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; }
         
-        .pagination { padding: 15px; display: flex; justify-content: center; gap: 5px; flex-shrink: 0; border-top: 1px solid var(--border-color); }
+        .pagination { padding: 10px; display: flex; justify-content: center; align-items: center; gap: 5px; flex-shrink: 0; }
         
-        .pagination button { padding: 8px 14px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; }
+        .pagination button { padding: 5px 10px; font-size: 12px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; }
         
         .pagination button.active { background: var(--accent-color); color: var(--button-text); border-color: var(--accent-color); }
         
@@ -153,7 +149,7 @@
         
         .modal-content { background-color: var(--card-bg); padding: 25px; border-radius: var(--radius); width: 90%; max-width: 500px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
         
-        .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .close { float: right; font-size: 28px; cursor: pointer; }
         
         .footer-button { background: none; border: none; color: #6c757d; cursor: pointer; text-decoration: underline; font-size: 13px; display: flex; align-items: center; gap: 5px; }
         
@@ -175,25 +171,18 @@
 
         /* BANNER DI NOTIFICA */
         #notification-container { position: fixed; top: 0; left: 0; width: 100%; z-index: 2000; display: flex; justify-content: center; }
-        .notification {
-            width: 100%;
-            padding: 12px 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            animation: fadeInDown 0.5s ease-out forwards;
-            transition: background-color 0.4s ease; /* Transizione per il cambio colore */
-        }
+        .notification { width: 100%; padding: 10px 15px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #fff; font-size: 14px; font-weight: 500; box-shadow: 0 2px 10px rgba(0,0,0,0.2); animation: fadeInDown 0.5s ease-out forwards; transition: background-color 0.4s ease; }
         .notification.fade-out { animation: fadeOutUp 0.5s ease-in forwards; }
         .notification .fa-sync-alt { animation: spin 1.5s linear infinite; }
         .notification-success { background-color: var(--success-color); }
         .notification-error { background-color: var(--warning-color); }
         .notification-info { background-color: var(--info-color); }
+
+        /* SCROLLBAR PERSONALIZZATA */
+        .table-container::-webkit-scrollbar { width: 8px; }
+        .table-container::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
+        .table-container::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+        .table-container::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
 
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fadeInDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
@@ -201,7 +190,7 @@
 
         @media (max-width: 900px) {
             .container { grid-template-columns: 1fr; }
-            .right-column .card { min-height: 400px; } /* Altezza minima su mobile */
+            .right-column .card { min-height: 400px; }
         }
     </style>
 </head>
@@ -220,8 +209,6 @@
         </header>
     </div>
     
-    <div id="loader" class="loader"></div>
-    
     <div class="container">
         <div class="left-column">
             <div class="card">
@@ -234,7 +221,7 @@
                     <div class="form-group"><label for="filter-genre">Genere</label><select id="filter-genre"><option value="">Tutti</option></select></div>
                     <div class="form-group"><label for="filter-year">Anno</label><select id="filter-year"><option value="">Tutti</option></select></div>
                     <div class="stats">
-                        <div class="stat-box"><div class="stat-value" id="total-cds">0</div><div class="stat-label">CD Totali</div></div>
+                        <div class="stat-box"><div class="stat-value" id="total-cds">0</div><div class="stat-label">CD</div></div>
                         <div class="stat-box"><div class="stat-value" id="unique-artists">0</div><div class="stat-label">Artisti</div></div>
                     </div>
                 </div>
@@ -244,7 +231,7 @@
         <div class="right-column">
             <div class="card">
                 <div class="card-content">
-                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco CD</h2>
+                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco Risultati</h2>
                 </div>
                 <div class="table-container">
                     <table id="cd-table">
@@ -265,19 +252,18 @@
     </div>
     
     <div class="footer">
-        <p>Catalogo CD © 2025 - Developed by Hardigor</p>
         <div class="footer-buttons">
-            <button class="footer-button" id="debug-toggle-button"><i class="fas fa-bug"></i> Mostra Debug</button>
+            <button class="footer-button" id="debug-toggle-button"><i class="fas fa-bug"></i> Debug</button>
             <button class="footer-button" id="config-toggle-button"><i class="fas fa-cog"></i> Configurazione</button>
         </div>
     </div>
     
     <div id="debug-modal" class="modal"><div class="modal-content"><span class="close" id="close-debug">&times;</span><h2>Debug</h2><div id="debug-info"></div></div></div>
-    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2>Configurazione Google Sheets</h2><div class="form-group"><label for="inline-sheets-url">URL di pubblicazione (CSV):</label><input type="text" id="inline-sheets-url" placeholder="File > Condividi > Pubblica sul web > CSV"></div><div class="sheets-buttons"><button class="btn-config" id="inline-save-sheets-url"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
+    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2>Configurazione Google Sheets</h2><div class="form-group"><label for="inline-sheets-url">URL di pubblicazione (CSV):</label><input type="text" id="inline-sheets-url" placeholder="File > Condividi > Pubblica sul web > CSV"></div><div class="sheets-buttons" style="display:flex; gap:10px; margin-top:15px;"><button class="btn-config" id="inline-save-sheets-url"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
     
     <script>
         let cds = [], filteredCds = [], sortField = 'title', sortDirection = 1, currentPage = 1;
-        const itemsPerPage = 20;
+        const itemsPerPage = 50;
         
         const dom = {
             body: document.body,
@@ -285,7 +271,6 @@
             searchInput: document.getElementById('search-input'),
             totalCds: document.getElementById('total-cds'),
             uniqueArtists: document.getElementById('unique-artists'),
-            loader: document.getElementById('loader'),
             pagination: document.getElementById('pagination'),
             filterGenre: document.getElementById('filter-genre'),
             filterYear: document.getElementById('filter-year'),
@@ -321,10 +306,7 @@
             document.getElementById('inline-import-sheets').addEventListener('click', importFromSheetsUrl);
             document.getElementById('inline-remove-sheets-url').addEventListener('click', clearSheetsUrl);
             
-            const modals = {
-                debug: document.getElementById('debug-modal'),
-                config: document.getElementById('config-modal')
-            };
+            const modals = { debug: document.getElementById('debug-modal'), config: document.getElementById('config-modal') };
             const toggle = (modal, show) => modal.style.display = show ? 'flex' : 'none';
             document.getElementById('debug-toggle-button').addEventListener('click', () => toggle(modals.debug, true));
             document.getElementById('config-toggle-button').addEventListener('click', () => toggle(modals.config, true));
@@ -385,19 +367,21 @@
                 return { title: values[0], artist: values[1], year: parseInt(values[2]) || 'N/A', genre: values[3] };
             }).filter(Boolean);
         }
-
-        async function handleImport(url) {
-            const banner = showNotification({ message: 'Caricamento dati...', type: 'info', duration: 0, icon: 'fa-sync-alt' });
+        
+        async function handleImport(url, isAuto = false) {
+            const message = isAuto ? 'Aggiornamento automatico...' : 'Caricamento dati...';
+            const banner = showNotification({ message, type: 'info', duration: 0, icon: 'fa-sync-alt' });
             try {
                 const newCds = await fetchDataFromSheets(url);
                 processCds(newCds);
-                updateNotification(banner, { message: `Catalogo aggiornato: ${newCds.length} CD`, type: 'success' });
+                const successMsg = isAuto ? `Catalogo aggiornato: ${newCds.length} CD` : `Importati ${newCds.length} CD con successo`;
+                updateNotification(banner, { message: successMsg, type: 'success' });
                 setTimeout(() => closeNotification(banner), 3000);
                 return newCds;
             } catch (error) {
                 updateNotification(banner, { message: error.message, type: 'error' });
                 setTimeout(() => closeNotification(banner), 6000);
-                throw error; // Rilancia l'errore per il chiamante
+                throw error;
             }
         }
 
@@ -405,10 +389,10 @@
             const url = dom.sheetsUrlInput.value.trim();
             if (!url) { loadCds(); return; }
             try {
-                const newCds = await handleImport(url);
+                const newCds = await handleImport(url, true);
                 localStorage.setItem('cds', JSON.stringify(newCds));
             } catch (error) {
-                loadCds(); // Fallback ai dati locali in caso di errore
+                loadCds();
             }
         }
         
@@ -416,11 +400,9 @@
             const url = dom.sheetsUrlInput.value.trim();
             if (!url) return showNotification({ message: 'Inserisci un URL valido', type: 'error' });
             try {
-                const newCds = await handleImport(url);
+                const newCds = await handleImport(url, false);
                 localStorage.setItem('cds', JSON.stringify(newCds));
-            } catch (error) {
-                // L'errore è già gestito da handleImport
-            }
+            } catch (error) { /* Errore già gestito */ }
         }
 
         function loadCds() {
@@ -436,7 +418,7 @@
         function processCds(newCds) {
             cds = newCds;
             populateFilters();
-            searchCds(); // Applica i filtri correnti
+            searchCds();
         }
         
         function saveSheetsUrl() {
@@ -469,7 +451,6 @@
                 else if (cd.year >= 2010) yearGroups['2010s'] = true;
                 else if (cd.year >= 2000) yearGroups['2000s'] = true;
             });
-
             dom.filterGenre.innerHTML = '<option value="">Tutti i Generi</option>' + genres.map(g => `<option>${g}</option>`).join('');
             dom.filterYear.innerHTML = '<option value="">Tutti gli Anni</option>' + Object.keys(yearGroups).filter(y => yearGroups[y]).map(y => `<option value="${y}">${y}</option>`).join('');
         }
@@ -521,7 +502,6 @@
                 (!genre || cd.genre === genre) &&
                 (!term || Object.values(cd).some(val => String(val).toLowerCase().includes(term)))
             );
-            currentPage = 1;
             renderCds();
         }
     </script>
