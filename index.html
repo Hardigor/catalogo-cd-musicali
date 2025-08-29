@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogo CD Musicali - Compact UI</title>
+    <title>Catalogo CD Musicali - Full Screen UI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -62,114 +62,124 @@
             max-width: 1600px;
             margin: 0 auto;
             padding: 15px;
-            font-size: 14px;
-            color: var(--text-color);
             font-family: 'Inter', 'Segoe UI', sans-serif;
-            line-height: 1.5;
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             gap: 15px;
+            overflow: hidden;
             transition: padding-top 0.5s ease;
+        }
+        
+        body.banner-visible { padding-top: 55px; }
+
+        .header-container {
+            background: var(--header-bg);
+            padding: 10px 15px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        
+        header { display: flex; align-items: center; justify-content: space-between; }
+        h1 { font-size: 20px; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { font-size: 22px; color: var(--accent-color); }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 15px;
+            flex-grow: 1;
+            overflow: hidden;
+            min-height: 0; /* Fix per flexbox */
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
             overflow: hidden;
         }
         
-        body.banner-visible { padding-top: 55px; height: calc(100vh - 40px); }
-
-        .header-container { background: var(--header-bg); padding: 10px 15px; border-radius: var(--radius); box-shadow: 0 4px 12px var(--shadow-color); border: 1px solid var(--border-color); flex-shrink: 0; }
-        
-        header { display: flex; align-items: center; justify-content: space-between; }
-        
-        h1 { font-size: 20px; }
-        
-        .logo { display: flex; align-items: center; gap: 12px; }
-        
-        .logo-icon { font-size: 22px; color: var(--accent-color); }
-        
-        .container { display: grid; grid-template-columns: 280px 1fr; gap: 15px; flex-grow: 1; overflow: hidden; }
-        
-        .card { background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 4px 12px var(--shadow-color); border: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; }
-        
-        .card-content { padding: 15px; }
-
+        .card-content { padding: 15px; flex-shrink: 0; }
         .card-title { font-size: 16px; margin-bottom: 15px; color: var(--accent-color); font-weight: 600; display: flex; align-items: center; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
         
         .form-group { margin-bottom: 12px; }
-        
         label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 500; }
-        
         input[type="text"], select { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 14px; background-color: var(--card-bg); color: var(--text-color); }
-        
         .search-box { display: flex; gap: 8px; margin-bottom: 15px; }
-        
         .btn-search { background: var(--button-bg); color: var(--button-text); border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; }
         
         .table-container {
             flex-grow: 1;
-            overflow-y: auto;
-            border-bottom: 1px solid var(--border-color);
+            overflow-y: auto; /* Scroll solo qui */
+            min-height: 0; /* Fix per flexbox */
         }
         
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        
         thead { background: var(--stat-bg); position: sticky; top: 0; z-index: 1; }
-        
         th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
-        
         th { font-weight: 600; cursor: pointer; }
-        
         tbody tr:last-child td { border-bottom: none; }
-        
         tbody tr:nth-child(even) { background-color: var(--row-even-bg); }
-        
         tbody tr:hover { background-color: var(--row-hover-bg); }
         
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        
         .stat-box { background: var(--stat-bg); padding: 10px; border-radius: var(--radius); text-align: center; }
-        
         .stat-value { font-size: 20px; font-weight: 700; color: var(--accent-color); }
-        
         .stat-label { font-size: 11px; color: #6c757d; }
         
-        .footer { text-align: center; padding-top: 15px; color: #6c757d; font-size: 13px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
+        .footer {
+            text-align: center;
+            padding-top: 15px;
+            color: #6c757d;
+            font-size: 13px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
         
         .footer-buttons { display: flex; justify-content: center; gap: 20px; }
         
-        .loader { border: 3px solid var(--stat-bg); border-top: 3px solid var(--accent-color); border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
-        
-        .btn-config { padding: 10px 15px; border: 1px solid var(--border-color); background: var(--card-bg); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-        
-        .pagination { padding: 10px; display: flex; justify-content: center; align-items: center; gap: 5px; flex-shrink: 0; }
+        .pagination {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            border-top: 1px solid var(--border-color);
+        }
         
         .pagination button { padding: 5px 10px; font-size: 12px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; }
-        
         .pagination button.active { background: var(--accent-color); color: var(--button-text); border-color: var(--accent-color); }
         
         .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
-        
         .modal-content { background-color: var(--card-bg); padding: 25px; border-radius: var(--radius); width: 90%; max-width: 500px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
-        
         .close { float: right; font-size: 28px; cursor: pointer; }
         
         .footer-button { background: none; border: none; color: #6c757d; cursor: pointer; text-decoration: underline; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .footer-button:hover { color: var(--accent-color); }
         
         .theme-toggle { display: flex; align-items: center; gap: 8px; }
-        
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        
         .switch input { opacity: 0; width: 0; height: 0; }
-        
         .slider { position: absolute; cursor: pointer; inset: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
-        
         input:checked + .slider { background-color: var(--button-bg); }
-        
         input:checked + .slider:before { transform: translateX(20px); }
         
         .sort-indicator { margin-left: 5px; display: inline-block; width: 1em; }
 
-        /* BANNER DI NOTIFICA */
         #notification-container { position: fixed; top: 0; left: 0; width: 100%; z-index: 2000; display: flex; justify-content: center; }
         .notification { width: 100%; padding: 10px 15px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #fff; font-size: 14px; font-weight: 500; box-shadow: 0 2px 10px rgba(0,0,0,0.2); animation: fadeInDown 0.5s ease-out forwards; transition: background-color 0.4s ease; }
         .notification.fade-out { animation: fadeOutUp 0.5s ease-in forwards; }
@@ -178,7 +188,6 @@
         .notification-error { background-color: var(--warning-color); }
         .notification-info { background-color: var(--info-color); }
 
-        /* SCROLLBAR PERSONALIZZATA */
         .table-container::-webkit-scrollbar { width: 8px; }
         .table-container::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
         .table-container::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
@@ -189,8 +198,9 @@
         @keyframes fadeOutUp { from { transform: translateY(0); } to { transform: translateY(-100%); } }
 
         @media (max-width: 900px) {
+            body { padding: 10px; gap: 10px; }
             .container { grid-template-columns: 1fr; }
-            .right-column .card { min-height: 400px; }
+            .right-column .card { min-height: 350px; }
         }
     </style>
 </head>
@@ -252,14 +262,15 @@
     </div>
     
     <div class="footer">
+        <p>Catalogo CD © 2025 - Developed by Hardigor</p>
         <div class="footer-buttons">
-            <button class="footer-button" id="debug-toggle-button"><i class="fas fa-bug"></i> Debug</button>
+            <button class="footer-button" id="debug-toggle-button"><i class="fas fa-bug"></i> Mostra Debug</button>
             <button class="footer-button" id="config-toggle-button"><i class="fas fa-cog"></i> Configurazione</button>
         </div>
     </div>
     
     <div id="debug-modal" class="modal"><div class="modal-content"><span class="close" id="close-debug">&times;</span><h2>Debug</h2><div id="debug-info"></div></div></div>
-    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2>Configurazione Google Sheets</h2><div class="form-group"><label for="inline-sheets-url">URL di pubblicazione (CSV):</label><input type="text" id="inline-sheets-url" placeholder="File > Condividi > Pubblica sul web > CSV"></div><div class="sheets-buttons" style="display:flex; gap:10px; margin-top:15px;"><button class="btn-config" id="inline-save-sheets-url"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
+    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2>Configurazione Google Sheets</h2><div class="form-group"><label for="inline-sheets-url">URL di pubblicazione (CSV):</label><input type="text" id="inline-sheets-url" placeholder="File > Condividi > Pubblica sul web > CSV"></div><div class="sheets-buttons" style="display:flex; gap:10px; margin-top:15px;"><button class="btn-config" id="inline-save-sheets-url" style="flex:1"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets" style="flex:1"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url" style="flex:1"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
     
     <script>
         let cds = [], filteredCds = [], sortField = 'title', sortDirection = 1, currentPage = 1;
