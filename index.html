@@ -1087,22 +1087,24 @@
             });
         }
         
-        // Funzione per attivare la light mode (ALTO CONTRASTO)
+        // Funzione per attivare la light mode (ALTO CONTRASTO con blu scuro e grigi più scuri)
         function enableLightMode() {
-            document.documentElement.style.setProperty('--primary-bg', '#f8f9fa');
-            document.documentElement.style.setProperty('--card-bg', '#ffffff');
-            document.documentElement.style.setProperty('--text-color', '#1a1a1a'); // Nero più pieno per il testo
-            document.documentElement.style.setProperty('--accent-color', '#0056b3'); // Blu più deciso e scuro
-            document.documentElement.style.setProperty('--border-color', '#ced4da'); // Bordo più visibile
-            document.documentElement.style.setProperty('--button-bg', '#6c757d'); // Grigio standard per bottoni
-            document.documentElement.style.setProperty('--button-hover', '#5a6268'); // Hover più scuro
-            document.documentElement.style.setProperty('--stat-bg', '#e9ecef');
-            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.1)'); // Ombra leggermente più marcata
-            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.15)');
+            document.documentElement.style.setProperty('--primary-bg', '#f8f9fa'); // Sfondo quasi bianco
+            document.documentElement.style.setProperty('--card-bg', '#ffffff'); // Sfondo card bianco
+            document.documentElement.style.setProperty('--text-color', '#1a1a1a'); // Testo quasi nero
+            document.documentElement.style.setProperty('--accent-color', '#001f4d'); // Blu molto scuro, quasi nero-blu
+            document.documentElement.style.setProperty('--border-color', '#adb5bd'); // Bordo più scuro
+            document.documentElement.style.setProperty('--button-bg', '#343a40'); // Bottoni grigio scuro
+            document.documentElement.style.setProperty('--button-hover', '#23272b'); // Hover bottoni ancora più scuro
+            document.documentElement.style.setProperty('--stat-bg', '#e9ecef'); // Sfondo statistiche grigio chiaro
+            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.15)'); // Ombra leggermente più marcata
+            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.2)');
             document.documentElement.style.setProperty('--success-color', '#218838');
             document.documentElement.style.setProperty('--warning-color', '#c82333');
-            document.documentElement.style.setProperty('--row-even-bg', '#f2f2f2'); // Grigio per righe alternate
-            document.documentElement.style.setProperty('--row-hover-bg', '#e2e6ea'); // Hover più evidente
+            document.documentElement.style.setProperty('--row-even-bg', '#f0f2f5'); // Riga pari della tabella grigio leggermente più scuro
+            document.documentElement.style.setProperty('--row-hover-bg', '#dee2e6'); // Hover righe della tabella più scuro
+            document.documentElement.style.setProperty('--header-bg', '#e9ecef'); // Header grigio scuro
+            document.documentElement.style.setProperty('--logo-icon-bg', '#495057'); // Sfondo logo icona
         }
         
         // Funzione per disattivare la light mode (tornare a dark mode)
@@ -1121,6 +1123,8 @@
             document.documentElement.style.setProperty('--warning-color', '#f44336');
             document.documentElement.style.setProperty('--row-even-bg', '#2a2a2a');
             document.documentElement.style.setProperty('--row-hover-bg', '#3d3d3d');
+            document.documentElement.style.setProperty('--header-bg', '#1a1a1a');
+            document.documentElement.style.setProperty('--logo-icon-bg', '#495057');
         }
         
         // Funzione per attivare/disattivare la light mode
