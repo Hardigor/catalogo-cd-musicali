@@ -393,103 +393,6 @@
             font-weight: 600;
         }
         
-        .status-message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            display: none;
-            font-weight: 500;
-            width: 100%;
-            font-size: 13px;
-        }
-        
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            box-shadow: 0 4px 12px rgba(21, 87, 36, 0.1);
-            animation: slideInFromTop 0.5s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        html.dark-mode .status-success {
-             background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
-             color: #2e7d2e;
-             border: 1px solid #b8e6b8;
-        }
-        
-        .status-success::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s ease-in-out;
-        }
-        
-        .status-success i {
-            margin-right: 8px;
-            font-size: 16px;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes slideInFromTop {
-            0% { transform: translateY(-100%); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
-        }
-        
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            box-shadow: 0 4px 12px rgba(114, 28, 36, 0.1);
-            animation: slideInFromTop 0.5s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        html.dark-mode .status-error {
-            background: linear-gradient(135deg, #4a2d2f 0%, #3e2528 100%);
-            color: #f44336;
-            border: 1px solid #5e3d3f;
-        }
-        
-        .status-error::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s ease-in-out;
-        }
-        
-        .status-error i {
-            margin-right: 8px;
-            font-size: 16px;
-            animation: shake 0.5s ease-in-out;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-        }
-        
         .loader {
             border: 2px solid #e9ecef;
             border-top: 2px solid var(--accent-color);
@@ -792,6 +695,78 @@
             .header-container, .card { padding: 10px; }
             .btn-config { min-width: unset; }
         }
+        
+        /* NUOVO CSS PER IL POP-UP */
+        .popup-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .popup {
+            padding: 12px 18px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.5s ease-out forwards, fadeOut 0.5s ease-in 4.5s forwards;
+            min-width: 250px;
+            max-width: 350px;
+        }
+
+        .popup i {
+            font-size: 18px;
+        }
+
+        .popup-success {
+            background-color: var(--success-color);
+            border-left: 5px solid #235d23;
+        }
+
+        html.dark-mode .popup-success {
+             background-color: #4caf50;
+             border-left-color: #388e3c;
+        }
+
+        .popup-error {
+            background-color: var(--warning-color);
+            border-left: 5px solid #8f131f;
+        }
+
+        html.dark-mode .popup-error {
+            background-color: #f44336;
+            border-left-color: #d32f2f;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -807,7 +782,6 @@
             </header>
         </div>
         
-        <div id="status-message" class="status-message"></div>
         <div id="auto-load-message" class="auto-load-indicator" style="display: none;">
             <i class="fas fa-sync fa-spin"></i>
             <span>Aggiornamento automatico dei dati in corso...</span>
@@ -949,6 +923,8 @@
             </div>
         </div>
     </div>
+
+    <div id="popup-container" class="popup-container"></div>
     
     <script>
         // Dati e configurazione
@@ -966,7 +942,6 @@
         const searchButton = document.getElementById('search-button');
         const totalCdsElement = document.getElementById('total-cds');
         const uniqueArtistsElement = document.getElementById('unique-artists');
-        const statusMessage = document.getElementById('status-message');
         const loader = document.getElementById('loader');
         const paginationElement = document.getElementById('pagination');
         const debugInfo = document.getElementById('debug-info');
@@ -1004,7 +979,7 @@
                 enableDarkMode();
                 themeToggleSwitch.checked = true;
             } else {
-                disableDarkMode(); 
+                disableDarkMode();  
                 themeToggleSwitch.checked = false;
             }
             
@@ -1072,14 +1047,22 @@
             }
         }
         
-        function showStatus(message, isError = false) {
-            const icon = isError ? '<i class="fas fa-exclamation-triangle"></i>' : '<i class="fas fa-check-circle"></i>';
-            statusMessage.innerHTML = icon + message;
-            statusMessage.className = isError ? 'status-message status-error' : 'status-message status-success';
-            statusMessage.style.display = 'block';
+        // NUOVA FUNZIONE PER IL POP-UP
+        function showPopup(message, isError = false) {
+            const container = document.getElementById('popup-container');
+            
+            const popup = document.createElement('div');
+            popup.className = isError ? 'popup popup-error' : 'popup popup-success';
+            
+            const iconClass = isError ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+            popup.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
+            
+            container.appendChild(popup);
+            
+            // Rimuove il pop-up dopo che l'animazione è finita
             setTimeout(() => {
-                statusMessage.style.display = 'none';
-            }, 5000);
+                popup.remove();
+            }, 5000); // 5 secondi totali (0.5s fade-in, 4s visibile, 0.5s fade-out)
         }
         
         function showLoader() { loader.style.display = 'block'; }
@@ -1096,13 +1079,13 @@
                         cds = JSON.parse(storedCds);
                         filteredCds = [...cds];
                         renderCds();
-                        showStatus('Dati caricati dalla memoria locale!');
+                        showPopup('Dati caricati dalla memoria locale!');
                     } catch (e) {
                         console.error('Errore nel parsing dei dati:', e);
-                        showStatus('Errore nel caricamento dei dati. I dati potrebbero essere corrotti.', true);
+                        showPopup('Errore nel caricamento. Dati corrotti.', true);
                     }
                 } else {
-                    showStatus('Nessun dato trovato. Importa i dati da Google Sheets.', true);
+                    showPopup('Nessun dato. Importa da Google Sheets.', true);
                 }
                 hideLoader();
                 updateDebugInfo();
@@ -1158,10 +1141,10 @@
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
-                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
+                showPopup(`Importati ${cds.length} CD da Google Sheets!`);
             } catch (error) {
                 console.error('Errore nel caricamento da Google Sheets:', error);
-                showStatus(`Errore: ${error.message}`, true);
+                showPopup(`Errore: ${error.message}`, true);
                 loadCds(); // Fallback to local data
             } finally {
                 hideAutoLoadMessage();
@@ -1171,9 +1154,9 @@
         
         async function importFromSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
-            if (!url) { showStatus('Inserisci un URL valido per Google Sheets', true); return; }
+            if (!url) { showPopup('Inserisci un URL valido per Google Sheets', true); return; }
             
-            showStatus('Importazione in corso...');
+            showPopup('Importazione in corso...');
             showLoader();
             try {
                 const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
@@ -1219,10 +1202,10 @@
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
-                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
+                showPopup(`Importati ${cds.length} CD da Google Sheets!`);
             } catch (error) {
                 console.error('Errore nel caricamento da Google Sheets:', error);
-                showStatus(`Errore: ${error.message}`, true);
+                showPopup(`Errore: ${error.message}`, true);
                 loadCds();
             } finally {
                 hideLoader();
@@ -1232,16 +1215,16 @@
         
         function saveSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
-            if (!url) { showStatus('Inserisci un URL valido per Google Sheets', true); return; }
+            if (!url) { showPopup('Inserisci un URL valido per Google Sheets', true); return; }
             localStorage.setItem('sheetsUrl', url);
-            showStatus('URL salvato con successo!');
+            showPopup('URL salvato con successo!');
             configModal.style.display = 'none';
         }
         
         function clearSheetsUrl() {
             localStorage.removeItem('sheetsUrl');
             inlineSheetsUrlInput.value = '';
-            showStatus('URL rimosso con successo!');
+            showPopup('URL rimosso con successo!');
         }
         
         function updateStats() {
@@ -1411,7 +1394,7 @@
                 disableDarkMode();
                 themeToggleSwitch.checked = false;
                 renderCds();
-                showStatus('Tutti i dati sono stati cancellati.');
+                showPopup('Tutti i dati sono stati cancellati.');
                 updateDebugInfo();
             }
         }
