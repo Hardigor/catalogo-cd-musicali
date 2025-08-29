@@ -13,7 +13,7 @@
             --card-bg: #ffffff;
             --text-color: #212529;
             --accent-color: #001f4d;
-            --border-color: #adb5bd;
+            --border-color: #dee2e6;
             --button-bg: #343a40;
             --button-hover: #23272b;
             --button-text: #ffffff;
@@ -24,9 +24,9 @@
             --warning-color: #c82333;
             --info-color: #004085;
             --row-even-bg: #f0f2f5;
-            --row-hover-bg: #dee2e6;
-            --radius: 6px;
-            --radius-sm: 3px;
+            --row-hover-bg: #e9ecef;
+            --radius: 8px;
+            --radius-sm: 4px;
             --transition: all 0.2s ease;
         }
 
@@ -41,7 +41,7 @@
             --button-hover: #777;
             --header-bg: #1a1a1a;
             --stat-bg: #2d2d2d;
-            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-color: rgba(0, 0, 0, 0.4);
             --success-color: #4caf50;
             --warning-color: #f44336;
             --info-color: #1e90ff;
@@ -57,104 +57,105 @@
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 15px;
             font-size: 14px;
             color: var(--text-color);
             font-family: 'Inter', 'Segoe UI', sans-serif;
-            line-height: 1.4;
+            line-height: 1.5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             transition: padding-top 0.5s ease;
         }
         
-        body.banner-visible { padding-top: 50px; }
+        body.banner-visible { padding-top: 60px; }
 
         .main-content { flex: 1; width: 100%; }
         
-        .header-container { background: var(--header-bg); padding: 12px; border-radius: var(--radius); margin-bottom: 15px; box-shadow: 0 2px 6px var(--shadow-color); border: 1px solid var(--border-color); }
+        .header-container { background: var(--header-bg); padding: 12px 20px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: 0 4px 12px var(--shadow-color); border: 1px solid var(--border-color); }
         
-        header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        header { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
         
-        h1 { font-size: 22px; color: var(--text-color); font-weight: 600; margin: 0; }
+        h1 { font-size: 22px; color: var(--text-color); font-weight: 600; }
         
-        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo { display: flex; align-items: center; gap: 12px; }
         
-        .logo-icon { font-size: 20px; color: var(--accent-color); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .logo-icon { font-size: 24px; color: var(--accent-color); }
         
-        .container { display: grid; grid-template-columns: 280px 1fr; gap: 18px; align-items: start; margin-top: 12px; }
+        .container { display: grid; grid-template-columns: 280px 1fr; gap: 20px; align-items: start; }
         
-        .card { background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 1px 4px var(--shadow-color); padding: 15px; border: 1px solid var(--border-color); }
+        .card { background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 4px 12px var(--shadow-color); padding: 20px; border: 1px solid var(--border-color); }
         
-        .card-title { font-size: 16px; margin-bottom: 12px; color: var(--accent-color); font-weight: 600; display: flex; align-items: center; gap: 6px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+        .card-title { font-size: 18px; margin-bottom: 15px; color: var(--accent-color); font-weight: 600; display: flex; align-items: center; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
         
-        .form-group { margin-bottom: 12px; }
+        .form-group { margin-bottom: 15px; }
         
-        label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 500; }
+        label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 500; }
         
-        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; background-color: var(--card-bg); color: var(--text-color); }
+        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 14px; background-color: var(--card-bg); color: var(--text-color); }
         
-        input[type="text"]:focus, select:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2); }
+        input[type="text"]:focus, select:focus { border-color: var(--accent-color); outline: none; box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); }
         
-        .search-box { display: flex; gap: 6px; margin-bottom: 15px; }
+        .search-box { display: flex; gap: 8px; margin-bottom: 20px; }
         
         .btn-search { background: var(--button-bg); color: var(--button-text); border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; transition: background-color 0.2s ease; }
         
         .btn-search:hover { background: var(--button-hover); }
         
-        .table-container { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: 0 1px 3px var(--shadow-color); }
+        .table-container { overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius); }
         
-        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
         
-        thead { background: var(--stat-bg); position: sticky; top: 0; z-index: 10; border-bottom: 2px solid var(--border-color); }
+        thead { background: var(--stat-bg); }
         
-        th { padding: 10px 8px; text-align: left; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        
+        th { font-weight: 600; cursor: pointer; }
         
         th:hover { background-color: var(--row-hover-bg); }
         
-        td { padding: 8px; border-bottom: 1px solid var(--border-color); }
+        tbody tr:last-child td { border-bottom: none; }
         
-        tr:nth-child(even) { background-color: var(--row-even-bg); }
+        tbody tr:nth-child(even) { background-color: var(--row-even-bg); }
         
-        tr:hover { background-color: var(--row-hover-bg); }
+        tbody tr:hover { background-color: var(--row-hover-bg); }
         
-        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
         
-        .stat-box { background: var(--stat-bg); padding: 12px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border-color); }
+        .stat-box { background: var(--stat-bg); padding: 15px; border-radius: var(--radius); text-align: center; }
         
-        .stat-value { font-size: 20px; font-weight: 700; color: var(--accent-color); }
+        .stat-value { font-size: 24px; font-weight: 700; color: var(--accent-color); }
         
-        .stat-label { font-size: 11px; color: #6c757d; text-transform: uppercase; font-weight: 500; }
+        .stat-label { font-size: 12px; color: #6c757d; text-transform: uppercase; }
         
-        .footer { text-align: center; margin-top: 20px; padding: 15px; color: #6c757d; font-size: 12px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; color: #6c757d; font-size: 13px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; gap: 15px; }
         
-        .footer-buttons { display: flex; justify-content: center; gap: 15px; margin: 10px 0; }
+        .footer-buttons { display: flex; justify-content: center; gap: 20px; }
         
-        .loader { border: 2px solid #e9ecef; border-top: 2px solid var(--accent-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
+        .loader { border: 3px solid var(--stat-bg); border-top: 3px solid var(--accent-color); border-radius: 50%; width: 32px; height: 32px; animation: spin 1s linear infinite; margin: 25px auto; display: none; }
         
-        html.dark-mode .loader { border-color: #2d2d2d; border-top-color: var(--accent-color); }
-
-        .btn-config { padding: 10px 12px; border: 1px solid var(--border-color); background: var(--card-bg); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+        .btn-config { padding: 10px 15px; border: 1px solid var(--border-color); background: var(--card-bg); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; }
         
-        .btn-config:hover { background: var(--row-hover-bg); }
+        .btn-config:hover { background: var(--row-hover-bg); border-color: var(--accent-color); }
         
-        .btn-config.btn-remove:hover { background: var(--warning-color); color: #fff; }
+        .btn-config.btn-remove:hover { background: var(--warning-color); color: #fff; border-color: var(--warning-color); }
         
-        .sheets-buttons { display: flex; gap: 8px; margin-top: 12px; }
+        .sheets-buttons { display: flex; gap: 10px; margin-top: 15px; }
         
-        .pagination { display: flex; justify-content: center; margin-top: 15px; gap: 4px; }
+        .pagination { display: flex; justify-content: center; margin-top: 20px; gap: 5px; }
         
-        .pagination button { padding: 8px 12px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; }
+        .pagination button { padding: 8px 14px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; }
         
         .pagination button.active { background: var(--accent-color); color: var(--button-text); border-color: var(--accent-color); }
         
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
         
-        .modal-content { background-color: var(--card-bg); padding: 20px; border-radius: var(--radius); width: 90%; max-width: 500px; }
+        .modal-content { background-color: var(--card-bg); padding: 25px; border-radius: var(--radius); width: 90%; max-width: 500px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
         
-        .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; }
         
-        .footer-button { background: none; border: none; color: #6c757d; cursor: pointer; text-decoration: underline; font-size: 12px; }
+        .footer-button { background: none; border: none; color: #6c757d; cursor: pointer; text-decoration: underline; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .footer-button:hover { color: var(--accent-color); }
         
         .theme-toggle { display: flex; align-items: center; gap: 8px; }
         
@@ -166,61 +167,31 @@
         
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
         
-        input:checked + .slider { background-color: #555; }
+        input:checked + .slider { background-color: var(--button-bg); }
         
         input:checked + .slider:before { transform: translateX(20px); }
         
-        .sort-indicator { margin-left: 4px; } .sort-indicator.active { color: var(--accent-color); }
+        .sort-indicator { margin-left: 5px; display: inline-block; } .sort-indicator.active { color: var(--accent-color); }
 
-        /* BANNER DI NOTIFICA UNIFICATO */
-        #notification-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        /* BANNER DI NOTIFICA */
+        #notification-container { position: fixed; top: 0; left: 0; width: 100%; z-index: 2000; display: flex; flex-direction: column; align-items: center; }
+        .notification { width: 100%; padding: 12px 15px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #fff; font-size: 14px; font-weight: 500; box-shadow: 0 2px 10px rgba(0,0,0,0.2); animation: fadeInDown 0.5s ease-out forwards; }
+        .notification.fade-out { animation: fadeOutUp 0.5s ease-in forwards; }
+        .notification .fa-sync-alt { animation: spin 1.5s linear infinite; }
+        .notification-success { background-color: var(--success-color); }
+        .notification-error { background-color: var(--warning-color); }
+        .notification-info { background-color: var(--info-color); }
 
-        .notification {
-            width: 100%;
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-bottom: 2px solid;
-            animation: fadeInDown 0.5s ease-out forwards;
-        }
-        .notification.fade-out {
-            animation: fadeOutUp 0.5s ease-in forwards;
-        }
-        .notification i {
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        /* Colori */
-        .notification-success { background-color: var(--success-color); border-color: rgba(0,0,0,0.2); }
-        .notification-error { background-color: var(--warning-color); border-color: rgba(0,0,0,0.2); }
-        .notification-info { background-color: var(--info-color); border-color: rgba(0,0,0,0.2); }
-
-        /* Animazioni */
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-        @keyframes fadeInDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeOutUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-100%); } }
+        @keyframes fadeInDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+        @keyframes fadeOutUp { from { transform: translateY(0); } to { transform: translateY(-100%); } }
 
         @media (max-width: 768px) {
+            body { padding: 10px; }
+            body.banner-visible { padding-top: 55px; }
             .container { grid-template-columns: 1fr; }
             h1 { font-size: 20px; }
         }
-
     </style>
 </head>
 <body>
@@ -241,35 +212,23 @@
         <div class="container">
             <div class="left-column">
                 <div class="card">
-                    <h2 class="card-title"><i class="fas fa-search"></i> Filtri</h2>
+                    <h2 class="card-title"><i class="fas fa-filter"></i> Filtri</h2>
                     <div class="search-box">
-                        <input type="text" id="search-input" placeholder="Cerca...">
+                        <input type="text" id="search-input" class="search-input" placeholder="Cerca per titolo, artista...">
                         <button id="search-button" class="btn-search"><i class="fas fa-search"></i></button>
                     </div>
-                    <div class="form-group">
-                        <label for="filter-genre">Genere</label>
-                        <select id="filter-genre"><option value="">Tutti</option><option>Rock</option><option>Hard Rock</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="filter-year">Anno</label>
-                        <select id="filter-year"><option value="">Tutti</option><option value="2020s">2020s</option><option value="2010s">2010s</option></select>
-                    </div>
+                    <div class="form-group"><label for="filter-genre">Genere</label><select id="filter-genre"><option value="">Tutti</option></select></div>
+                    <div class="form-group"><label for="filter-year">Anno</label><select id="filter-year"><option value="">Tutti</option></select></div>
                     <div class="stats">
-                        <div class="stat-box">
-                            <div class="stat-value" id="total-cds">0</div>
-                            <div class="stat-label">CD Totali</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value" id="unique-artists">0</div>
-                            <div class="stat-label">Artisti</div>
-                        </div>
+                        <div class="stat-box"><div class="stat-value" id="total-cds">0</div><div class="stat-label">CD Totali</div></div>
+                        <div class="stat-box"><div class="stat-value" id="unique-artists">0</div><div class="stat-label">Artisti</div></div>
                     </div>
                 </div>
             </div>
             
             <div class="right-column">
                 <div class="card">
-                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco</h2>
+                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco CD</h2>
                     <div class="table-container">
                         <table id="cd-table">
                             <thead>
@@ -290,10 +249,10 @@
     </div>
     
     <div class="footer">
-        <p>Catalogo CD © 2025</p>
+        <p>Catalogo CD © 2025 - Developed by Hardigor</p>
         <div class="footer-buttons">
-            <button class="footer-button" id="debug-toggle-button"><i class="fas fa-bug"></i> Debug</button>
-            <button class="footer-button" id="config-toggle-button"><i class="fas fa-cog"></i> Config</button>
+            <button class="footer-button" id="debug-toggle-button"><i class="fas fa-bug"></i> Mostra Debug</button>
+            <button class="footer-button" id="config-toggle-button"><i class="fas fa-cog"></i> Configurazione</button>
         </div>
         <div class="theme-toggle">
             <label class="switch">
@@ -304,11 +263,11 @@
     </div>
     
     <div id="debug-modal" class="modal"><div class="modal-content"><span class="close" id="close-debug">&times;</span><h2>Debug</h2><div id="debug-info"></div></div></div>
-    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2>Configurazione</h2><div class="form-group"><label for="inline-sheets-url">URL Google Sheet:</label><input type="text" id="inline-sheets-url" placeholder="https://..."></div><div class="sheets-buttons"><button class="btn-config" id="inline-save-sheets-url"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
+    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2>Configurazione Google Sheets</h2><div class="form-group"><label for="inline-sheets-url">URL di pubblicazione (CSV):</label><input type="text" id="inline-sheets-url" placeholder="File > Condividi > Pubblica sul web > CSV"></div><div class="sheets-buttons"><button class="btn-config" id="inline-save-sheets-url"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
     
     <script>
         let cds = [], filteredCds = [], sortField = 'title', sortDirection = 1, currentPage = 1;
-        const itemsPerPage = 10;
+        const itemsPerPage = 15;
         
         const dom = {
             body: document.body,
@@ -331,7 +290,7 @@
             const savedUrl = localStorage.getItem('sheetsUrl');
             if (savedUrl) {
                 dom.sheetsUrlInput.value = savedUrl;
-                setTimeout(() => autoImportFromSheetsUrl(), 1000);
+                setTimeout(() => autoImportFromSheetsUrl(), 500);
             } else {
                 loadCds();
             }
@@ -354,10 +313,7 @@
             document.getElementById('inline-import-sheets').addEventListener('click', importFromSheetsUrl);
             document.getElementById('inline-remove-sheets-url').addEventListener('click', clearSheetsUrl);
             
-            const toggle = (modal, show) => {
-                if (show) updateDebugInfo();
-                modal.style.display = show ? 'flex' : 'none';
-            };
+            const toggle = (modal, show) => modal.style.display = show ? 'flex' : 'none';
             document.getElementById('debug-toggle-button').addEventListener('click', () => toggle(dom.debugModal, true));
             document.getElementById('config-toggle-button').addEventListener('click', () => toggle(dom.configModal, true));
             document.getElementById('close-debug').addEventListener('click', () => toggle(dom.debugModal, false));
@@ -369,19 +325,16 @@
             });
         }
 
-        /** Sistema di Notifiche Unificato */
-        function showNotification({ message, type = 'success', duration = 4000 }) {
+        function showNotification({ message, type = 'success', duration = 4000, icon = null }) {
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
-            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-triangle', info: 'fa-info-circle' };
-            notification.innerHTML = `<i class="fas ${icons[type]}"></i><span>${message}</span>`;
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-triangle', info: 'fa-info-circle', loading: 'fa-sync-alt' };
+            notification.innerHTML = `<i class="fas ${icon || icons[type]}"></i><span>${message}</span>`;
             
             dom.notificationContainer.appendChild(notification);
             dom.body.classList.add('banner-visible');
 
-            if (duration > 0) {
-                setTimeout(() => closeNotification(notification), duration);
-            }
+            if (duration > 0) setTimeout(() => closeNotification(notification), duration);
             return notification;
         }
 
@@ -399,30 +352,35 @@
         function showLoader(show) { dom.loader.style.display = show ? 'block' : 'none'; }
         
         async function fetchDataFromSheets(url) {
-            const response = await fetch(`${url}?t=${Date.now()}`);
-            if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
+            const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+            const response = await fetch(cacheBusterUrl);
+            if (!response.ok) {
+                if (response.status === 400) {
+                    throw new Error("HTTP 400: URL non valido. Usa l'URL da 'File > Condividi > Pubblica sul web' in formato CSV.");
+                }
+                throw new Error(`Errore HTTP: ${response.status}`);
+            }
             const text = await response.text();
-            if (!text) throw new Error('Il foglio è vuoto');
+            if (!text) throw new Error('Il foglio di calcolo sembra essere vuoto.');
             
             return text.split('\n').slice(1).map(line => {
-                const [title, artist, year, genre] = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-                return { title, artist, year: parseInt(year) || 0, genre };
-            }).filter(cd => cd.title);
+                const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+                if (values.length < 4 || !values[0]) return null;
+                return { title: values[0], artist: values[1], year: parseInt(values[2]) || 'N/A', genre: values[3] };
+            }).filter(Boolean);
         }
 
         async function autoImportFromSheetsUrl() {
             const url = dom.sheetsUrlInput.value.trim();
             if (!url) { loadCds(); return; }
             
-            const banner = showNotification({ message: 'Aggiornamento automatico...', type: 'info', duration: 0 });
+            const banner = showNotification({ message: 'Aggiornamento automatico in corso...', type: 'info', duration: 0, icon: 'fa-sync-alt' });
             try {
-                cds = await fetchDataFromSheets(url);
-                localStorage.setItem('cds', JSON.stringify(cds));
-                filteredCds = [...cds];
-                renderCds();
-                showNotification({ message: `Importati ${cds.length} CD`, type: 'success' });
+                const newCds = await fetchDataFromSheets(url);
+                processCds(newCds);
+                showNotification({ message: `Catalogo aggiornato con ${newCds.length} CD`, type: 'success' });
             } catch (error) {
-                showNotification({ message: `Errore: ${error.message}`, type: 'error' });
+                showNotification({ message: error.message, type: 'error', duration: 6000 });
                 loadCds();
             } finally {
                 closeNotification(banner);
@@ -430,45 +388,44 @@
         }
 
         function loadCds() {
-            showLoader(true);
-            setTimeout(() => {
-                try {
-                    const stored = localStorage.getItem('cds');
-                    cds = stored ? JSON.parse(stored) : [];
-                    filteredCds = [...cds];
-                    renderCds();
-                } catch {
-                    showNotification({ message: 'Dati locali corrotti.', type: 'error' });
-                } finally {
-                    showLoader(false);
-                }
-            }, 300);
+            try {
+                const stored = localStorage.getItem('cds');
+                const loadedCds = stored ? JSON.parse(stored) : [];
+                processCds(loadedCds);
+            } catch {
+                showNotification({ message: 'Dati locali corrotti.', type: 'error' });
+                processCds([]);
+            }
         }
         
         async function importFromSheetsUrl() {
             const url = dom.sheetsUrlInput.value.trim();
             if (!url) return showNotification({ message: 'Inserisci un URL valido', type: 'error' });
             
-            const banner = showNotification({ message: 'Importazione in corso...', type: 'info', duration: 0 });
+            const banner = showNotification({ message: 'Importazione in corso...', type: 'info', duration: 0, icon: 'fa-sync-alt' });
             showLoader(true);
             try {
-                cds = await fetchDataFromSheets(url);
-                localStorage.setItem('cds', JSON.stringify(cds));
-                filteredCds = [...cds];
-                renderCds();
-                showNotification({ message: `Importati ${cds.length} CD`, type: 'success' });
+                const newCds = await fetchDataFromSheets(url);
+                processCds(newCds);
+                localStorage.setItem('cds', JSON.stringify(newCds));
+                showNotification({ message: `Importati ${newCds.length} CD con successo`, type: 'success' });
             } catch (error) {
-                showNotification({ message: `Errore: ${error.message}`, type: 'error' });
+                showNotification({ message: error.message, type: 'error', duration: 6000 });
             } finally {
                 closeNotification(banner);
                 showLoader(false);
             }
         }
         
+        function processCds(newCds) {
+            cds = newCds;
+            filteredCds = [...cds];
+            populateFilters();
+            renderCds();
+        }
+        
         function saveSheetsUrl() {
-            const url = dom.sheetsUrlInput.value.trim();
-            if (!url) return showNotification({ message: 'Inserisci un URL valido', type: 'error' });
-            localStorage.setItem('sheetsUrl', url);
+            localStorage.setItem('sheetsUrl', dom.sheetsUrlInput.value.trim());
             showNotification({ message: 'URL salvato!', type: 'success' });
         }
         
@@ -488,11 +445,29 @@
             sortField = field;
             renderCds();
         }
+
+        function populateFilters() {
+            const genres = [...new Set(cds.map(cd => cd.genre).filter(Boolean))].sort();
+            const years = [...new Set(cds.map(cd => {
+                if (cd.year >= 2020) return '2020s';
+                if (cd.year >= 2010) return '2010s';
+                if (cd.year >= 2000) return '2000s';
+                return null;
+            }).filter(Boolean))].sort().reverse();
+
+            dom.filterGenre.innerHTML = '<option value="">Tutti i Generi</option>' + genres.map(g => `<option>${g}</option>`).join('');
+            dom.filterYear.innerHTML = '<option value="">Tutti gli Anni</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+        }
         
         function renderCds() {
-            filteredCds.sort((a, b) => ('' + a[sortField]).localeCompare(b[sortField], 'it') * sortDirection);
+            filteredCds.sort((a, b) => {
+                const valA = a[sortField], valB = b[sortField];
+                if (typeof valA === 'string') return valA.localeCompare(valB, 'it', { sensitivity: 'base' }) * sortDirection;
+                return (valA - valB) * sortDirection;
+            });
             
             const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
+            currentPage = Math.min(currentPage, totalPages) || 1;
             const currentItems = filteredCds.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
             
             dom.cdList.innerHTML = currentItems.length ? currentItems.map(cd => `<tr><td>${cd.title}</td><td>${cd.artist}</td><td>${cd.year}</td><td>${cd.genre}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;padding:20px;font-style:italic;">Nessun CD trovato.</td></tr>';
@@ -517,18 +492,25 @@
         function updateSortIndicators() {
             document.querySelectorAll('.sort-indicator').forEach(s => s.textContent = '');
             const indicator = document.getElementById(`sort-${sortField}`);
-            if (indicator) indicator.textContent = sortDirection === 1 ? ' ↑' : ' ↓';
+            if (indicator) indicator.textContent = sortDirection === 1 ? '▲' : '▼';
         }
         
         function searchCds() {
             const term = dom.searchInput.value.toLowerCase();
             const genre = dom.filterGenre.value;
-            filteredCds = cds.filter(cd => (!genre || cd.genre === genre) && Object.values(cd).some(val => String(val).toLowerCase().includes(term)));
+            const yearRange = dom.filterYear.value;
+            
+            const yearRanges = { '2020s': [2020, 2029], '2010s': [2010, 2019], '2000s': [2000, 2009] };
+
+            filteredCds = cds.filter(cd => {
+                const inYearRange = !yearRange || (cd.year >= yearRanges[yearRange][0] && cd.year <= yearRanges[yearRange][1]);
+                const inGenre = !genre || cd.genre === genre;
+                const inSearch = !term || Object.values(cd).some(val => String(val).toLowerCase().includes(term));
+                return inYearRange && inGenre && inSearch;
+            });
             currentPage = 1;
             renderCds();
         }
-
-        function updateDebugInfo() { /* ... */ }
     </script>
 </body>
 </html>
