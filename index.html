@@ -8,7 +8,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Tema scuro predefinito */
+            /* TEMA CHIARO PREDEFINITO (DEFAULT) */
+            --primary-bg: #f8f9fa; /* Sfondo generale molto chiaro */
+            --card-bg: #ffffff; /* Sfondo delle card bianco */
+            --text-color: #212529; /* Testo principale scuro */
+            --accent-color: #001f4d; /* Blu molto scuro per accenti e highlight */
+            --border-color: #adb5bd; /* Bordo grigio medio */
+            --button-bg: #343a40; /* Sfondo bottoni grigio scuro */
+            --button-hover: #23272b; /* Hover bottoni ancora più scuro */
+            --button-text: #ffffff; /* Testo bottoni bianco */
+            --header-bg: #ffffff; /* Sfondo header bianco */
+            --stat-bg: #e9ecef; /* Sfondo per statistiche e thead tabella */
+            --shadow-color: rgba(0, 0, 0, 0.1); /* Ombre leggere */
+            --shadow-hover: rgba(0, 0, 0, 0.15);
+            --success-color: #2e7d2e; /* Verde scuro per successo */
+            --warning-color: #c82333; /* Rosso scuro per errore */
+            --row-even-bg: #f0f2f5; /* Riga pari della tabella (grigio chiarissimo) */
+            --row-hover-bg: #dee2e6; /* Hover righe tabella (grigio più chiaro) */
+            --radius: 6px;
+            --radius-sm: 3px;
+            --transition: all 0.2s ease;
+        }
+
+        /* Override per il TEMA SCURO */
+        body.dark-mode {
             --primary-bg: #121212;
             --card-bg: #1e1e1e;
             --text-color: #e0e0e0;
@@ -25,29 +48,6 @@
             --warning-color: #f44336;
             --row-even-bg: #2a2a2a;
             --row-hover-bg: #3d3d3d;
-            --radius: 6px;
-            --radius-sm: 3px;
-            --transition: all 0.2s ease;
-        }
-
-        /* Override per il tema chiaro con blu e grigi scuri */
-        body.light-mode {
-            --primary-bg: #f8f9fa; /* Sfondo generale molto chiaro */
-            --card-bg: #ffffff; /* Sfondo delle card bianco */
-            --text-color: #212529; /* Testo principale scuro */
-            --accent-color: #001f4d; /* Blu molto scuro per accenti e highlight */
-            --border-color: #adb5bd; /* Bordo grigio medio */
-            --button-bg: #343a40; /* Sfondo bottoni grigio scuro */
-            --button-hover: #23272b; /* Hover bottoni ancora più scuro */
-            --button-text: #ffffff; /* Testo bottoni bianco */
-            --header-bg: #ffffff; /* Sfondo header bianco */
-            --stat-bg: #e9ecef; /* Sfondo per statistiche e thead tabella */
-            --shadow-color: rgba(0, 0, 0, 0.15); /* Ombre leggere */
-            --shadow-hover: rgba(0, 0, 0, 0.2);
-            --success-color: #2e7d2e; /* Verde scuro per successo */
-            --warning-color: #c82333; /* Rosso scuro per errore */
-            --row-even-bg: #f0f2f5; /* Riga pari della tabella (grigio chiarissimo) */
-            --row-hover-bg: #dee2e6; /* Hover righe tabella (grigio più chiaro) */
         }
 
         * {
@@ -61,7 +61,8 @@
             height: 100%;
             overflow-x: hidden;
             font-size: 14px;
-            background-color: var(--primary-bg);
+            /* Modifica qui: usa primary-bg per tutto lo sfondo */
+            background-color: var(--primary-bg); 
             color: var(--text-color);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
@@ -245,9 +246,9 @@
         }
         
         .btn-search {
-            background: var(--accent-color);
+            background: var(--button-bg);
             color: var(--button-text);
-            border: 1px solid var(--accent-color);
+            border: 1px solid var(--button-bg);
             padding: 0 16px;
             border-radius: var(--radius-sm);
             cursor: pointer;
@@ -407,13 +408,19 @@
         }
         
         .status-success {
-            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
-            color: var(--success-color);
-            border: 1px solid #b8e6b8;
-            box-shadow: 0 4px 12px rgba(144, 238, 144, 0.25);
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            box-shadow: 0 4px 12px rgba(21, 87, 36, 0.1);
             animation: slideInFromTop 0.5s ease-out;
             position: relative;
             overflow: hidden;
+        }
+        
+        .dark-mode .status-success {
+             background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+             color: #2e7d2e;
+             border: 1px solid #b8e6b8;
         }
         
         .status-success::before {
@@ -423,7 +430,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(144, 238, 144, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             animation: shimmer 2s ease-in-out;
         }
         
@@ -434,44 +441,34 @@
         }
         
         @keyframes slideInFromTop {
-            0% {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
         
         @keyframes shimmer {
-            0% {
-                left: -100%;
-            }
-            100% {
-                left: 100%;
-            }
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
         @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.7;
-                transform: scale(1.1);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
         }
         
         .status-error {
-            background: linear-gradient(135deg, #f8d7da 0%, #ffe9ec 100%);
-            color: var(--warning-color);
+            background: #f8d7da;
+            color: #721c24;
             border: 1px solid #f5c6cb;
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+            box-shadow: 0 4px 12px rgba(114, 28, 36, 0.1);
             animation: slideInFromTop 0.5s ease-out;
             position: relative;
             overflow: hidden;
+        }
+
+        .dark-mode .status-error {
+            background: linear-gradient(135deg, #4a2d2f 0%, #3e2528 100%);
+            color: #f44336;
+            border: 1px solid #5e3d3f;
         }
         
         .status-error::before {
@@ -481,7 +478,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(220, 53, 69, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             animation: shimmer 2s ease-in-out;
         }
         
@@ -492,16 +489,12 @@
         }
         
         @keyframes shake {
-            0%, 20%, 40%, 60%, 80%, 100% {
-                transform: translateX(0);
-            }
-            10%, 30%, 50%, 70%, 90% {
-                transform: translateX(-2px);
-            }
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
         }
         
         .loader {
-            border: 2px solid #e9ecef; /* Colore più chiaro per il loader in light mode */
+            border: 2px solid #e9ecef;
             border-top: 2px solid var(--accent-color);
             border-radius: 50%;
             width: 30px;
@@ -511,6 +504,11 @@
             display: none;
         }
         
+        .dark-mode .loader {
+            border: 2px solid #2d2d2d;
+            border-top: 2px solid var(--accent-color);
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -534,7 +532,7 @@
         }
         
         .btn-config:hover {
-            background: var(--row-hover-bg); /* Usa un grigio più scuro per l'hover */
+            background: var(--row-hover-bg);
             border-color: var(--row-hover-bg);
         }
         
@@ -645,6 +643,10 @@
             cursor: pointer;
         }
         
+        .dark-mode .close {
+            color: #a0a0a0;
+        }
+
         .close:hover, .close:focus {
             color: var(--text-color);
             text-decoration: none;
@@ -674,8 +676,8 @@
         }
         
         .auto-load-indicator {
-            background-color: #e6f2ff; /* Sfondo messaggio di caricamento */
-            border-left: 4px solid #001f4d; /* Bordo blu scuro */
+            background-color: #e6f2ff;
+            border-left: 4px solid var(--accent-color);
             padding: 10px 15px;
             margin: 10px 0;
             border-radius: var(--radius-sm);
@@ -683,7 +685,13 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #001f4d; /* Testo blu scuro */
+            color: var(--accent-color);
+        }
+
+        .dark-mode .auto-load-indicator {
+            background-color: #1a3c5a;
+            border-left: 4px solid #4d94db;
+            color: #e0e0e0;
         }
         
         .theme-toggle {
@@ -696,6 +704,10 @@
         .theme-toggle-label {
             font-size: 12px;
             color: #6c757d;
+        }
+
+        .dark-mode .theme-toggle-label {
+            color: var(--text-color);
         }
         
         .switch {
@@ -722,6 +734,11 @@
             transition: .4s;
             border-radius: 34px;
         }
+
+        /* Colore slider per il tema scuro */
+        .dark-mode .slider {
+            background-color: #555;
+        }
         
         .slider:before {
             position: absolute;
@@ -735,12 +752,41 @@
             border-radius: 50%;
         }
         
-        input:checked + .slider {
-            background-color: var(--accent-color);
+        /* Spostamento e colore del pallino quando il tema scuro è attivo */
+        .dark-mode input:checked + .slider {
+            background-color: var(--accent-color); /* Blu acceso per lo sfondo dello slider in dark mode attivo */
         }
         
-        input:checked + .slider:before {
+        .dark-mode input:checked + .slider:before {
             transform: translateX(20px);
+            background-color: white; /* Pallino bianco in dark mode */
+        }
+
+        /* Stato normale dello slider in light mode */
+        body:not(.dark-mode) input:checked + .slider {
+            background-color: #ccc; /* Il pallino checked è sul lato destro, ma lo sfondo è quello non-checked del tema chiaro */
+        }
+
+        /* Pallino in light mode (non attivo/dark mode) */
+        body:not(.dark-mode) .slider:before {
+            background-color: white;
+            transform: translateX(0); /* Assicurati che il pallino sia a sinistra */
+        }
+        
+        /* Pallino in light mode (attivo/dark mode) */
+        body:not(.dark-mode) input:checked + .slider:before {
+            transform: translateX(20px);
+            background-color: var(--accent-color); /* Blu scuro per il pallino quando il tema chiaro è attivo */
+        }
+
+        /* Correzione per il colore dello slider quando la dark mode NON è attiva e il pallino è a sinistra (quindi siamo in light mode) */
+        body:not(.dark-mode) .slider {
+            background-color: #ccc;
+        }
+
+        /* Correzione per il colore dello sfondo dello slider quando la dark mode NON è attiva e il pallino è a destra (significa che lo switch è "spento" in dark mode, ma siamo in light mode) */
+        body:not(.dark-mode) input:checked + .slider {
+            background-color: var(--accent-color); /* Blu scuro per lo sfondo dello slider quando il tema chiaro è attivo */
         }
         
         .sort-indicator {
@@ -753,88 +799,27 @@
         }
         
         @media (max-width: 767px) {
-            body {
-                padding: 8px;
-            }
-            
-            .container {
-                gap: 12px;
-                width: 100%;
-            }
-            
-            .card {
-                padding: 12px;
-                margin-bottom: 12px;
-                width: 100%;
-            }
-            
-            .header-container {
-                padding: 10px;
-                width: 100%;
-            }
-            
-            .search-box {
-                flex-direction: column;
-            }
-            
-            .btn-search {
-                padding: 10px;
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .sheets-buttons {
-                flex-direction: column;
-            }
-            
-            .btn-config {
-                width: 100%;
-            }
-            
-            .footer {
-                padding: 12px;
-                gap: 12px;
-            }
-            
-            .footer-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
+            body { padding: 8px; }
+            .container { gap: 12px; width: 100%; }
+            .card { padding: 12px; margin-bottom: 12px; width: 100%; }
+            .header-container { padding: 10px; width: 100%; }
+            .search-box { flex-direction: column; }
+            .btn-search { padding: 10px; width: 100%; justify-content: center; }
+            .stats { grid-template-columns: 1fr; }
+            .sheets-buttons { flex-direction: column; }
+            .btn-config { width: 100%; }
+            .footer { padding: 12px; gap: 12px; }
+            .footer-buttons { flex-direction: column; gap: 10px; }
         }
         
         @media (max-width: 360px) {
-            h1 {
-                font-size: 18px;
-            }
-            
-            .logo {
-                flex-direction: column;
-                gap: 6px;
-            }
-            
-            .card-title {
-                font-size: 14px;
-            }
-            
-            .stat-value {
-                font-size: 18px;
-            }
-            
-            body {
-                padding: 6px;
-            }
-            
-            .header-container, .card {
-                padding: 10px;
-            }
-            
-            .btn-config {
-                min-width: unset;
-            }
+            h1 { font-size: 18px; }
+            .logo { flex-direction: column; gap: 6px; }
+            .card-title { font-size: 14px; }
+            .stat-value { font-size: 18px; }
+            body { padding: 6px; }
+            .header-container, .card { padding: 10px; }
+            .btn-config { min-width: unset; }
         }
     </style>
 </head>
@@ -957,10 +942,10 @@
 
         <div class="theme-toggle">
             <label class="switch">
-                <input type="checkbox" id="light-mode-toggle">
+                <input type="checkbox" id="theme-toggle-switch">
                 <span class="slider"></span>
             </label>
-            <span class="theme-toggle-label">Modalità Chiara</span>
+            <span class="theme-toggle-label">Modalità Scura</span>
         </div>
     </div>
     
@@ -1017,7 +1002,7 @@
         const filterGenre = document.getElementById('filter-genre');
         const filterYear = document.getElementById('filter-year');
         const autoLoadMessage = document.getElementById('auto-load-message');
-        const lightModeToggle = document.getElementById('light-mode-toggle');
+        const themeToggleSwitch = document.getElementById('theme-toggle-switch');
         
         // Elementi per i modali
         const debugModal = document.getElementById('debug-modal');
@@ -1049,10 +1034,14 @@
             }
             
             // Carica la preferenza del tema
-            const lightModeEnabled = localStorage.getItem('lightMode') === 'true';
-            if (lightModeEnabled) {
-                enableLightMode();
-                lightModeToggle.checked = true;
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                enableDarkMode();
+                themeToggleSwitch.checked = true;
+            } else {
+                // Assicurati che il tema predefinito (light) sia sempre attivo all'avvio se non è dark
+                disableDarkMode(); 
+                themeToggleSwitch.checked = false;
             }
             
             // Imposta i gestori degli eventi
@@ -1096,8 +1085,8 @@
                 configModal.style.display = 'none';
             });
             
-            // Toggle light mode
-            lightModeToggle.addEventListener('change', toggleLightMode);
+            // Toggle tema
+            themeToggleSwitch.addEventListener('change', toggleTheme);
             
             // Chiudi i modali cliccando fuori da essi
             window.addEventListener('click', (event) => {
@@ -1110,24 +1099,24 @@
             });
         }
         
-        // Funzione per attivare la light mode (Stile "Moderno e Vivace") con blu e grigi scuri
-        function enableLightMode() {
-            document.body.classList.add('light-mode');
+        // Funzione per attivare la dark mode
+        function enableDarkMode() {
+            document.body.classList.add('dark-mode');
         }
         
-        // Funzione per disattivare la light mode (tornare a dark mode)
-        function disableLightMode() {
-            document.body.classList.remove('light-mode');
+        // Funzione per disattivare la dark mode (tornare a light mode)
+        function disableDarkMode() {
+            document.body.classList.remove('dark-mode');
         }
         
-        // Funzione per attivare/disattivare la light mode
-        function toggleLightMode() {
-            if (lightModeToggle.checked) {
-                enableLightMode();
-                localStorage.setItem('lightMode', 'true');
+        // Funzione per attivare/disattivare il tema
+        function toggleTheme() {
+            if (themeToggleSwitch.checked) {
+                enableDarkMode();
+                localStorage.setItem('theme', 'dark');
             } else {
-                disableLightMode();
-                localStorage.setItem('lightMode', 'false');
+                disableDarkMode();
+                localStorage.setItem('theme', 'light');
             }
         }
         
@@ -1191,45 +1180,35 @@
             showAutoLoadMessage();
             
             try {
-                // Aggiungi un timestamp per evitare caching
                 const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-                
                 const response = await fetch(cacheBusterUrl);
                 if (!response.ok) {
                     throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
                 }
                 
                 const csvText = await response.text();
-                
                 if (!csvText || csvText.trim().length === 0) {
                     throw new Error('Il foglio sembra essere vuoto o non accessibile.');
                 }
                 
-                // Parsing del CSV
                 const lines = csvText.split('\n');
-                
-                // Rimuovi la prima riga (intestazioni) e righe vuote
                 const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
-                
                 if (dataLines.length === 0) {
                     throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
                 }
                 
                 cds = [];
-                
                 for (const line of dataLines) {
-                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
                     const values = [];
                     let inQuotes = false;
                     let currentValue = '';
                     
                     for (let i = 0; i < line.length; i++) {
                         const char = line[i];
-                        
                         if (char === '"') {
                             if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
                                 currentValue += '"';
-                                i++; // Salta il prossimo "
+                                i++;
                             } else {
                                 inQuotes = !inQuotes;
                             }
@@ -1256,7 +1235,6 @@
                     throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
                 }
                 
-                // Salva i dati e aggiorna l'interfaccia
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
@@ -1266,7 +1244,6 @@
                 console.error('Errore nel caricamento da Google Sheets:', error);
                 showStatus(`Errore: ${error.message}`, true);
                 
-                // Tentativo di caricare dati locali come fallback
                 try {
                     const storedCds = localStorage.getItem('cds');
                     if (storedCds) {
@@ -1284,7 +1261,6 @@
             updateDebugInfo();
         }
         
-        // Funzione principale per importare i dati da Google Sheets (manuale)
         async function importFromSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
             if (!url) {
@@ -1296,45 +1272,35 @@
             showLoader();
             
             try {
-                // Aggiungi un timestamp per evitare caching
                 const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-                
                 const response = await fetch(cacheBusterUrl);
                 if (!response.ok) {
                     throw new Error(`Errore HTTP: ${response.status}. Assicurati che il foglio sia pubblicato correttamente.`);
                 }
                 
                 const csvText = await response.text();
-                
                 if (!csvText || csvText.trim().length === 0) {
                     throw new Error('Il foglio sembra essere vuoto o non accessibile.');
                 }
                 
-                // Parsing del CSV
                 const lines = csvText.split('\n');
-                
-                // Rimuovi la prima riga (intestazioni) e righe vuote
                 const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
-                
                 if (dataLines.length === 0) {
                     throw new Error('Nessun dato trovato nel foglio. Verifica che ci siano dati oltre alle intestazioni.');
                 }
                 
                 cds = [];
-                
                 for (const line of dataLines) {
-                    // Gestione dei valori tra virgolette che potrebbero contenere virgole
                     const values = [];
                     let inQuotes = false;
                     let currentValue = '';
                     
                     for (let i = 0; i < line.length; i++) {
                         const char = line[i];
-                        
                         if (char === '"') {
                             if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
                                 currentValue += '"';
-                                i++; // Salta il prossimo "
+                                i++;
                             } else {
                                 inQuotes = !inQuotes;
                             }
@@ -1361,7 +1327,6 @@
                     throw new Error('Nessun CD valido trovato. Verifica il formato dei dati.');
                 }
                 
-                // Salva i dati e aggiorna l'interfaccia
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
@@ -1371,7 +1336,6 @@
                 console.error('Errore nel caricamento da Google Sheets:', error);
                 showStatus(`Errore: ${error.message}`, true);
                 
-                // Tentativo di caricare dati locali come fallback
                 try {
                     const storedCds = localStorage.getItem('cds');
                     if (storedCds) {
@@ -1389,7 +1353,6 @@
             updateDebugInfo();
         }
         
-        // Salva l'URL del Google Sheets per importazioni future
         function saveSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
             if (!url) {
@@ -1402,7 +1365,6 @@
             configModal.style.display = 'none';
         }
         
-        // Rimuovi l'URL salvato
         function clearSheetsUrl() {
             localStorage.removeItem('sheetsUrl');
             inlineSheetsUrlInput.value = '';
@@ -1411,7 +1373,6 @@
         
         function updateStats() {
             totalCdsElement.textContent = cds.length;
-            
             const artists = new Set(cds.map(cd => cd.artist));
             uniqueArtistsElement.textContent = artists.size;
         }
@@ -1423,12 +1384,10 @@
                 sortField = field;
                 sortDirection = 1;
             }
-            
             renderCds();
         }
         
         function renderCds() {
-            // Applica l'ordinamento
             filteredCds.sort((a, b) => {
                 let cmp;
                 if (sortField === 'year') {
@@ -1439,13 +1398,11 @@
                 return cmp * sortDirection;
             });
             
-            // Paginazione
             const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = Math.min(startIndex + itemsPerPage, filteredCds.length);
             const currentItems = filteredCds.slice(startIndex, endIndex);
             
-            // Renderizza la tabella
             cdList.innerHTML = '';
             if (currentItems.length === 0) {
                 cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato con i filtri selezionati</td></tr>';
@@ -1464,10 +1421,8 @@
                 });
             }
             
-            // Aggiorna la paginazione
             updatePagination(totalPages);
             
-            // Aggiorna le freccette nelle intestazioni
             document.querySelectorAll('.sort-indicator').forEach(s => {
                 s.innerHTML = '↕';
                 s.classList.remove('active');
@@ -1486,10 +1441,8 @@
         
         function updatePagination(totalPages) {
             paginationElement.innerHTML = '';
-            
             if (totalPages <= 1) return;
             
-            // Pulsante Indietro
             const prevButton = document.createElement('button');
             prevButton.innerHTML = '&laquo;';
             prevButton.disabled = currentPage === 1;
@@ -1501,7 +1454,6 @@
             });
             paginationElement.appendChild(prevButton);
             
-            // Pulsanti pagina
             const startPage = Math.max(1, currentPage - 2);
             const endPage = Math.min(totalPages, startPage + 4);
             
@@ -1516,7 +1468,6 @@
                 paginationElement.appendChild(pageButton);
             }
             
-            // Pulsante Avanti
             const nextButton = document.createElement('button');
             nextButton.innerHTML = '&raquo;';
             nextButton.disabled = currentPage === totalPages;
@@ -1543,57 +1494,26 @@
                 );
             }
             
-            // Applica anche il filtro per genere se attivo
             const genreFilter = filterGenre.value;
             if (genreFilter) {
                 filteredCds = filteredCds.filter(cd => cd.genre === genreFilter);
             }
             
-            // Applica anche il filtro per anno se attivo
             const yearFilter = filterYear.value;
             if (yearFilter) {
                 const currentYear = new Date().getFullYear();
                 let startYear, endYear;
-                
                 switch(yearFilter) {
-                    case '2020s':
-                        startYear = 2020;
-                        endYear = currentYear;
-                        break;
-                    case '2010s':
-                        startYear = 2010;
-                        endYear = 2019;
-                        break;
-                    case '2000s':
-                        startYear = 2000;
-                        endYear = 2009;
-                        break;
-                    case '1990s':
-                        startYear = 1990;
-                        endYear = 1999;
-                        break;
-                    case '1980s':
-                        startYear = 1980;
-                        endYear = 1989;
-                        break;
-                    case '1970s':
-                        startYear = 1970;
-                        endYear = 1979;
-                        break;
-                    case '1960s':
-                        startYear = 1960;
-                        endYear = 1969;
-                        break;
-                    case '1950s':
-                        startYear = 1950;
-                        endYear = 1959;
-                        break;
-                    case 'pre1950':
-                        startYear = 0;
-                        endYear = 1949;
-                        break;
+                    case '2020s': startYear = 2020; endYear = currentYear; break;
+                    case '2010s': startYear = 2010; endYear = 2019; break;
+                    case '2000s': startYear = 2000; endYear = 2009; break;
+                    case '1990s': startYear = 1990; endYear = 1999; break;
+                    case '1980s': startYear = 1980; endYear = 1989; break;
+                    case '1970s': startYear = 1970; endYear = 1979; break;
+                    case '1960s': startYear = 1960; endYear = 1969; break;
+                    case '1950s': startYear = 1950; endYear = 1959; break;
+                    case 'pre1950': startYear = 0; endYear = 1949; break;
                 }
-                
                 filteredCds = filteredCds.filter(cd => {
                     if (yearFilter === 'pre1950') {
                         return cd.year < 1950;
@@ -1618,7 +1538,7 @@
                     Elementi per pagina: ${itemsPerPage}<br>
                     Dimensione localStorage: ${localStorage.getItem('cds') ? Math.ceil(localStorage.getItem('cds').length / 1024) : 0} KB<br>
                     URL Google Sheets salvato: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br>
-                    Light mode attiva: ${localStorage.getItem('lightMode') === 'true' ? 'Sì' : 'No'}<br>
+                    Tema attivo: ${localStorage.getItem('theme') || 'light'}<br>
                     Browser: ${navigator.userAgent}<br>
                     <button onclick="clearLocalStorage()">Cancella tutti i dati</button>
                 `;
@@ -1629,12 +1549,12 @@
             if (confirm('Sei sicuro di voler cancellare tutti i dati? Questa operazione non può essere annullata.')) {
                 localStorage.removeItem('cds');
                 localStorage.removeItem('sheetsUrl');
-                localStorage.removeItem('lightMode');
+                localStorage.removeItem('theme');
                 cds = [];
                 filteredCds = [];
                 inlineSheetsUrlInput.value = '';
-                disableLightMode();
-                lightModeToggle.checked = false;
+                disableDarkMode();
+                themeToggleSwitch.checked = false;
                 renderCds();
                 showStatus('Tutti i dati sono stati cancellati.');
                 updateDebugInfo();
