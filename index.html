@@ -23,6 +23,7 @@
             --shadow-hover: rgba(0, 0, 0, 0.15);
             --success-color: #2e7d2e; /* Verde scuro per successo */
             --warning-color: #c82333; /* Rosso scuro per errore */
+            --info-color: #004085; /* Blu per informazioni */
             --row-even-bg: #f0f2f5; /* Riga pari della tabella (grigio chiarissimo) */
             --row-hover-bg: #dee2e6; /* Hover righe tabella (grigio più chiaro) */
             --radius: 6px;
@@ -46,6 +47,7 @@
             --shadow-hover: rgba(0, 0, 0, 0.4);
             --success-color: #4caf50;
             --warning-color: #f44336;
+            --info-color: #1e90ff;
             --row-even-bg: #2a2a2a;
             --row-hover-bg: #3d3d3d;
         }
@@ -73,6 +75,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding-top: 60px; /* Spazio per il banner fisso */
         }
         
         .main-content {
@@ -215,7 +218,7 @@
         input[type="text"]:focus, select:focus {
             border-color: var(--accent-color);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2); /* Ombra dal blu scuro */
+            box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2);
         }
         
         .search-box {
@@ -239,7 +242,7 @@
         
         .search-input:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2); /* Ombra dal blu scuro */
+            box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2);
         }
         
         .btn-search {
@@ -297,7 +300,7 @@
         }
         
         th:hover {
-            background-color: var(--row-hover-bg); /* Usa un grigio più scuro per l'hover */
+            background-color: var(--row-hover-bg);
         }
         
         td {
@@ -574,24 +577,35 @@
         .footer-button i {
             font-size: 14px;
         }
+
+        /* NUOVO BANNER DI CARICAMENTO AUTOMATICO */
+        .auto-load-banner {
+            display: none; /* Nascosto di default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #d4e7ff, #e6f2ff);
+            color: #004085;
+            padding: 8px 15px;
+            z-index: 2100;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 2px solid var(--accent-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: fadeInDown 0.5s ease-out;
+        }
         
-        .auto-load-indicator {
-            background-color: #e6f2ff;
-            border-left: 4px solid var(--accent-color);
-            padding: 10px 15px;
-            margin: 10px 0;
-            border-radius: var(--radius-sm);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent-color);
+        html.dark-mode .auto-load-banner {
+            background: linear-gradient(90deg, #1a3c5a, #2c4a6b);
+            color: #e0e0e0;
+            border-bottom-color: var(--accent-color);
         }
 
-        html.dark-mode .auto-load-indicator {
-            background-color: #1a3c5a;
-            border-left: 4px solid #4d94db;
-            color: #e0e0e0;
+        .auto-load-banner i {
+            margin-right: 8px;
+            animation: pulse 1.5s ease-in-out infinite;
         }
         
         .theme-toggle {
@@ -673,7 +687,7 @@
         }
         
         @media (max-width: 767px) {
-            body { padding: 8px; }
+            body { padding: 8px; padding-top: 50px; }
             .container { gap: 12px; width: 100%; }
             .card { padding: 12px; margin-bottom: 12px; width: 100%; }
             .header-container { padding: 10px; width: 100%; }
@@ -691,7 +705,7 @@
             .logo { flex-direction: column; gap: 6px; }
             .card-title { font-size: 14px; }
             .stat-value { font-size: 18px; }
-            body { padding: 6px; }
+            body { padding: 6px; padding-top: 50px; }
             .header-container, .card { padding: 10px; }
             .btn-config { min-width: unset; }
         }
@@ -718,9 +732,12 @@
             color: #fff;
             font-size: 14px;
             font-weight: 500;
-            animation: slideIn 0.5s ease-out forwards, fadeOut 0.5s ease-in 4.5s forwards;
+            animation: slideIn 0.5s ease-out forwards;
             min-width: 250px;
             max-width: 350px;
+        }
+        .popup.fade-out {
+            animation: fadeOut 0.5s ease-in forwards;
         }
 
         .popup i {
@@ -731,7 +748,6 @@
             background-color: var(--success-color);
             border-left: 5px solid #235d23;
         }
-
         html.dark-mode .popup-success {
              background-color: #4caf50;
              border-left-color: #388e3c;
@@ -741,12 +757,21 @@
             background-color: var(--warning-color);
             border-left: 5px solid #8f131f;
         }
-
         html.dark-mode .popup-error {
             background-color: #f44336;
             border-left-color: #d32f2f;
         }
 
+        .popup-info {
+            background-color: var(--info-color);
+            border-left: 5px solid #002752;
+        }
+        html.dark-mode .popup-info {
+            background-color: #1e90ff;
+            border-left-color: #1c6dd0;
+        }
+
+        /* ANIMAZIONI */
         @keyframes slideIn {
             from {
                 transform: translateX(120%);
@@ -757,7 +782,6 @@
                 opacity: 1;
             }
         }
-
         @keyframes fadeOut {
             from {
                 opacity: 1;
@@ -767,9 +791,29 @@
                 transform: translateY(20px);
             }
         }
+        @keyframes fadeInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
     </style>
 </head>
 <body>
+    <div id="auto-load-banner" class="auto-load-banner">
+        <i class="fas fa-sync-alt"></i>
+        <span>Aggiornamento automatico dei dati in corso...</span>
+    </div>
+
     <div class="main-content">
         <div class="header-container">
             <header>
@@ -782,10 +826,6 @@
             </header>
         </div>
         
-        <div id="auto-load-message" class="auto-load-indicator" style="display: none;">
-            <i class="fas fa-sync fa-spin"></i>
-            <span>Aggiornamento automatico dei dati in corso...</span>
-        </div>
         <div id="loader" class="loader"></div>
         
         <div class="container">
@@ -947,7 +987,7 @@
         const debugInfo = document.getElementById('debug-info');
         const filterGenre = document.getElementById('filter-genre');
         const filterYear = document.getElementById('filter-year');
-        const autoLoadMessage = document.getElementById('auto-load-message');
+        const autoLoadBanner = document.getElementById('auto-load-banner');
         const themeToggleSwitch = document.getElementById('theme-toggle-switch');
         
         // Elementi per i modali
@@ -1047,28 +1087,59 @@
             }
         }
         
-        // NUOVA FUNZIONE PER IL POP-UP
-        function showPopup(message, isError = false) {
+        // FUNZIONE POP-UP MIGLIORATA
+        function showPopup(message, type = 'success', duration = 5000) {
             const container = document.getElementById('popup-container');
-            
             const popup = document.createElement('div');
-            popup.className = isError ? 'popup popup-error' : 'popup popup-success';
             
-            const iconClass = isError ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+            let iconClass, popupClass;
+
+            switch(type) {
+                case 'error':
+                    iconClass = 'fas fa-exclamation-triangle';
+                    popupClass = 'popup popup-error';
+                    break;
+                case 'info':
+                    iconClass = 'fas fa-info-circle';
+                    popupClass = 'popup popup-info';
+                    break;
+                case 'success':
+                default:
+                    iconClass = 'fas fa-check-circle';
+                    popupClass = 'popup popup-success';
+                    break;
+            }
+
+            popup.className = popupClass;
             popup.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
             
             container.appendChild(popup);
             
-            // Rimuove il pop-up dopo che l'animazione è finita
-            setTimeout(() => {
-                popup.remove();
-            }, 5000); // 5 secondi totali (0.5s fade-in, 4s visibile, 0.5s fade-out)
+            // Rimuove il pop-up solo se la durata non è 0 (persistente)
+            if (duration > 0) {
+                setTimeout(() => {
+                    closePopup(popup);
+                }, duration);
+            }
+
+            return popup; // Restituisce l'elemento per poterlo chiudere manualmente
         }
+
+        function closePopup(popupElement) {
+            if (popupElement) {
+                popupElement.classList.add('fade-out');
+                // Rimuove l'elemento dopo la fine dell'animazione
+                setTimeout(() => {
+                    popupElement.remove();
+                }, 500);
+            }
+        }
+
         
         function showLoader() { loader.style.display = 'block'; }
         function hideLoader() { loader.style.display = 'none'; }
-        function showAutoLoadMessage() { autoLoadMessage.style.display = 'flex'; }
-        function hideAutoLoadMessage() { autoLoadMessage.style.display = 'none'; }
+        function showAutoLoadBanner() { autoLoadBanner.style.display = 'block'; }
+        function hideAutoLoadBanner() { autoLoadBanner.style.display = 'none'; }
         
         function loadCds() {
             showLoader();
@@ -1079,13 +1150,13 @@
                         cds = JSON.parse(storedCds);
                         filteredCds = [...cds];
                         renderCds();
-                        showPopup('Dati caricati dalla memoria locale!');
+                        showPopup('Dati caricati dalla memoria locale.', 'success');
                     } catch (e) {
                         console.error('Errore nel parsing dei dati:', e);
-                        showPopup('Errore nel caricamento. Dati corrotti.', true);
+                        showPopup('Errore nel caricamento. Dati corrotti.', 'error');
                     }
                 } else {
-                    showPopup('Nessun dato. Importa da Google Sheets.', true);
+                    showPopup('Nessun dato. Importa da Google Sheets.', 'info');
                 }
                 hideLoader();
                 updateDebugInfo();
@@ -1096,7 +1167,7 @@
             const url = inlineSheetsUrlInput.value.trim();
             if (!url) { loadCds(); return; }
             
-            showAutoLoadMessage();
+            showAutoLoadBanner();
             try {
                 const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
                 const response = await fetch(cacheBusterUrl);
@@ -1141,22 +1212,22 @@
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
-                showPopup(`Importati ${cds.length} CD da Google Sheets!`);
+                showPopup(`Importati ${cds.length} CD da Google Sheets!`, 'success');
             } catch (error) {
                 console.error('Errore nel caricamento da Google Sheets:', error);
-                showPopup(`Errore: ${error.message}`, true);
+                showPopup(`Errore: ${error.message}`, 'error');
                 loadCds(); // Fallback to local data
             } finally {
-                hideAutoLoadMessage();
+                hideAutoLoadBanner();
                 updateDebugInfo();
             }
         }
         
         async function importFromSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
-            if (!url) { showPopup('Inserisci un URL valido per Google Sheets', true); return; }
+            if (!url) { showPopup('Inserisci un URL valido per Google Sheets', 'error'); return; }
             
-            showPopup('Importazione in corso...');
+            const importPopup = showPopup('Importazione in corso...', 'info', 0); // Pop-up persistente
             showLoader();
             try {
                 const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
@@ -1202,12 +1273,13 @@
                 localStorage.setItem('cds', JSON.stringify(cds));
                 filteredCds = [...cds];
                 renderCds();
-                showPopup(`Importati ${cds.length} CD da Google Sheets!`);
+                showPopup(`Importati ${cds.length} CD da Google Sheets!`, 'success');
             } catch (error) {
                 console.error('Errore nel caricamento da Google Sheets:', error);
-                showPopup(`Errore: ${error.message}`, true);
+                showPopup(`Errore: ${error.message}`, 'error');
                 loadCds();
             } finally {
+                closePopup(importPopup); // Chiude il pop-up di importazione
                 hideLoader();
                 updateDebugInfo();
             }
@@ -1215,16 +1287,16 @@
         
         function saveSheetsUrl() {
             const url = inlineSheetsUrlInput.value.trim();
-            if (!url) { showPopup('Inserisci un URL valido per Google Sheets', true); return; }
+            if (!url) { showPopup('Inserisci un URL valido per Google Sheets', 'error'); return; }
             localStorage.setItem('sheetsUrl', url);
-            showPopup('URL salvato con successo!');
+            showPopup('URL salvato con successo!', 'success');
             configModal.style.display = 'none';
         }
         
         function clearSheetsUrl() {
             localStorage.removeItem('sheetsUrl');
             inlineSheetsUrlInput.value = '';
-            showPopup('URL rimosso con successo!');
+            showPopup('URL rimosso con successo!', 'info');
         }
         
         function updateStats() {
@@ -1394,7 +1466,7 @@
                 disableDarkMode();
                 themeToggleSwitch.checked = false;
                 renderCds();
-                showPopup('Tutti i dati sono stati cancellati.');
+                showPopup('Tutti i dati sono stati cancellati.', 'info');
                 updateDebugInfo();
             }
         }
