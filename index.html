@@ -93,7 +93,7 @@
             gap: 15px;
             flex-grow: 1;
             overflow: hidden;
-            min-height: 0; /* Fix per flexbox */
+            min-height: 0;
         }
         
         .card {
@@ -118,8 +118,8 @@
         
         .table-container {
             flex-grow: 1;
-            overflow-y: auto; /* Scroll solo qui */
-            min-height: 0; /* Fix per flexbox */
+            overflow-y: auto;
+            min-height: 0;
         }
         
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -160,9 +160,12 @@
             border-top: 1px solid var(--border-color);
         }
         
-        .pagination button { padding: 5px 10px; font-size: 12px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); cursor: pointer; }
+        .pagination button, .pagination span { padding: 5px 10px; font-size: 12px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); margin: 0 2px; }
+        .pagination button { cursor: pointer; }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
         .pagination button.active { background: var(--accent-color); color: var(--button-text); border-color: var(--accent-color); }
-        
+        .pagination span { border: none; }
+
         .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
         .modal-content { background-color: var(--card-bg); padding: 25px; border-radius: var(--radius); width: 90%; max-width: 500px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
         .close { float: right; font-size: 28px; cursor: pointer; }
@@ -487,13 +490,41 @@
         function updatePagination(totalPages) {
             dom.pagination.innerHTML = '';
             if (totalPages <= 1) return;
-            for (let i = 1; i <= totalPages; i++) {
+
+            const createButton = (page, text = page, active = false, disabled = false) => {
                 const btn = document.createElement('button');
-                btn.textContent = i;
-                if (i === currentPage) btn.className = 'active';
-                btn.onclick = () => { currentPage = i; renderCds(); };
-                dom.pagination.appendChild(btn);
+                btn.innerHTML = text;
+                if (active) btn.className = 'active';
+                btn.disabled = disabled;
+                btn.onclick = () => { currentPage = page; renderCds(); };
+                return btn;
+            };
+
+            dom.pagination.appendChild(createButton(currentPage - 1, '&laquo;', false, currentPage === 1));
+
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
             }
+
+            if (startPage > 1) {
+                dom.pagination.appendChild(createButton(1));
+                if (startPage > 2) dom.pagination.appendChild(document.createElement('span')).innerHTML = '...';
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                dom.pagination.appendChild(createButton(i, i, i === currentPage));
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) dom.pagination.appendChild(document.createElement('span')).innerHTML = '...';
+                dom.pagination.appendChild(createButton(totalPages));
+            }
+
+            dom.pagination.appendChild(createButton(currentPage + 1, '&raquo;', false, currentPage === totalPages));
         }
 
         function updateSortIndicators() {
