@@ -415,9 +415,9 @@
         }
         
         html.dark-mode .status-success {
-             background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
-             color: #2e7d2e;
-             border: 1px solid #b8e6b8;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            color: #2e7d2e;
+            border: 1px solid #b8e6b8;
         }
         
         .status-success::before {
@@ -695,7 +695,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 10px;
         }
         
         .theme-toggle-label {
@@ -804,6 +803,13 @@
                     </div>
                     <h1>Catalogo CD Musicali</h1>
                 </div>
+                <div class="theme-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="theme-toggle-switch">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="theme-toggle-label">Modalità Scura</span>
+                </div>
             </header>
         </div>
         
@@ -911,14 +917,7 @@
             </button>
         </div>
 
-        <div class="theme-toggle">
-            <label class="switch">
-                <input type="checkbox" id="theme-toggle-switch">
-                <span class="slider"></span>
-            </label>
-            <span class="theme-toggle-label">Modalità Scura</span>
         </div>
-    </div>
     
     <div id="debug-modal" class="modal">
         <div class="modal-content">
