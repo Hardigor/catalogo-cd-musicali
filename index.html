@@ -3,35 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogo CD Musicali - Full Screen UI</title>
+    <title>Catalogo CD Musicali - Integrazione Google Sheets</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* TEMA CHIARO */
-            --primary-bg: #f4f7fa;
-            --card-bg: #ffffff;
-            --text-color: #212529;
-            --accent-color: #001f4d;
-            --border-color: #dee2e6;
-            --button-bg: #343a40;
-            --button-hover: #23272b;
-            --button-text: #ffffff;
-            --header-bg: #ffffff;
-            --stat-bg: #e9ecef;
-            --shadow-color: rgba(0, 0, 0, 0.07);
-            --success-color: #2e7d2e;
-            --warning-color: #c82333;
-            --info-color: #004085;
-            --row-even-bg: #f8f9fa;
-            --row-hover-bg: #e9ecef;
-            --scrollbar-bg: #f1f1f1;
-            --scrollbar-thumb: #ccc;
-            --radius: 8px;
-            --radius-sm: 4px;
+            /* TEMA CHIARO PREDEFINITO (DEFAULT) */
+            --primary-bg: #f8f9fa; /* Sfondo generale molto chiaro */
+            --card-bg: #ffffff; /* Sfondo delle card bianco */
+            --text-color: #212529; /* Testo principale scuro */
+            --accent-color: #001f4d; /* Blu molto scuro per accenti e highlight */
+            --border-color: #adb5bd; /* Bordo grigio medio */
+            --button-bg: #343a40; /* Sfondo bottoni grigio scuro */
+            --button-hover: #23272b; /* Hover bottoni ancora più scuro */
+            --button-text: #ffffff; /* Testo bottoni bianco */
+            --header-bg: #ffffff; /* Sfondo header bianco */
+            --stat-bg: #e9ecef; /* Sfondo per statistiche e thead tabella */
+            --shadow-color: rgba(0, 0, 0, 0.1); /* Ombre leggere */
+            --shadow-hover: rgba(0, 0, 0, 0.15);
+            --success-color: #2e7d2e; /* Verde scuro per successo */
+            --warning-color: #c82333; /* Rosso scuro per errore */
+            --row-even-bg: #f0f2f5; /* Riga pari della tabella (grigio chiarissimo) */
+            --row-hover-bg: #dee2e6; /* Hover righe tabella (grigio più chiaro) */
+            --radius: 6px;
+            --radius-sm: 3px;
+            --transition: all 0.2s ease;
         }
 
-        /* TEMA SCURO */
+        /* Override per il TEMA SCURO */
         html.dark-mode {
             --primary-bg: #121212;
             --card-bg: #1e1e1e;
@@ -40,511 +39,1381 @@
             --border-color: #333;
             --button-bg: #555;
             --button-hover: #777;
+            --button-text: #ffffff;
             --header-bg: #1a1a1a;
             --stat-bg: #2d2d2d;
-            --shadow-color: rgba(0, 0, 0, 0.4);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.4);
             --success-color: #4caf50;
             --warning-color: #f44336;
-            --info-color: #1e90ff;
             --row-even-bg: #2a2a2a;
             --row-hover-bg: #3d3d3d;
-            --scrollbar-bg: #2d2d2d;
-            --scrollbar-thumb: #555;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         
-        html { background-color: var(--primary-bg); }
+        html {
+            background-color: var(--primary-bg); /* Applica lo sfondo all'intera pagina */
+            transition: background-color 0.3s ease;
+        }
         
         body {
             width: 100%;
-            height: 100vh;
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 15px;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            padding: 10px;
+            font-size: 14px;
             color: var(--text-color);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
+            width: 100%;
+        }
+        
+        .header-container {
+            background: var(--header-bg);
+            padding: 12px;
+            border-radius: var(--radius);
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px var(--shadow-color);
+            width: 100%;
+            border: 1px solid var(--border-color);
+        }
+        
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
+        }
+        
+        h1 {
+            font-size: 20px;
+            color: var(--text-color);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+        
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 22px;
+            }
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        @media (min-width: 768px) {
+            .logo {
+                justify-content: flex-start;
+            }
+        }
+        
+        .logo-icon {
+            font-size: 20px;
+            color: var(--accent-color);
+            background: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            overflow: hidden;
-            transition: padding-top 0.5s ease;
+            margin-top: 12px;
+            width: 100%;
         }
         
-        body.banner-visible { padding-top: 55px; }
-
-        .header-container {
-            background: var(--header-bg);
-            padding: 10px 15px;
-            border-radius: var(--radius);
-            box-shadow: 0 4px 12px var(--shadow-color);
-            border: 1px solid var(--border-color);
-            flex-shrink: 0;
-        }
-        
-        header { display: flex; align-items: center; justify-content: space-between; }
-        h1 { font-size: 20px; }
-        .logo { display: flex; align-items: center; gap: 12px; }
-        .logo-icon { font-size: 22px; color: var(--accent-color); }
-        
-        .container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 15px;
-            flex-grow: 1;
-            overflow: hidden;
-            min-height: 0;
+        @media (min-width: 992px) {
+            .container {
+                display: grid;
+                grid-template-columns: 280px 1fr;
+                gap: 18px;
+                align-items: stretch;
+            }
         }
         
         .card {
             background: var(--card-bg);
             border-radius: var(--radius);
-            box-shadow: 0 4px 12px var(--shadow-color);
+            box-shadow: 0 1px 4px var(--shadow-color);
+            padding: 15px;
+            margin-bottom: 15px;
             border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
+            width: 100%;
             overflow: hidden;
+            height: 100%;
         }
         
-        .card-content { padding: 15px; flex-shrink: 0; }
-        .card-title { font-size: 16px; margin-bottom: 15px; color: var(--accent-color); font-weight: 600; display: flex; align-items: center; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+        .card-title {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--accent-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
         
-        .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 500; }
-        input[type="text"], select { width: 100%; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 14px; background-color: var(--card-bg); color: var(--text-color); }
-        .search-box { display: flex; gap: 8px; margin-bottom: 15px; }
-        .btn-search { background: var(--button-bg); color: var(--button-text); border: none; padding: 0 16px; border-radius: var(--radius-sm); cursor: pointer; }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            transition: var(--transition);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        input[type="text"]:focus, select:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2); /* Ombra dal blu scuro */
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2); /* Ombra dal blu scuro */
+        }
+        
+        .btn-search {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--button-bg);
+            padding: 0 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+        
+        .btn-search:hover {
+            background: var(--button-hover);
+            border-color: var(--button-hover);
+        }
         
         .table-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            min-height: 0;
+            overflow-x: auto;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px var(--shadow-color);
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
         }
         
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        thead { background: var(--stat-bg); position: sticky; top: 0; z-index: 1; }
-        th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
-        th { font-weight: 600; cursor: pointer; }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:nth-child(even) { background-color: var(--row-even-bg); }
-        tbody tr:hover { background-color: var(--row-hover-bg); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 600px;
+        }
         
-        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .stat-box { background: var(--stat-bg); padding: 10px; border-radius: var(--radius); text-align: center; }
-        .stat-value { font-size: 20px; font-weight: 700; color: var(--accent-color); }
-        .stat-label { font-size: 11px; color: #6c757d; }
+        thead {
+            background: var(--stat-bg);
+            color: var(--text-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        th {
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+            color: var(--text-color);
+            font-size: 13px;
+        }
+        
+        th:hover {
+            background-color: var(--row-hover-bg); /* Usa un grigio più scuro per l'hover */
+        }
+        
+        td {
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 13px;
+            line-height: 1.3;
+        }
+        
+        tr {
+            transition: var(--transition);
+            height: 32px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--row-even-bg);
+        }
+        
+        tr:hover {
+            background-color: var(--row-hover-bg);
+        }
+        
+        .text-center {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        
+        .stat-box {
+            background: var(--stat-bg);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 2px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
         
         .footer {
             text-align: center;
-            padding-top: 15px;
+            margin-top: 20px;
+            padding: 15px;
             color: #6c757d;
-            font-size: 13px;
+            font-size: 12px;
             border-top: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
+            gap: 15px;
+            width: 100%;
         }
         
-        .footer-buttons { display: flex; justify-content: center; gap: 20px; }
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
         
-        .pagination {
-            padding: 10px;
+        .footer-buttons {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 5px;
-            flex-shrink: 0;
-            border-top: 1px solid var(--border-color);
+            gap: 15px;
+            margin: 10px 0;
+            flex-wrap: wrap;
         }
         
-        .pagination button, .pagination span { padding: 5px 10px; font-size: 12px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm); margin: 0 2px; }
-        .pagination button { cursor: pointer; }
-        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .pagination button.active { background: var(--accent-color); color: var(--button-text); border-color: var(--accent-color); }
-        .pagination span { border: none; }
-
-        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
-        .modal-content { background-color: var(--card-bg); padding: 25px; border-radius: var(--radius); width: 90%; max-width: 500px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
-        .close { float: right; font-size: 28px; cursor: pointer; }
+        .highlight {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
         
-        .footer-button { background: none; border: none; color: #6c757d; cursor: pointer; text-decoration: underline; font-size: 13px; display: flex; align-items: center; gap: 5px; }
-        .footer-button:hover { color: var(--accent-color); }
+        .status-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            display: none;
+            font-weight: 500;
+            width: 100%;
+            font-size: 13px;
+        }
         
-        .theme-toggle { display: flex; align-items: center; gap: 8px; }
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--button-bg); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            box-shadow: 0 4px 12px rgba(21, 87, 36, 0.1);
+            animation: slideInFromTop 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
         
-        .sort-indicator { margin-left: 5px; display: inline-block; width: 1em; }
+        html.dark-mode .status-success {
+             background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+             color: #2e7d2e;
+             border: 1px solid #b8e6b8;
+        }
+        
+        .status-success::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s ease-in-out;
+        }
+        
+        .status-success i {
+            margin-right: 8px;
+            font-size: 16px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes slideInFromTop {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            box-shadow: 0 4px 12px rgba(114, 28, 36, 0.1);
+            animation: slideInFromTop 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
 
-        #notification-container { position: fixed; top: 0; left: 0; width: 100%; z-index: 2000; display: flex; justify-content: center; }
-        .notification { width: 100%; padding: 10px 15px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #fff; font-size: 14px; font-weight: 500; box-shadow: 0 2px 10px rgba(0,0,0,0.2); animation: fadeInDown 0.5s ease-out forwards; transition: background-color 0.4s ease; }
-        .notification.fade-out { animation: fadeOutUp 0.5s ease-in forwards; }
-        .notification .fa-sync-alt { animation: spin 1.5s linear infinite; }
-        .notification-success { background-color: var(--success-color); }
-        .notification-error { background-color: var(--warning-color); }
-        .notification-info { background-color: var(--info-color); }
+        html.dark-mode .status-error {
+            background: linear-gradient(135deg, #4a2d2f 0%, #3e2528 100%);
+            color: #f44336;
+            border: 1px solid #5e3d3f;
+        }
+        
+        .status-error::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s ease-in-out;
+        }
+        
+        .status-error i {
+            margin-right: 8px;
+            font-size: 16px;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+        }
+        
+        .loader {
+            border: 2px solid #e9ecef;
+            border-top: 2px solid var(--accent-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 15px auto;
+            display: none;
+        }
+        
+        html.dark-mode .loader {
+            border: 2px solid #2d2d2d;
+            border-top: 2px solid var(--accent-color);
+        }
 
-        .table-container::-webkit-scrollbar { width: 8px; }
-        .table-container::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
-        .table-container::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
-        .table-container::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .btn-config {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .btn-config:hover {
+            background: var(--row-hover-bg);
+            border-color: var(--row-hover-bg);
+        }
+        
+        .btn-config.btn-remove:hover {
+            background: var(--warning-color);
+            border-color: var(--warning-color);
+            color: #ffffff;
+        }
+        
+        .sheets-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        @media (min-width: 480px) {
+            .sheets-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 13px;
+            min-width: 36px;
+        }
+        
+        .pagination button:hover {
+            background-color: var(--row-hover-bg);
+        }
+        
+        .pagination button.active {
+            background: var(--accent-color);
+            color: var(--button-text);
+            font-weight: 600;
+            border: 1px solid var(--accent-color);
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .debug-info {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 12px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 11px;
+            line-height: 1.4;
+            width: 100%;
+            overflow: auto;
+            max-height: 300px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close {
+            color: #6c757d;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+        
+        html.dark-mode .close {
+            color: #a0a0a0;
+        }
 
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes fadeInDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-        @keyframes fadeOutUp { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+        .close:hover, .close:focus {
+            color: var(--text-color);
+            text-decoration: none;
+        }
+        
+        .footer-button {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 12px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .footer-button:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-button i {
+            font-size: 14px;
+        }
+        
+        .auto-load-indicator {
+            background-color: #e6f2ff;
+            border-left: 4px solid var(--accent-color);
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+        }
 
-        @media (max-width: 900px) {
-            body { padding: 10px; gap: 10px; }
-            .container { grid-template-columns: 1fr; }
-            .right-column .card { min-height: 350px; }
+        html.dark-mode .auto-load-indicator {
+            background-color: #1a3c5a;
+            border-left: 4px solid #4d94db;
+            color: #e0e0e0;
+        }
+        
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .theme-toggle-label {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        html.dark-mode .theme-toggle-label {
+            color: var(--text-color);
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        html.dark-mode .slider {
+            background-color: #555;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #555;
+        }
+
+        html:not(.dark-mode) input:checked + .slider {
+            background-color: #ccc;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        
+        .sort-indicator {
+            margin-left: 4px;
+            font-size: 12px;
+        }
+        
+        .sort-indicator.active {
+            color: var(--accent-color);
+        }
+        
+        @media (max-width: 767px) {
+            body { padding: 8px; }
+            .container { gap: 12px; width: 100%; }
+            .card { padding: 12px; margin-bottom: 12px; width: 100%; }
+            .header-container { padding: 10px; width: 100%; }
+            .search-box { flex-direction: column; }
+            .btn-search { padding: 10px; width: 100%; justify-content: center; }
+            .stats { grid-template-columns: 1fr; }
+            .sheets-buttons { flex-direction: column; }
+            .btn-config { width: 100%; }
+            .footer { padding: 12px; gap: 12px; }
+            .footer-buttons { flex-direction: column; gap: 10px; }
+        }
+        
+        @media (max-width: 360px) {
+            h1 { font-size: 18px; }
+            .logo { flex-direction: column; gap: 6px; }
+            .card-title { font-size: 14px; }
+            .stat-value { font-size: 18px; }
+            body { padding: 6px; }
+            .header-container, .card { padding: 10px; }
+            .btn-config { min-width: unset; }
         }
     </style>
 </head>
 <body>
-    <div id="notification-container"></div>
-
-    <div class="header-container">
-        <header>
-            <div class="logo">
-                <div class="logo-icon"><i class="fas fa-compact-disc"></i></div>
-                <h1>Catalogo CD</h1>
-            </div>
-            <div class="theme-toggle">
-                <label class="switch"><input type="checkbox" id="theme-toggle-switch"><span class="slider"></span></label>
-            </div>
-        </header>
-    </div>
-    
-    <div class="container">
-        <div class="left-column">
-            <div class="card">
-                <div class="card-content">
-                    <h2 class="card-title"><i class="fas fa-filter"></i> Filtri</h2>
-                    <div class="search-box">
-                        <input type="text" id="search-input" class="search-input" placeholder="Cerca...">
-                        <button id="search-button" class="btn-search"><i class="fas fa-search"></i></button>
+    <div class="main-content">
+        <div class="header-container">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-compact-disc"></i>
                     </div>
-                    <div class="form-group"><label for="filter-genre">Genere</label><select id="filter-genre"><option value="">Tutti</option></select></div>
-                    <div class="form-group"><label for="filter-year">Anno</label><select id="filter-year"><option value="">Tutti</option></select></div>
-                    <div class="stats">
-                        <div class="stat-box"><div class="stat-value" id="total-cds">0</div><div class="stat-label">CD</div></div>
-                        <div class="stat-box"><div class="stat-value" id="unique-artists">0</div><div class="stat-label">Artisti</div></div>
-                    </div>
+                    <h1>Catalogo CD Musicali</h1>
                 </div>
-            </div>
+            </header>
         </div>
         
-        <div class="right-column">
-            <div class="card">
-                <div class="card-content">
-                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco Risultati</h2>
+        <div id="status-message" class="status-message"></div>
+        <div id="auto-load-message" class="auto-load-indicator" style="display: none;">
+            <i class="fas fa-sync fa-spin"></i>
+            <span>Aggiornamento automatico dei dati in corso...</span>
+        </div>
+        <div id="loader" class="loader"></div>
+        
+        <div class="container">
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-search"></i> Cerca e Filtra</h2>
+                    <div class="search-box">
+                        <input type="text" id="search-input" class="search-input" placeholder="Cerca per titolo, artista...">
+                        <button class="btn-search" id="search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-genre">Filtra per genere</label>
+                        <select id="filter-genre">
+                            <option value="">Tutti i generi</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Hard Rock">Hard Rock</option>
+                            <option value="Metal">Metal</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Jazz">Jazz</option>
+                            <option value="Classica">Classica</option>
+                            <option value="Blues">Blues</option>
+                            <option value="Hip Hop">Hip Hop</option>
+                            <option value="Elettronica">Elettronica</option>
+                            <option value="Altro">Altro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-year">Filtra per anno</label>
+                        <select id="filter-year">
+                            <option value="">Tutti gli anni</option>
+                            <option value="2020s">2020-oggi</option>
+                            <option value="2010s">2010-2019</option>
+                            <option value="2000s">2000-2009</option>
+                            <option value="1990s">1990-1999</option>
+                            <option value="1980s">1980-1989</option>
+                            <option value="1970s">1970-1979</option>
+                            <option value="1960s">1960-1969</option>
+                            <option value="1950s">1950-1959</option>
+                            <option value="pre1950">Prima del 1950</option>
+                        </select>
+                    </div>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-value" id="total-cds">0</div>
+                            <div class="stat-label">CD Totali</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="unique-artists">0</div>
+                            <div class="stat-label">Artisti</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="table-container">
-                    <table id="cd-table">
-                        <thead>
-                            <tr>
-                                <th data-sort="title">Titolo <span class="sort-indicator" id="sort-title"></span></th>
-                                <th data-sort="artist">Artista <span class="sort-indicator" id="sort-artist"></span></th>
-                                <th data-sort="year">Anno <span class="sort-indicator" id="sort-year"></span></th>
-                                <th data-sort="genre">Genere <span class="sort-indicator" id="sort-genre"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody id="cd-list"></tbody>
-                    </table>
+            </div>
+            
+            <div class="right-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-list"></i> Elenco CD</h2>
+                    
+                    <div class="table-container">
+                        <table id="cd-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="title">Titolo <span class="sort-indicator" id="sort-title">↕</span></th>
+                                    <th data-sort="artist">Artista <span class="sort-indicator" id="sort-artist">↕</span></th>
+                                    <th data-sort="year">Anno <span class="sort-indicator" id="sort-year">↕</span></th>
+                                    <th data-sort="genre">Genere <span class="sort-indicator" id="sort-genre">↕</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cd-list">
+                                <tr>
+                                    <td colspan="4" class="text-center">Nessun CD presente. Importa i dati da Google Sheets.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="pagination" class="pagination"></div>
+                    <p id="no-cds" class="text-center" style="display: none;">Nessun CD presente nel catalogo</p>
                 </div>
-                <div id="pagination" class="pagination"></div>
             </div>
         </div>
     </div>
     
     <div class="footer">
-        <p>Catalogo CD © 2025 - Developed by Hardigor</p>
+        <div class="footer-content">
+            <p>Catalogo CD © 2025 - Developed by Hardigor - <span class="highlight">Integrazione Google Sheets</span></p>
+        </div>
+        
         <div class="footer-buttons">
-            <button class="footer-button" id="debug-toggle-button"><i class="fas fa-bug"></i> Mostra Debug</button>
-            <button class="footer-button" id="config-toggle-button"><i class="fas fa-cog"></i> Configurazione</button>
+            <button class="footer-button" id="debug-toggle-button">
+                <i class="fas fa-bug"></i> Mostra informazioni di debug
+            </button>
+            <button class="footer-button" id="config-toggle-button">
+                <i class="fas fa-cog"></i> Configurazione Google Sheets
+            </button>
+        </div>
+
+        <div class="theme-toggle">
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle-switch">
+                <span class="slider"></span>
+            </label>
+            <span class="theme-toggle-label">Modalità Scura</span>
         </div>
     </div>
     
-    <div id="debug-modal" class="modal"><div class="modal-content"><span class="close" id="close-debug">&times;</span><h2>Debug</h2><div id="debug-info"></div></div></div>
-    <div id="config-modal" class="modal"><div class="modal-content"><span class="close" id="close-config">&times;</span><h2>Configurazione Google Sheets</h2><div class="form-group"><label for="inline-sheets-url">URL di pubblicazione (CSV):</label><input type="text" id="inline-sheets-url" placeholder="File > Condividi > Pubblica sul web > CSV"></div><div class="sheets-buttons" style="display:flex; gap:10px; margin-top:15px;"><button class="btn-config" id="inline-save-sheets-url" style="flex:1"><i class="fas fa-save"></i> Salva</button><button class="btn-config" id="inline-import-sheets" style="flex:1"><i class="fas fa-download"></i> Importa</button><button class="btn-config btn-remove" id="inline-remove-sheets-url" style="flex:1"><i class="fas fa-trash"></i> Rimuovi</button></div></div></div>
+    <div id="debug-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-debug">&times;</span>
+            <h2><i class="fas fa-bug"></i> Informazioni di Debug</h2>
+            <div id="debug-info" class="debug-info"></div>
+        </div>
+    </div>
+    
+    <div id="config-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-config">&times;</span>
+            <h2><i class="fas fa-cog"></i> Configurazione Google Sheets</h2>
+            <div class="form-group">
+                <label for="inline-sheets-url">URL Google Sheet:</label>
+                <input type="text" id="inline-sheets-url" placeholder="https://docs.google.com/spreadsheets/d/...">
+            </div>
+            <div class="sheets-buttons">
+                <button class="btn-config" id="inline-save-sheets-url">
+                    <i class="fas fa-save"></i> Salva
+                </button>
+                <button class="btn-config" id="inline-import-sheets">
+                    <i class="fas fa-download"></i> Importa
+                </button>
+                <button class="btn-config btn-remove" id="inline-remove-sheets-url">
+                    <i class="fas fa-trash"></i> Rimuovi
+                </button>
+            </div>
+        </div>
+    </div>
     
     <script>
-        let cds = [], filteredCds = [], sortField = 'title', sortDirection = 1, currentPage = 1;
-        const itemsPerPage = 50;
+        // Dati e configurazione
+        let cds = [];
+        let filteredCds = [];
+        let sortField = 'title';
+        let sortDirection = 1; // 1 = ascendente, -1 = discendente
+        let currentPage = 1;
+        const itemsPerPage = 10;
         
-        const dom = {
-            body: document.body,
-            cdList: document.getElementById('cd-list'),
-            searchInput: document.getElementById('search-input'),
-            totalCds: document.getElementById('total-cds'),
-            uniqueArtists: document.getElementById('unique-artists'),
-            pagination: document.getElementById('pagination'),
-            filterGenre: document.getElementById('filter-genre'),
-            filterYear: document.getElementById('filter-year'),
-            themeSwitch: document.getElementById('theme-toggle-switch'),
-            sheetsUrlInput: document.getElementById('inline-sheets-url'),
-            notificationContainer: document.getElementById('notification-container')
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedUrl = localStorage.getItem('sheetsUrl');
-            if (savedUrl) {
-                dom.sheetsUrlInput.value = savedUrl;
-                setTimeout(() => autoImportFromSheetsUrl(), 500);
+        // Elementi DOM
+        const cdList = document.getElementById('cd-list');
+        const noCds = document.getElementById('no-cds');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const totalCdsElement = document.getElementById('total-cds');
+        const uniqueArtistsElement = document.getElementById('unique-artists');
+        const statusMessage = document.getElementById('status-message');
+        const loader = document.getElementById('loader');
+        const paginationElement = document.getElementById('pagination');
+        const debugInfo = document.getElementById('debug-info');
+        const filterGenre = document.getElementById('filter-genre');
+        const filterYear = document.getElementById('filter-year');
+        const autoLoadMessage = document.getElementById('auto-load-message');
+        const themeToggleSwitch = document.getElementById('theme-toggle-switch');
+        
+        // Elementi per i modali
+        const debugModal = document.getElementById('debug-modal');
+        const configModal = document.getElementById('config-modal');
+        const debugToggleButton = document.getElementById('debug-toggle-button');
+        const configToggleButton = document.getElementById('config-toggle-button');
+        const closeDebug = document.getElementById('close-debug');
+        const closeConfig = document.getElementById('close-config');
+        
+        // Nuovi elementi per la configurazione inline
+        const inlineSheetsUrlInput = document.getElementById('inline-sheets-url');
+        const inlineSaveSheetsUrlBtn = document.getElementById('inline-save-sheets-url');
+        const inlineImportSheetsBtn = document.getElementById('inline-import-sheets');
+        const inlineRemoveSheetsUrlBtn = document.getElementById('inline-remove-sheets-url');
+        
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedSheetsUrl = localStorage.getItem('sheetsUrl');
+            if (savedSheetsUrl) {
+                inlineSheetsUrlInput.value = savedSheetsUrl;
+                setTimeout(() => autoImportFromSheetsUrl(), 1000);
             } else {
                 loadCds();
             }
-            if (localStorage.getItem('theme') === 'dark') {
-                dom.body.parentElement.classList.add('dark-mode');
-                dom.themeSwitch.checked = true;
+            
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                enableDarkMode();
+                themeToggleSwitch.checked = true;
+            } else {
+                disableDarkMode(); 
+                themeToggleSwitch.checked = false;
             }
+            
             setupEventListeners();
         });
-
+        
         function setupEventListeners() {
-            document.getElementById('search-button').addEventListener('click', searchCds);
-            dom.searchInput.addEventListener('input', searchCds);
-            dom.filterGenre.addEventListener('change', searchCds);
-            dom.filterYear.addEventListener('change', searchCds);
+            searchButton.addEventListener('click', searchCds);
+            searchInput.addEventListener('input', searchCds);
+            filterGenre.addEventListener('change', searchCds);
+            filterYear.addEventListener('change', searchCds);
             
-            document.querySelectorAll('th[data-sort]').forEach(th => th.addEventListener('click', () => sortBy(th.getAttribute('data-sort'))));
+            document.querySelectorAll('th[data-sort]').forEach(th => {
+                th.addEventListener('click', () => sortBy(th.getAttribute('data-sort')));
+            });
             
-            document.getElementById('inline-save-sheets-url').addEventListener('click', saveSheetsUrl);
-            document.getElementById('inline-import-sheets').addEventListener('click', importFromSheetsUrl);
-            document.getElementById('inline-remove-sheets-url').addEventListener('click', clearSheetsUrl);
+            inlineSaveSheetsUrlBtn.addEventListener('click', saveSheetsUrl);
+            inlineImportSheetsBtn.addEventListener('click', importFromSheetsUrl);
+            inlineRemoveSheetsUrlBtn.addEventListener('click', clearSheetsUrl);
             
-            const modals = { debug: document.getElementById('debug-modal'), config: document.getElementById('config-modal') };
-            const toggle = (modal, show) => modal.style.display = show ? 'flex' : 'none';
-            document.getElementById('debug-toggle-button').addEventListener('click', () => toggle(modals.debug, true));
-            document.getElementById('config-toggle-button').addEventListener('click', () => toggle(modals.config, true));
-            document.getElementById('close-debug').addEventListener('click', () => toggle(modals.debug, false));
-            document.getElementById('close-config').addEventListener('click', () => toggle(modals.config, false));
+            debugToggleButton.addEventListener('click', () => {
+                updateDebugInfo();
+                debugModal.style.display = 'flex';
+            });
             
-            dom.themeSwitch.addEventListener('change', () => {
-                dom.body.parentElement.classList.toggle('dark-mode');
-                localStorage.setItem('theme', dom.themeSwitch.checked ? 'dark' : 'light');
+            configToggleButton.addEventListener('click', () => {
+                configModal.style.display = 'flex';
+            });
+            
+            closeDebug.addEventListener('click', () => {
+                debugModal.style.display = 'none';
+            });
+            
+            closeConfig.addEventListener('click', () => {
+                configModal.style.display = 'none';
+            });
+            
+            themeToggleSwitch.addEventListener('change', toggleTheme);
+            
+            window.addEventListener('click', (event) => {
+                if (event.target === debugModal) {
+                    debugModal.style.display = 'none';
+                }
+                if (event.target === configModal) {
+                    configModal.style.display = 'none';
+                }
             });
         }
-
-        function showNotification({ message, type = 'success', duration = 4000, icon = null }) {
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-triangle', info: 'fa-info-circle', loading: 'fa-sync-alt' };
-            notification.innerHTML = `<i class="fas ${icon || icons[type]}"></i><span>${message}</span>`;
-            
-            dom.notificationContainer.appendChild(notification);
-            if(dom.notificationContainer.childElementCount === 1) dom.body.classList.add('banner-visible');
-
-            if (duration > 0) setTimeout(() => closeNotification(notification), duration);
-            return notification;
-        }
-
-        function updateNotification(notification, { message, type }) {
-            if (!notification) return;
-            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-triangle', info: 'fa-info-circle' };
-            notification.className = `notification notification-${type}`;
-            notification.querySelector('i').className = `fas ${icons[type]}`;
-            notification.querySelector('span').textContent = message;
-        }
-
-        function closeNotification(notification) {
-            if (!notification) return;
-            notification.classList.add('fade-out');
-            setTimeout(() => {
-                notification.remove();
-                if (dom.notificationContainer.childElementCount === 0) {
-                    dom.body.classList.remove('banner-visible');
-                }
-            }, 500);
-        }
-
-        async function fetchDataFromSheets(url) {
-            const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
-            const response = await fetch(cacheBusterUrl);
-            if (!response.ok) {
-                if (response.status === 400) throw new Error("Errore 400: URL non valido. Usa l'URL da 'File > Condividi > Pubblica sul web > CSV'.");
-                throw new Error(`Errore HTTP: ${response.status}`);
-            }
-            const text = await response.text();
-            if (!text) throw new Error('Il foglio di calcolo è vuoto.');
-            
-            return text.split('\n').slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-                if (values.length < 4 || !values[0]) return null;
-                return { title: values[0], artist: values[1], year: parseInt(values[2]) || 'N/A', genre: values[3] };
-            }).filter(Boolean);
+        
+        function enableDarkMode() {
+            document.documentElement.classList.add('dark-mode');
         }
         
-        async function handleImport(url, isAuto = false) {
-            const message = isAuto ? 'Aggiornamento automatico...' : 'Caricamento dati...';
-            const banner = showNotification({ message, type: 'info', duration: 0, icon: 'fa-sync-alt' });
-            try {
-                const newCds = await fetchDataFromSheets(url);
-                processCds(newCds);
-                const successMsg = isAuto ? `Catalogo aggiornato: ${newCds.length} CD` : `Importati ${newCds.length} CD con successo`;
-                updateNotification(banner, { message: successMsg, type: 'success' });
-                setTimeout(() => closeNotification(banner), 3000);
-                return newCds;
-            } catch (error) {
-                updateNotification(banner, { message: error.message, type: 'error' });
-                setTimeout(() => closeNotification(banner), 6000);
-                throw error;
+        function disableDarkMode() {
+            document.documentElement.classList.remove('dark-mode');
+        }
+        
+        function toggleTheme() {
+            if (themeToggleSwitch.checked) {
+                enableDarkMode();
+                localStorage.setItem('theme', 'dark');
+            } else {
+                disableDarkMode();
+                localStorage.setItem('theme', 'light');
             }
         }
-
+        
+        function showStatus(message, isError = false) {
+            const icon = isError ? '<i class="fas fa-exclamation-triangle"></i>' : '<i class="fas fa-check-circle"></i>';
+            statusMessage.innerHTML = icon + message;
+            statusMessage.className = isError ? 'status-message status-error' : 'status-message status-success';
+            statusMessage.style.display = 'block';
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoader() { loader.style.display = 'block'; }
+        function hideLoader() { loader.style.display = 'none'; }
+        function showAutoLoadMessage() { autoLoadMessage.style.display = 'flex'; }
+        function hideAutoLoadMessage() { autoLoadMessage.style.display = 'none'; }
+        
+        function loadCds() {
+            showLoader();
+            setTimeout(() => {
+                const storedCds = localStorage.getItem('cds');
+                if (storedCds) {
+                    try {
+                        cds = JSON.parse(storedCds);
+                        filteredCds = [...cds];
+                        renderCds();
+                        showStatus('Dati caricati dalla memoria locale!');
+                    } catch (e) {
+                        console.error('Errore nel parsing dei dati:', e);
+                        showStatus('Errore nel caricamento dei dati. I dati potrebbero essere corrotti.', true);
+                    }
+                } else {
+                    showStatus('Nessun dato trovato. Importa i dati da Google Sheets.', true);
+                }
+                hideLoader();
+                updateDebugInfo();
+            }, 500);
+        }
+        
         async function autoImportFromSheetsUrl() {
-            const url = dom.sheetsUrlInput.value.trim();
+            const url = inlineSheetsUrlInput.value.trim();
             if (!url) { loadCds(); return; }
+            
+            showAutoLoadMessage();
             try {
-                const newCds = await handleImport(url, true);
-                localStorage.setItem('cds', JSON.stringify(newCds));
+                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+                const response = await fetch(cacheBusterUrl);
+                if (!response.ok) throw new Error(`Errore HTTP: ${response.status}.`);
+                
+                const csvText = await response.text();
+                if (!csvText || csvText.trim().length === 0) throw new Error('Il foglio sembra essere vuoto.');
+                
+                const lines = csvText.split('\n');
+                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
+                if (dataLines.length === 0) throw new Error('Nessun dato trovato nel foglio.');
+                
+                cds = [];
+                for (const line of dataLines) {
+                    const values = [];
+                    let inQuotes = false;
+                    let currentValue = '';
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        if (char === '"') {
+                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
+                                currentValue += '"'; i++;
+                            } else { inQuotes = !inQuotes; }
+                        } else if (char === ',' && !inQuotes) {
+                            values.push(currentValue.trim()); currentValue = '';
+                        } else { currentValue += char; }
+                    }
+                    values.push(currentValue.trim());
+                    
+                    if (values.length >= 4) {
+                        cds.push({
+                            title: values[0].replace(/^"|"$/g, ''),
+                            artist: values[1].replace(/^"|"$/g, ''),
+                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
+                            genre: values[3].replace(/^"|"$/g, '')
+                        });
+                    }
+                }
+                
+                if (cds.length === 0) throw new Error('Nessun CD valido trovato.');
+                
+                localStorage.setItem('cds', JSON.stringify(cds));
+                filteredCds = [...cds];
+                renderCds();
+                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
             } catch (error) {
-                loadCds();
+                console.error('Errore nel caricamento da Google Sheets:', error);
+                showStatus(`Errore: ${error.message}`, true);
+                loadCds(); // Fallback to local data
+            } finally {
+                hideAutoLoadMessage();
+                updateDebugInfo();
             }
         }
         
         async function importFromSheetsUrl() {
-            const url = dom.sheetsUrlInput.value.trim();
-            if (!url) return showNotification({ message: 'Inserisci un URL valido', type: 'error' });
+            const url = inlineSheetsUrlInput.value.trim();
+            if (!url) { showStatus('Inserisci un URL valido per Google Sheets', true); return; }
+            
+            showStatus('Importazione in corso...');
+            showLoader();
             try {
-                const newCds = await handleImport(url, false);
-                localStorage.setItem('cds', JSON.stringify(newCds));
-            } catch (error) { /* Errore già gestito */ }
-        }
-
-        function loadCds() {
-            try {
-                const stored = localStorage.getItem('cds');
-                processCds(stored ? JSON.parse(stored) : []);
-            } catch {
-                showNotification({ message: 'Dati locali corrotti.', type: 'error' });
-                processCds([]);
+                const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+                const response = await fetch(cacheBusterUrl);
+                if (!response.ok) throw new Error(`Errore HTTP: ${response.status}.`);
+                
+                const csvText = await response.text();
+                if (!csvText || csvText.trim().length === 0) throw new Error('Il foglio sembra essere vuoto.');
+                
+                const lines = csvText.split('\n');
+                const dataLines = lines.filter((line, index) => index > 0 && line.trim() !== '');
+                if (dataLines.length === 0) throw new Error('Nessun dato trovato nel foglio.');
+                
+                cds = [];
+                for (const line of dataLines) {
+                    const values = [];
+                    let inQuotes = false;
+                    let currentValue = '';
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        if (char === '"') {
+                            if (inQuotes && i + 1 < line.length && line[i+1] === '"') {
+                                currentValue += '"'; i++;
+                            } else { inQuotes = !inQuotes; }
+                        } else if (char === ',' && !inQuotes) {
+                            values.push(currentValue.trim()); currentValue = '';
+                        } else { currentValue += char; }
+                    }
+                    values.push(currentValue.trim());
+                    
+                    if (values.length >= 4) {
+                        cds.push({
+                            title: values[0].replace(/^"|"$/g, ''),
+                            artist: values[1].replace(/^"|"$/g, ''),
+                            year: parseInt(values[2].replace(/^"|"$/g, '')) || 0,
+                            genre: values[3].replace(/^"|"$/g, '')
+                        });
+                    }
+                }
+                
+                if (cds.length === 0) throw new Error('Nessun CD valido trovato.');
+                
+                localStorage.setItem('cds', JSON.stringify(cds));
+                filteredCds = [...cds];
+                renderCds();
+                showStatus(`Importati ${cds.length} CD da Google Sheets!`);
+            } catch (error) {
+                console.error('Errore nel caricamento da Google Sheets:', error);
+                showStatus(`Errore: ${error.message}`, true);
+                loadCds();
+            } finally {
+                hideLoader();
+                updateDebugInfo();
             }
         }
         
-        function processCds(newCds) {
-            cds = newCds;
-            populateFilters();
-            searchCds();
-        }
-        
         function saveSheetsUrl() {
-            localStorage.setItem('sheetsUrl', dom.sheetsUrlInput.value.trim());
-            showNotification({ message: 'URL salvato!', type: 'success' });
+            const url = inlineSheetsUrlInput.value.trim();
+            if (!url) { showStatus('Inserisci un URL valido per Google Sheets', true); return; }
+            localStorage.setItem('sheetsUrl', url);
+            showStatus('URL salvato con successo!');
+            configModal.style.display = 'none';
         }
         
         function clearSheetsUrl() {
             localStorage.removeItem('sheetsUrl');
-            dom.sheetsUrlInput.value = '';
-            showNotification({ message: 'URL rimosso', type: 'info' });
+            inlineSheetsUrlInput.value = '';
+            showStatus('URL rimosso con successo!');
         }
         
         function updateStats() {
-            dom.totalCds.textContent = cds.length;
-            dom.uniqueArtists.textContent = new Set(cds.map(cd => cd.artist)).size;
+            totalCdsElement.textContent = cds.length;
+            const artists = new Set(cds.map(cd => cd.artist));
+            uniqueArtistsElement.textContent = artists.size;
         }
         
         function sortBy(field) {
-            sortDirection = (sortField === field) ? -sortDirection : 1;
-            sortField = field;
+            if (sortField === field) {
+                sortDirection = -sortDirection;
+            } else {
+                sortField = field;
+                sortDirection = 1;
+            }
             renderCds();
-        }
-
-        function populateFilters() {
-            const genres = [...new Set(cds.map(cd => cd.genre).filter(Boolean))].sort();
-            const yearGroups = { '2020s': false, '2010s': false, '2000s': false };
-            cds.forEach(cd => {
-                if (cd.year >= 2020) yearGroups['2020s'] = true;
-                else if (cd.year >= 2010) yearGroups['2010s'] = true;
-                else if (cd.year >= 2000) yearGroups['2000s'] = true;
-            });
-            dom.filterGenre.innerHTML = '<option value="">Tutti i Generi</option>' + genres.map(g => `<option>${g}</option>`).join('');
-            dom.filterYear.innerHTML = '<option value="">Tutti gli Anni</option>' + Object.keys(yearGroups).filter(y => yearGroups[y]).map(y => `<option value="${y}">${y}</option>`).join('');
         }
         
         function renderCds() {
             filteredCds.sort((a, b) => {
-                const valA = a[sortField], valB = b[sortField];
-                if (typeof valA === 'string') return valA.localeCompare(valB, 'it', { sensitivity: 'base' }) * sortDirection;
-                return (valA - valB) * sortDirection;
+                let cmp;
+                if (sortField === 'year') {
+                    cmp = a.year - b.year;
+                } else {
+                    cmp = a[sortField].localeCompare(b[sortField], 'it', { sensitivity: 'base' });
+                }
+                return cmp * sortDirection;
             });
             
             const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
-            currentPage = Math.min(currentPage, totalPages || 1);
-            const currentItems = filteredCds.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredCds.length);
+            const currentItems = filteredCds.slice(startIndex, endIndex);
             
-            dom.cdList.innerHTML = currentItems.length ? currentItems.map(cd => `<tr><td>${cd.title}</td><td>${cd.artist}</td><td>${cd.year}</td><td>${cd.genre}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;padding:20px;font-style:italic;">Nessun CD trovato.</td></tr>';
+            cdList.innerHTML = '';
+            if (currentItems.length === 0) {
+                cdList.innerHTML = '<tr><td colspan="4" class="text-center">Nessun CD trovato</td></tr>';
+                noCds.style.display = 'block';
+            } else {
+                noCds.style.display = 'none';
+                currentItems.forEach((cd) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${cd.title}</td><td>${cd.artist}</td><td>${cd.year}</td><td>${cd.genre}</td>`;
+                    cdList.appendChild(row);
+                });
+            }
             
             updatePagination(totalPages);
-            updateSortIndicators();
+            
+            document.querySelectorAll('.sort-indicator').forEach(s => {
+                s.innerHTML = '↕';
+                s.classList.remove('active');
+            });
+            
+            const arrow = sortDirection === 1 ? '↑' : '↓';
+            const activeIndicator = document.getElementById(`sort-${sortField}`);
+            if (activeIndicator) {
+                activeIndicator.innerHTML = arrow;
+                activeIndicator.classList.add('active');
+            }
+            
             updateStats();
+            updateDebugInfo();
         }
         
         function updatePagination(totalPages) {
-            dom.pagination.innerHTML = '';
+            paginationElement.innerHTML = '';
             if (totalPages <= 1) return;
-
-            const createButton = (page, text = page, active = false, disabled = false) => {
-                const btn = document.createElement('button');
-                btn.innerHTML = text;
-                if (active) btn.className = 'active';
-                btn.disabled = disabled;
-                btn.onclick = () => { currentPage = page; renderCds(); };
-                return btn;
-            };
-
-            dom.pagination.appendChild(createButton(currentPage - 1, '&laquo;', false, currentPage === 1));
-
-            const maxPagesToShow = 5;
-            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
-            if (endPage - startPage + 1 < maxPagesToShow) {
-                startPage = Math.max(1, endPage - maxPagesToShow + 1);
-            }
-
-            if (startPage > 1) {
-                dom.pagination.appendChild(createButton(1));
-                if (startPage > 2) dom.pagination.appendChild(document.createElement('span')).innerHTML = '...';
-            }
-
+            
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&laquo;';
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderCds(); } });
+            paginationElement.appendChild(prevButton);
+            
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
             for (let i = startPage; i <= endPage; i++) {
-                dom.pagination.appendChild(createButton(i, i, i === currentPage));
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.classList.toggle('active', i === currentPage);
+                pageButton.addEventListener('click', () => { currentPage = i; renderCds(); });
+                paginationElement.appendChild(pageButton);
             }
-
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) dom.pagination.appendChild(document.createElement('span')).innerHTML = '...';
-                dom.pagination.appendChild(createButton(totalPages));
-            }
-
-            dom.pagination.appendChild(createButton(currentPage + 1, '&raquo;', false, currentPage === totalPages));
-        }
-
-        function updateSortIndicators() {
-            document.querySelectorAll('.sort-indicator').forEach(s => s.textContent = '');
-            const indicator = document.getElementById(`sort-${sortField}`);
-            if (indicator) indicator.textContent = sortDirection === 1 ? '▲' : '▼';
+            
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&raquo;';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderCds(); } });
+            paginationElement.appendChild(nextButton);
         }
         
         function searchCds() {
-            const term = dom.searchInput.value.toLowerCase();
-            const genre = dom.filterGenre.value;
-            const yearRange = dom.filterYear.value;
-            const yearRanges = { '2020s': [2020, 2029], '2010s': [2010, 2019], '2000s': [2000, 2009] };
-
-            filteredCds = cds.filter(cd => 
-                (!yearRange || (cd.year >= yearRanges[yearRange][0] && cd.year <= yearRanges[yearRange][1])) &&
-                (!genre || cd.genre === genre) &&
-                (!term || Object.values(cd).some(val => String(val).toLowerCase().includes(term)))
-            );
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (!searchTerm) {
+                filteredCds = [...cds];
+            } else {
+                filteredCds = cds.filter(cd => 
+                    cd.title.toLowerCase().includes(searchTerm) ||
+                    cd.artist.toLowerCase().includes(searchTerm) ||
+                    cd.year.toString().includes(searchTerm) ||
+                    cd.genre.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            const genreFilter = filterGenre.value;
+            if (genreFilter) {
+                filteredCds = filteredCds.filter(cd => cd.genre === genreFilter);
+            }
+            
+            const yearFilter = filterYear.value;
+            if (yearFilter) {
+                const currentYear = new Date().getFullYear();
+                let startYear, endYear;
+                switch(yearFilter) {
+                    case '2020s': startYear = 2020; endYear = currentYear; break;
+                    case '2010s': startYear = 2010; endYear = 2019; break;
+                    case '2000s': startYear = 2000; endYear = 2009; break;
+                    case '1990s': startYear = 1990; endYear = 1999; break;
+                    case '1980s': startYear = 1980; endYear = 1989; break;
+                    case '1970s': startYear = 1970; endYear = 1979; break;
+                    case '1960s': startYear = 1960; endYear = 1969; break;
+                    case '1950s': startYear = 1950; endYear = 1959; break;
+                    case 'pre1950': startYear = 0; endYear = 1949; break;
+                }
+                filteredCds = filteredCds.filter(cd => {
+                    if (yearFilter === 'pre1950') {
+                        return cd.year < 1950;
+                    } else {
+                        return cd.year >= startYear && cd.year <= endYear;
+                    }
+                });
+            }
+            
+            currentPage = 1;
             renderCds();
+        }
+        
+        function updateDebugInfo() {
+            const debugElement = document.getElementById('debug-info');
+            if (debugElement) {
+                debugElement.innerHTML = `
+                    <strong>Informazioni di Debug:</strong><br>
+                    CD totali: ${cds.length}<br>
+                    CD filtrati: ${filteredCds.length}<br>
+                    Pagina corrente: ${currentPage}<br>
+                    Elementi per pagina: ${itemsPerPage}<br>
+                    Dimensione localStorage: ${localStorage.getItem('cds') ? Math.ceil(localStorage.getItem('cds').length / 1024) : 0} KB<br>
+                    URL Google Sheets salvato: ${localStorage.getItem('sheetsUrl') || 'Nessuno'}<br>
+                    Tema attivo: ${localStorage.getItem('theme') || 'light'}<br>
+                    Browser: ${navigator.userAgent}<br>
+                    <button onclick="clearLocalStorage()">Cancella tutti i dati</button>
+                `;
+            }
+        }
+        
+        function clearLocalStorage() {
+            if (confirm('Sei sicuro di voler cancellare tutti i dati? Questa operazione non può essere annullata.')) {
+                localStorage.removeItem('cds');
+                localStorage.removeItem('sheetsUrl');
+                localStorage.removeItem('theme');
+                cds = [];
+                filteredCds = [];
+                inlineSheetsUrlInput.value = '';
+                disableDarkMode();
+                themeToggleSwitch.checked = false;
+                renderCds();
+                showStatus('Tutti i dati sono stati cancellati.');
+                updateDebugInfo();
+            }
         }
     </script>
 </body>
