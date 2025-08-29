@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Tema scuro predefinito */
             --primary-bg: #121212;
             --card-bg: #1e1e1e;
             --text-color: #e0e0e0;
@@ -27,6 +28,26 @@
             --radius: 6px;
             --radius-sm: 3px;
             --transition: all 0.2s ease;
+        }
+
+        /* Override per il tema chiaro con blu e grigi scuri */
+        body.light-mode {
+            --primary-bg: #f8f9fa; /* Sfondo generale molto chiaro */
+            --card-bg: #ffffff; /* Sfondo delle card bianco */
+            --text-color: #212529; /* Testo principale scuro */
+            --accent-color: #001f4d; /* Blu molto scuro per accenti e highlight */
+            --border-color: #adb5bd; /* Bordo grigio medio */
+            --button-bg: #343a40; /* Sfondo bottoni grigio scuro */
+            --button-hover: #23272b; /* Hover bottoni ancora più scuro */
+            --button-text: #ffffff; /* Testo bottoni bianco */
+            --header-bg: #ffffff; /* Sfondo header bianco */
+            --stat-bg: #e9ecef; /* Sfondo per statistiche e thead tabella */
+            --shadow-color: rgba(0, 0, 0, 0.15); /* Ombre leggere */
+            --shadow-hover: rgba(0, 0, 0, 0.2);
+            --success-color: #2e7d2e; /* Verde scuro per successo */
+            --warning-color: #c82333; /* Rosso scuro per errore */
+            --row-even-bg: #f0f2f5; /* Riga pari della tabella (grigio chiarissimo) */
+            --row-hover-bg: #dee2e6; /* Hover righe tabella (grigio più chiaro) */
         }
 
         * {
@@ -196,7 +217,7 @@
         input[type="text"]:focus, select:focus {
             border-color: var(--accent-color);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2); /* Ombra dal blu scuro */
         }
         
         .search-box {
@@ -220,7 +241,7 @@
         
         .search-input:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 0 0 2px rgba(0, 31, 77, 0.2); /* Ombra dal blu scuro */
         }
         
         .btn-search {
@@ -278,7 +299,7 @@
         }
         
         th:hover {
-            background-color: #dee2e6;
+            background-color: var(--row-hover-bg); /* Usa un grigio più scuro per l'hover */
         }
         
         td {
@@ -387,7 +408,7 @@
         
         .status-success {
             background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
-            color: #2e7d2e;
+            color: var(--success-color);
             border: 1px solid #b8e6b8;
             box-shadow: 0 4px 12px rgba(144, 238, 144, 0.25);
             animation: slideInFromTop 0.5s ease-out;
@@ -444,10 +465,10 @@
         }
         
         .status-error {
-            background: linear-gradient(135deg, #4a2d2f 0%, #3e2528 100%);
-            color: #f44336;
-            border: 1px solid #5e3d3f;
-            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.15);
+            background: linear-gradient(135deg, #f8d7da 0%, #ffe9ec 100%);
+            color: var(--warning-color);
+            border: 1px solid #f5c6cb;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
             animation: slideInFromTop 0.5s ease-out;
             position: relative;
             overflow: hidden;
@@ -460,7 +481,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(244, 67, 54, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(220, 53, 69, 0.1), transparent);
             animation: shimmer 2s ease-in-out;
         }
         
@@ -480,8 +501,8 @@
         }
         
         .loader {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #007bff;
+            border: 2px solid #e9ecef; /* Colore più chiaro per il loader in light mode */
+            border-top: 2px solid var(--accent-color);
             border-radius: 50%;
             width: 30px;
             height: 30px;
@@ -513,13 +534,13 @@
         }
         
         .btn-config:hover {
-            background: #e9ecef;
-            border-color: #dee2e6;
+            background: var(--row-hover-bg); /* Usa un grigio più scuro per l'hover */
+            border-color: var(--row-hover-bg);
         }
         
         .btn-config.btn-remove:hover {
-            background: #dc3545;
-            border-color: #dc3545;
+            background: var(--warning-color);
+            border-color: var(--warning-color);
             color: #ffffff;
         }
         
@@ -558,7 +579,7 @@
         }
         
         .pagination button:hover {
-            background-color: #e9ecef;
+            background-color: var(--row-hover-bg);
         }
         
         .pagination button.active {
@@ -625,7 +646,7 @@
         }
         
         .close:hover, .close:focus {
-            color: #212529;
+            color: var(--text-color);
             text-decoration: none;
         }
         
@@ -653,8 +674,8 @@
         }
         
         .auto-load-indicator {
-            background-color: #e6f2ff;
-            border-left: 4px solid #007bff;
+            background-color: #e6f2ff; /* Sfondo messaggio di caricamento */
+            border-left: 4px solid #001f4d; /* Bordo blu scuro */
             padding: 10px 15px;
             margin: 10px 0;
             border-radius: var(--radius-sm);
@@ -662,7 +683,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #004085;
+            color: #001f4d; /* Testo blu scuro */
         }
         
         .theme-toggle {
@@ -1089,45 +1110,14 @@
             });
         }
         
-        // Funzione per attivare la light mode (Stile "Moderno e Vivace")
+        // Funzione per attivare la light mode (Stile "Moderno e Vivace") con blu e grigi scuri
         function enableLightMode() {
-            document.documentElement.style.setProperty('--primary-bg', '#f4f6f9'); // Grigio molto chiaro, quasi azzurrino
-            document.documentElement.style.setProperty('--card-bg', '#ffffff'); // Card bianche
-            document.documentElement.style.setProperty('--text-color', '#212529'); // Testo nero standard
-            document.documentElement.style.setProperty('--accent-color', '#007bff'); // Blu brillante
-            document.documentElement.style.setProperty('--border-color', '#dee2e6'); // Bordo grigio chiaro
-            document.documentElement.style.setProperty('--button-bg', '#007bff'); // Bottoni con colore primario
-            document.documentElement.style.setProperty('--button-hover', '#0056b3'); // Hover del bottone più scuro
-            document.documentElement.style.setProperty('--button-text', '#ffffff'); // Testo dei bottoni bianco
-            document.documentElement.style.setProperty('--header-bg', '#ffffff'); // Header bianco come le card
-            document.documentElement.style.setProperty('--stat-bg', '#f8f9fa'); // Sfondo statistiche e righe tabella
-            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.05)'); // Ombra molto leggera
-            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.1)');
-            document.documentElement.style.setProperty('--success-color', '#28a745');
-            document.documentElement.style.setProperty('--warning-color', '#dc3545');
-            document.documentElement.style.setProperty('--row-even-bg', '#f8f9fa'); // Riga pari della tabella
-            document.documentElement.style.setProperty('--row-hover-bg', '#e9ecef'); // Hover righe della tabella
+            document.body.classList.add('light-mode');
         }
         
         // Funzione per disattivare la light mode (tornare a dark mode)
         function disableLightMode() {
-            // Ripristina i valori originali del tema scuro
-            document.documentElement.style.setProperty('--primary-bg', '#121212');
-            document.documentElement.style.setProperty('--card-bg', '#1e1e1e');
-            document.documentElement.style.setProperty('--text-color', '#e0e0e0');
-            document.documentElement.style.setProperty('--accent-color', '#6ab7ff');
-            document.documentElement.style.setProperty('--border-color', '#333');
-            document.documentElement.style.setProperty('--button-bg', '#555');
-            document.documentElement.style.setProperty('--button-hover', '#777');
-            document.documentElement.style.setProperty('--button-text', '#ffffff');
-            document.documentElement.style.setProperty('--header-bg', '#1a1a1a');
-            document.documentElement.style.setProperty('--stat-bg', '#2d2d2d');
-            document.documentElement.style.setProperty('--shadow-color', 'rgba(0, 0, 0, 0.3)');
-            document.documentElement.style.setProperty('--shadow-hover', 'rgba(0, 0, 0, 0.4)');
-            document.documentElement.style.setProperty('--success-color', '#4caf50');
-            document.documentElement.style.setProperty('--warning-color', '#f44336');
-            document.documentElement.style.setProperty('--row-even-bg', '#2a2a2a');
-            document.documentElement.style.setProperty('--row-hover-bg', '#3d3d3d');
+            document.body.classList.remove('light-mode');
         }
         
         // Funzione per attivare/disattivare la light mode
