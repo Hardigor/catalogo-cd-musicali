@@ -334,15 +334,29 @@
             flex-wrap: wrap;
         }
         
+        /* --- STILE NOTIFICA FLUTTUANTE --- */
         .status-message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: var(--radius-sm);
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translate(-50%, -100px);
+            z-index: 1001;
+            width: auto;
+            max-width: 90%;
+            padding: 12px 20px;
+            border-radius: var(--radius);
             text-align: center;
-            display: none;
             font-weight: 500;
-            width: 100%;
-            font-size: 13px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        .status-message.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+            visibility: visible;
         }
         
         .status-success {
@@ -467,6 +481,7 @@
         </div>
         
         <div id="status-message" class="status-message"></div>
+
         <div id="auto-load-message" class="auto-load-indicator">
             <i class="fas fa-sync fa-spin"></i>
             <span>Aggiornamento automatico dei dati in corso...</span>
@@ -585,6 +600,7 @@
         let sortState = { field: 'title', direction: 1 }; // 1: asc, -1: desc
         let currentPage = 1;
         const itemsPerPage = 10;
+        let statusTimeout;
 
         // --- ELEMENTI DOM ---
         const dom = {
@@ -612,10 +628,17 @@
 
         // --- FUNZIONI ---
         const showStatus = (message, isError = false) => {
+            clearTimeout(statusTimeout);
             dom.statusMessage.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${message}`;
             dom.statusMessage.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
-            dom.statusMessage.style.display = 'block';
-            setTimeout(() => dom.statusMessage.style.display = 'none', 5000);
+            
+            // Aggiungi la classe 'show' per attivare l'animazione di entrata
+            dom.statusMessage.classList.add('show');
+
+            // Imposta un timeout per rimuovere la classe 'show' e far scomparire il messaggio
+            statusTimeout = setTimeout(() => {
+                dom.statusMessage.classList.remove('show');
+            }, 5000);
         };
 
         const debounce = (func, delay) => {
@@ -627,7 +650,6 @@
         };
 
         const renderCds = () => {
-            // Ordina
             filteredCds.sort((a, b) => {
                 const valA = a[sortState.field];
                 const valB = b[sortState.field];
@@ -640,12 +662,10 @@
                 return comparison * sortState.direction;
             });
 
-            // Pagina
             const totalPages = Math.ceil(filteredCds.length / itemsPerPage);
             const startIndex = (currentPage - 1) * itemsPerPage;
             const paginatedCds = filteredCds.slice(startIndex, startIndex + itemsPerPage);
 
-            // Renderizza
             dom.cdList.innerHTML = '';
             if (paginatedCds.length === 0) {
                 dom.cdList.innerHTML = `<tr><td colspan="4" class="empty-state-cell"><i class="fas fa-compact-disc"></i>Nessun CD trovato. Prova a modificare i filtri.</td></tr>`;
@@ -669,33 +689,25 @@
             const yearFilter = dom.filterYear.value;
 
             filteredCds = cds.filter(cd => {
-                // Filtro per testo
                 const matchesSearch = searchTerm ? 
                     ['title', 'artist', 'genre'].some(field => String(cd[field]).toLowerCase().includes(searchTerm)) || 
                     String(cd.year).includes(searchTerm) : true;
-
-                // Filtro per genere
                 const matchesGenre = genreFilter ? cd.genre === genreFilter : true;
                 
-                // Filtro per anno
                 let matchesYear = true;
                 if (yearFilter) {
                     const year = cd.year;
                     const ranges = {
-                        '2020s': [2020, new Date().getFullYear()], '2010s': [2010, 2019],
-                        '2000s': [2000, 2009], '1990s': [1990, 1999],
-                        '1980s': [1980, 1989], '1970s': [1970, 1979],
-                        '1960s': [1960, 1969], '1950s': [1950, 1959],
-                        'pre1950': [0, 1949]
+                        '2020s': [2020, new Date().getFullYear()], '2010s': [2010, 2019], '2000s': [2000, 2009],
+                        '1990s': [1990, 1999], '1980s': [1980, 1989], '1970s': [1970, 1979], '1960s': [1960, 1969],
+                        '1950s': [1950, 1959], 'pre1950': [0, 1949]
                     };
                     if (ranges[yearFilter]) {
                         matchesYear = year >= ranges[yearFilter][0] && year <= ranges[yearFilter][1];
                     }
                 }
-                
                 return matchesSearch && matchesGenre && matchesYear;
             });
-
             currentPage = 1;
             renderCds();
         };
@@ -730,38 +742,31 @@
         const updatePagination = (totalPages) => {
             dom.pagination.innerHTML = '';
             if (totalPages <= 1) return;
-            // Logica di paginazione semplificata per brevità
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement('button');
                 btn.textContent = i;
                 if (i === currentPage) btn.classList.add('active');
-                btn.addEventListener('click', () => {
-                    currentPage = i;
-                    renderCds();
-                });
+                btn.addEventListener('click', () => { currentPage = i; renderCds(); });
                 dom.pagination.appendChild(btn);
             }
         };
 
         const parseCsv = (text) => {
-            const lines = text.split('\n').slice(1); // Salta l'intestazione
+            const lines = text.split('\n').slice(1);
             return lines.map(line => {
                 const [title, artist, year, genre] = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
                 return { title, artist, year: parseInt(year) || 0, genre };
-            }).filter(cd => cd.title); // Ignora righe vuote
+            }).filter(cd => cd.title);
         };
 
         const importFromUrl = async (isAuto = false) => {
             const url = dom.sheetsUrlInput.value.trim();
-            if (!url) {
-                if (!isAuto) showStatus('Inserisci un URL valido.', true);
-                return;
-            }
+            if (!url) { if (!isAuto) showStatus('Inserisci un URL valido.', true); return; }
             dom.loader.style.display = 'block';
             if(isAuto) dom.autoLoadMessage.style.display = 'flex';
 
             try {
-                const response = await fetch(url + `&t=${Date.now()}`); // Cache busting
+                const response = await fetch(url + `&t=${Date.now()}`);
                 if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
                 const csvText = await response.text();
                 cds = parseCsv(csvText);
@@ -770,7 +775,7 @@
                 showStatus(`Importati ${cds.length} CD con successo!`);
             } catch (error) {
                 showStatus(`Errore importazione: ${error.message}`, true);
-                loadFromStorage(); // Fallback
+                loadFromStorage();
             } finally {
                 dom.loader.style.display = 'none';
                 if(isAuto) dom.autoLoadMessage.style.display = 'none';
@@ -789,21 +794,17 @@
             }
         };
 
-        // --- GESTIONE TEMA ---
         const applyTheme = (theme) => {
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark-mode');
-            } else {
-                document.documentElement.classList.remove('dark-mode');
-            }
+            document.documentElement.classList.toggle('dark-mode', theme === 'dark');
             localStorage.setItem('theme', theme);
         };
+        
+        // --- SETUP EVENTI ---
         dom.themeToggleButton.addEventListener('click', () => {
             const newTheme = document.documentElement.classList.contains('dark-mode') ? 'light' : 'dark';
             applyTheme(newTheme);
         });
 
-        // --- SETUP EVENTI ---
         dom.searchButton.addEventListener('click', applyFiltersAndSearch);
         dom.searchInput.addEventListener('input', debounce(applyFiltersAndSearch, 300));
         dom.filterGenre.addEventListener('change', applyFiltersAndSearch);
@@ -813,12 +814,8 @@
         document.querySelectorAll('th[data-sort]').forEach(th => {
             th.addEventListener('click', () => {
                 const field = th.dataset.sort;
-                if (sortState.field === field) {
-                    sortState.direction *= -1;
-                } else {
-                    sortState.field = field;
-                    sortState.direction = 1;
-                }
+                sortState.field = field;
+                sortState.direction = sortState.field === field ? sortState.direction * -1 : 1;
                 renderCds();
             });
         });
@@ -842,15 +839,11 @@
 
         // --- INIZIALIZZAZIONE ---
         const init = () => {
-            // Carica tema
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            applyTheme(savedTheme);
-
-            // Carica URL
+            applyTheme(localStorage.getItem('theme') || 'light');
             const savedUrl = localStorage.getItem('sheetsUrl');
             if (savedUrl) {
                 dom.sheetsUrlInput.value = savedUrl;
-                importFromUrl(true); // Auto-import
+                importFromUrl(true);
             } else {
                 loadFromStorage();
             }
