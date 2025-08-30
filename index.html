@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogo CD Musicali - Integrazione MusicBrainz</title>
+    <title>Catalogo CD Musicali - Integrazione TheAudioDB</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -452,8 +452,8 @@
 
         /* Stili per la modale dei dettagli */
         .modal-body { display: flex; gap: 20px; align-items: flex-start; }
-        .modal-cover { width: 150px; height: 150px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px var(--shadow-color); object-fit: cover; flex-shrink: 0; background-color: var(--stat-bg);}
-        .modal-info { min-width: 0; }
+        .modal-cover { width: 150px; height: 150px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px var(--shadow-color); object-fit: cover; flex-shrink: 0; }
+        .modal-info { min-width: 0; } /* Prevents flexbox overflow */
         .modal-info h2 { margin: 0 0 5px 0; color: var(--accent-color); font-size: 18px; }
         .modal-info h3 { margin: 0 0 15px 0; font-weight: 400; opacity: 0.8; font-size: 14px; }
         .modal-info h4 { font-size: 14px; margin-bottom: 8px; }
@@ -675,81 +675,7 @@
                 timeout = setTimeout(() => func.apply(this, args), delay);
             };
         };
-        
-        // =================================================================
-        // NUOVA FUNZIONE PER RECUPERARE I DATI DA MUSICBRAINZ
-        // =================================================================
-        /**
-         * Recupera i dettagli di un album da MusicBrainz e Cover Art Archive
-         * @param {string} artist - Nome dell'artista
-         * @param {string} title - Titolo dell'album
-         */
-        const getAlbumDetails = async (artist, title) => {
-            // L'header User-Agent è OBBLIGATORIO per le API di MusicBrainz.
-            const fetchOptions = {
-                headers: {
-                    'User-Agent': 'CatalogoCD/1.0.0 ( a.hardigor@gmail.com )' // Sostituisci con la tua app e email
-                }
-            };
 
-            try {
-                // 1. Cerca il "release-group" (l'album) per ottenere il suo ID (MBID)
-                let url = `https://musicbrainz.org/ws/2/release-group/?query=releasegroup:${encodeURIComponent(title)} AND artist:${encodeURIComponent(artist)}&fmt=json`;
-                let response = await fetch(url, fetchOptions);
-                if (!response.ok) throw new Error(`MusicBrainz (search): ${response.statusText}`);
-                let data = await response.json();
-
-                if (!data['release-groups'] || data['release-groups'].length === 0) {
-                    return null; // Nessun album trovato
-                }
-                const releaseGroupId = data['release-groups'][0].id;
-
-                // 2. Usa l'ID per ottenere i dettagli di una release specifica (per tracklist e cover)
-                url = `https://musicbrainz.org/ws/2/release-group/${releaseGroupId}?inc=releases&fmt=json`;
-                response = await fetch(url, fetchOptions);
-                 if (!response.ok) throw new Error(`MusicBrainz (lookup): ${response.statusText}`);
-                data = await response.json();
-
-                if (!data.releases || data.releases.length === 0) {
-                     return null;
-                }
-                const releaseId = data.releases[0].id; // ID della prima release trovata
-
-                // 3. Usa l'ID della release per cercare la copertina su Cover Art Archive
-                let coverUrl = null;
-                try {
-                    const coverResponse = await fetch(`https://coverartarchive.org/release/${releaseId}`);
-                    if (coverResponse.ok) {
-                        const coverData = await coverResponse.json();
-                        if (coverData.images && coverData.images.length > 0) {
-                             // Usiamo il thumbnail piccolo per la modale, più veloce da caricare
-                            coverUrl = coverData.images[0].thumbnails.small || coverData.images[0].image;
-                        }
-                    }
-                } catch (coverError) {
-                    console.warn("Cover Art non trovata o errore:", coverError);
-                }
-
-                // 4. Recupera la tracklist dalla release
-                url = `https://musicbrainz.org/ws/2/release/${releaseId}?inc=media&fmt=json`;
-                response = await fetch(url, fetchOptions);
-                if (!response.ok) throw new Error(`MusicBrainz (tracks): ${response.statusText}`);
-                const releaseData = await response.json();
-
-                const tracks = releaseData.media[0]?.tracks.map(track => track.title) || [];
-                
-                return {
-                    cover: coverUrl,
-                    tracks: tracks
-                };
-
-            } catch (error) {
-                console.error("Errore nel recuperare i dettagli da MusicBrainz:", error);
-                showStatus("Impossibile caricare i dettagli.", "error");
-                return null;
-            }
-        };
-        
         const renderCds = () => {
             filteredCds.sort((a, b) => {
                 const valA = a[sortState.field];
@@ -781,6 +707,33 @@
             updateSortIndicators();
             updatePagination(totalPages);
             updateStats();
+        };
+        
+        const getAlbumDetails = async (artist, title) => {
+            const apiKey = "2"; // Chiave API di test da TheAudioDB
+            const url = `https://www.theaudiodb.com/api/v1/json/${apiKey}/searchalbum.php?s=${encodeURIComponent(artist)}&a=${encodeURIComponent(title)}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Errore di rete: ${response.statusText}`);
+                const data = await response.json();
+
+                if (data.album && data.album.length > 0) {
+                    const album = data.album[0];
+                    const trackResponse = await fetch(`https://www.theaudiodb.com/api/v1/json/${apiKey}/track.php?m=${album.idAlbum}`);
+                    if (!trackResponse.ok) throw new Error(`Errore nel recupero tracce: ${trackResponse.statusText}`);
+                    const trackData = await trackResponse.json();
+                    
+                    return {
+                        cover: album.strAlbumThumb ? album.strAlbumThumb + "/preview" : null,
+                        tracks: trackData.track || []
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error("Errore API:", error);
+                showStatus("Impossibile caricare i dettagli.", "error");
+                return null;
+            }
         };
 
         const applyFiltersAndSearch = () => {
@@ -939,18 +892,18 @@
             if (!row || !row.dataset.artist) return;
             const artist = row.dataset.artist;
             const title = row.dataset.title;
-            showStatus('Ricerca su MusicBrainz...', 'loading', null);
+            showStatus('Caricamento dettagli...', 'loading', null);
             const details = await getAlbumDetails(artist, title);
             hideStatus();
             if (details) {
                 dom.modalAlbumTitle.textContent = title;
                 dom.modalAlbumArtist.textContent = artist;
-                dom.modalCoverArt.src = details.cover || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; // Placeholder
+                dom.modalCoverArt.src = details.cover || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; // Immagine trasparente
                 dom.modalTrackList.innerHTML = '';
                 if (details.tracks && details.tracks.length > 0) {
-                    details.tracks.forEach(trackTitle => {
+                    details.tracks.sort((a, b) => a.strTrackNumber - b.strTrackNumber).forEach(track => {
                         const li = document.createElement('li');
-                        li.textContent = trackTitle;
+                        li.textContent = `${track.strTrack}`;
                         dom.modalTrackList.appendChild(li);
                     });
                 } else {
@@ -958,7 +911,7 @@
                 }
                 dom.detailsModal.style.display = 'flex';
             } else {
-                showStatus('Dettagli non trovati su MusicBrainz.', 'error');
+                showStatus('Dettagli non trovati per questo album.', 'error');
             }
         });
 
