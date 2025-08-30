@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogo CD Musicali - Integrazione Google Sheets</title>
+    <title>Catalogo CD Musicali - Integrazione TheAudioDB</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -21,7 +21,6 @@
             --stat-bg: #e9ecef;
             --shadow-color: rgba(0, 0, 0, 0.1);
             --shadow-hover: rgba(0, 0, 0, 0.15);
-            --success-color: #2e7d2e;
             --warning-color: #c82333;
             --row-even-bg: #f0f2f5;
             --row-hover-bg: #dee2e6;
@@ -39,12 +38,10 @@
             --border-color: #333;
             --button-bg: #555;
             --button-hover: #777;
-            --button-text: #ffffff;
             --header-bg: #1a1a1a;
             --stat-bg: #2d2d2d;
             --shadow-color: rgba(0, 0, 0, 0.3);
             --shadow-hover: rgba(0, 0, 0, 0.4);
-            --success-color: #4caf50;
             --warning-color: #f44336;
             --row-even-bg: #2a2a2a;
             --row-hover-bg: #3d3d3d;
@@ -298,6 +295,11 @@
         }
         
         tr { transition: background-color 0.2s ease; }
+        
+        #cd-list tr {
+            cursor: pointer;
+        }
+
         tr:nth-child(even) { background-color: var(--row-even-bg); }
         tr:hover { background-color: var(--row-hover-bg); }
         
@@ -360,9 +362,9 @@
         }
         
         .status-success {
-            background-color: #d4edda; /* Verde chiaro */
-            color: #155724; /* Verde scuro per il testo */
-            border: 1px solid #c3e6cb; /* Bordo coordinato */
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
         
         .status-error {
@@ -424,7 +426,7 @@
         html.dark-mode .theme-icon-sun { display: block; }
         html.dark-mode .theme-icon-moon { display: none; }
         
-        /* --- Responsive & other styles --- */
+        /* --- MODAL & RESPONSIVE STYLES --- */
         .form-group { margin-bottom: 12px; }
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
         .stat-box { background: var(--stat-bg); padding: 12px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border-color); }
@@ -447,12 +449,26 @@
         .footer-button:hover { color: var(--accent-color); }
         .sort-indicator { margin-left: 4px; font-size: 12px; }
         .sort-indicator.active { color: var(--accent-color); }
-        
+
+        /* Stili per la modale dei dettagli */
+        .modal-body { display: flex; gap: 20px; align-items: flex-start; }
+        .modal-cover { width: 150px; height: 150px; border-radius: var(--radius-sm); box-shadow: 0 2px 8px var(--shadow-color); object-fit: cover; flex-shrink: 0; }
+        .modal-info { min-width: 0; } /* Prevents flexbox overflow */
+        .modal-info h2 { margin: 0 0 5px 0; color: var(--accent-color); font-size: 18px; }
+        .modal-info h3 { margin: 0 0 15px 0; font-weight: 400; opacity: 0.8; font-size: 14px; }
+        .modal-info h4 { font-size: 14px; margin-bottom: 8px; }
+        .tracklist { padding-left: 20px; max-height: 250px; overflow-y: auto; font-size: 13px; }
+        .tracklist li { margin-bottom: 5px; }
+
         @media (max-width: 767px) {
             body { padding: 8px; }
             .container, .card, .header-container { width: 100%; gap: 12px; padding: 12px; margin-bottom: 12px;}
             .search-box, .sheets-buttons, .footer-buttons { flex-direction: column; }
             .stats { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .modal-body { flex-direction: column; align-items: center; text-align: center; }
+            .tracklist { text-align: left; }
         }
     </style>
 </head>
@@ -579,13 +595,28 @@
             </div>
         </div>
     </div>
+
+    <div id="details-modal" class="modal">
+        <div class="modal-content" id="details-modal-content">
+            <span class="close" id="close-details">&times;</span>
+            <div class="modal-body">
+                <img src="" alt="Copertina Album" class="modal-cover" id="modal-cover-art">
+                <div class="modal-info">
+                    <h2 id="modal-album-title"></h2>
+                    <h3 id="modal-album-artist"></h3>
+                    <h4>Tracklist:</h4>
+                    <ol id="modal-track-list" class="tracklist"></ol>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- VARIABILI GLOBALI ---
         let cds = [];
         let filteredCds = [];
-        let sortState = { field: 'title', direction: 1 }; // 1: asc, -1: desc
+        let sortState = { field: 'title', direction: 1 };
         let currentPage = 1;
         const itemsPerPage = 10;
         let statusTimeout;
@@ -610,39 +641,32 @@
             sheetsUrlInput: document.getElementById('inline-sheets-url'),
             saveUrlBtn: document.getElementById('inline-save-sheets-url'),
             importBtn: document.getElementById('inline-import-sheets'),
-            removeUrlBtn: document.getElementById('inline-remove-sheets-url')
+            removeUrlBtn: document.getElementById('inline-remove-sheets-url'),
+            detailsModal: document.getElementById('details-modal'),
+            closeDetails: document.getElementById('close-details'),
+            modalCoverArt: document.getElementById('modal-cover-art'),
+            modalAlbumTitle: document.getElementById('modal-album-title'),
+            modalAlbumArtist: document.getElementById('modal-album-artist'),
+            modalTrackList: document.getElementById('modal-track-list')
         };
 
         // --- FUNZIONI ---
-        /**
-         * Mostra una notifica.
-         * @param {string} message - Il testo del messaggio.
-         * @param {string} type - Tipo di messaggio: 'success', 'error', o 'loading'.
-         * @param {number|null} duration - Durata in ms. Se null, il messaggio è persistente.
-         */
         const showStatus = (message, type = 'success', duration = 5000) => {
             clearTimeout(statusTimeout);
-            
             const icons = {
                 success: 'fa-check-circle',
                 error: 'fa-exclamation-triangle',
                 loading: 'fa-sync fa-spin'
             };
-            
             dom.statusMessage.innerHTML = `<i class="fas ${icons[type]}"></i> ${message}`;
             dom.statusMessage.className = `status-message status-${type}`;
             dom.statusMessage.classList.add('show');
-
             if (duration !== null) {
-                statusTimeout = setTimeout(() => {
-                    dom.statusMessage.classList.remove('show');
-                }, duration);
+                statusTimeout = setTimeout(() => dom.statusMessage.classList.remove('show'), duration);
             }
         };
 
-        const hideStatus = () => {
-             dom.statusMessage.classList.remove('show');
-        }
+        const hideStatus = () => dom.statusMessage.classList.remove('show');
 
         const debounce = (func, delay) => {
             let timeout;
@@ -656,12 +680,9 @@
             filteredCds.sort((a, b) => {
                 const valA = a[sortState.field];
                 const valB = b[sortState.field];
-                let comparison = 0;
-                if (typeof valA === 'number' && typeof valB === 'number') {
-                    comparison = valA - valB;
-                } else {
-                    comparison = String(valA).localeCompare(String(valB), 'it', { sensitivity: 'base' });
-                }
+                let comparison = typeof valA === 'number' && typeof valB === 'number' 
+                    ? valA - valB 
+                    : String(valA).localeCompare(String(valB), 'it', { sensitivity: 'base' });
                 return comparison * sortState.direction;
             });
 
@@ -671,11 +692,13 @@
 
             dom.cdList.innerHTML = '';
             if (paginatedCds.length === 0) {
-                dom.cdList.innerHTML = `<tr><td colspan="4" class="empty-state-cell"><i class="fas fa-compact-disc"></i>Nessun CD trovato. Prova a modificare i filtri.</td></tr>`;
+                dom.cdList.innerHTML = `<tr><td colspan="4" class="empty-state-cell"><i class="fas fa-compact-disc"></i>Nessun CD trovato.</td></tr>`;
             } else {
                 paginatedCds.forEach(cd => {
                     const row = document.createElement('tr');
                     row.className = 'fade-in';
+                    row.setAttribute('data-artist', cd.artist);
+                    row.setAttribute('data-title', cd.title);
                     row.innerHTML = `<td>${cd.title}</td><td>${cd.artist}</td><td>${cd.year || ''}</td><td>${cd.genre}</td>`;
                     dom.cdList.appendChild(row);
                 });
@@ -685,18 +708,43 @@
             updatePagination(totalPages);
             updateStats();
         };
+        
+        const getAlbumDetails = async (artist, title) => {
+            const apiKey = "2"; // Chiave API di test da TheAudioDB
+            const url = `https://www.theaudiodb.com/api/v1/json/${apiKey}/searchalbum.php?s=${encodeURIComponent(artist)}&a=${encodeURIComponent(title)}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Errore di rete: ${response.statusText}`);
+                const data = await response.json();
+
+                if (data.album && data.album.length > 0) {
+                    const album = data.album[0];
+                    const trackResponse = await fetch(`https://www.theaudiodb.com/api/v1/json/${apiKey}/track.php?m=${album.idAlbum}`);
+                    if (!trackResponse.ok) throw new Error(`Errore nel recupero tracce: ${trackResponse.statusText}`);
+                    const trackData = await trackResponse.json();
+                    
+                    return {
+                        cover: album.strAlbumThumb ? album.strAlbumThumb + "/preview" : null,
+                        tracks: trackData.track || []
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error("Errore API:", error);
+                showStatus("Impossibile caricare i dettagli.", "error");
+                return null;
+            }
+        };
 
         const applyFiltersAndSearch = () => {
             const searchTerm = dom.searchInput.value.toLowerCase();
             const genreFilter = dom.filterGenre.value;
             const yearFilter = dom.filterYear.value;
-
             filteredCds = cds.filter(cd => {
                 const matchesSearch = searchTerm ? 
                     ['title', 'artist', 'genre'].some(field => String(cd[field]).toLowerCase().includes(searchTerm)) || 
                     String(cd.year).includes(searchTerm) : true;
                 const matchesGenre = genreFilter ? cd.genre === genreFilter : true;
-                
                 let matchesYear = true;
                 if (yearFilter) {
                     const year = cd.year;
@@ -732,12 +780,11 @@
             document.querySelectorAll('th[data-sort]').forEach(th => {
                 const field = th.dataset.sort;
                 const indicator = th.querySelector('.sort-indicator');
+                indicator.textContent = '';
+                indicator.classList.remove('active');
                 if (field === sortState.field) {
                     indicator.textContent = sortState.direction === 1 ? '▲' : '▼';
                     indicator.classList.add('active');
-                } else {
-                    indicator.textContent = '';
-                    indicator.classList.remove('active');
                 }
             });
         };
@@ -755,21 +802,19 @@
         };
 
         const parseCsv = (text) => {
-            const lines = text.split('\n').slice(1);
+            const lines = text.trim().split('\n').slice(1);
             return lines.map(line => {
                 const [title, artist, year, genre] = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
                 return { title, artist, year: parseInt(year) || 0, genre };
-            }).filter(cd => cd.title);
+            }).filter(cd => cd.title && cd.artist);
         };
 
         const importFromUrl = async (isAuto = false) => {
             const url = dom.sheetsUrlInput.value.trim();
             if (!url) { if (!isAuto) showStatus('Inserisci un URL valido.', 'error'); return; }
-            
-            const loadingMessage = isAuto ? 'Aggiornamento automatico in corso...' : 'Importazione in corso...';
-            showStatus(loadingMessage, 'loading', null); // Messaggio persistente
+            const loadingMessage = isAuto ? 'Aggiornamento automatico...' : 'Importazione...';
+            showStatus(loadingMessage, 'loading', null);
             dom.loader.style.display = 'block';
-
             try {
                 const response = await fetch(url + `&t=${Date.now()}`);
                 if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
@@ -815,17 +860,17 @@
         dom.filterYear.addEventListener('change', applyFiltersAndSearch);
         dom.resetFiltersButton.addEventListener('click', resetFilters);
         
-        document.querySelectorAll('th[data-sort]').forEach(th => {
-            th.addEventListener('click', () => {
-                const field = th.dataset.sort;
-                if(sortState.field === field) {
-                   sortState.direction *= -1;
-                } else {
-                   sortState.field = field;
-                   sortState.direction = 1;
-                }
-                renderCds();
-            });
+        document.querySelector('thead').addEventListener('click', (e) => {
+            const th = e.target.closest('th[data-sort]');
+            if (!th) return;
+            const field = th.dataset.sort;
+            if(sortState.field === field) {
+               sortState.direction *= -1;
+            } else {
+               sortState.field = field;
+               sortState.direction = 1;
+            }
+            renderCds();
         });
         
         dom.configToggleButton.addEventListener('click', () => dom.configModal.style.display = 'flex');
@@ -841,8 +886,40 @@
             showStatus('URL rimosso.');
         });
         dom.importBtn.addEventListener('click', () => importFromUrl(false));
+        
+        dom.cdList.addEventListener('click', async (e) => {
+            const row = e.target.closest('tr');
+            if (!row || !row.dataset.artist) return;
+            const artist = row.dataset.artist;
+            const title = row.dataset.title;
+            showStatus('Caricamento dettagli...', 'loading', null);
+            const details = await getAlbumDetails(artist, title);
+            hideStatus();
+            if (details) {
+                dom.modalAlbumTitle.textContent = title;
+                dom.modalAlbumArtist.textContent = artist;
+                dom.modalCoverArt.src = details.cover || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; // Immagine trasparente
+                dom.modalTrackList.innerHTML = '';
+                if (details.tracks && details.tracks.length > 0) {
+                    details.tracks.sort((a, b) => a.strTrackNumber - b.strTrackNumber).forEach(track => {
+                        const li = document.createElement('li');
+                        li.textContent = `${track.strTrack}`;
+                        dom.modalTrackList.appendChild(li);
+                    });
+                } else {
+                    dom.modalTrackList.innerHTML = '<li>Tracklist non disponibile.</li>';
+                }
+                dom.detailsModal.style.display = 'flex';
+            } else {
+                showStatus('Dettagli non trovati per questo album.', 'error');
+            }
+        });
+
+        dom.closeDetails.addEventListener('click', () => dom.detailsModal.style.display = 'none');
+        
         window.addEventListener('click', (e) => {
             if (e.target === dom.configModal) dom.configModal.style.display = 'none';
+            if (e.target === dom.detailsModal) dom.detailsModal.style.display = 'none';
         });
 
         // --- INIZIALIZZAZIONE ---
@@ -856,7 +933,6 @@
                 loadFromStorage();
             }
         };
-
         init();
     });
     </script>
