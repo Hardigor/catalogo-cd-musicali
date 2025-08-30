@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogo CD Musicali - Integrazione Discogs</title>
+    <title>Catalogo CD Musicali - Integrazione Discogs (Smart)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -677,20 +677,20 @@
         };
         
         // =================================================================
-        // NUOVA FUNZIONE PER RECUPERARE I DATI DA DISCOGS
+        // FUNZIONE AGGIORNATA PER DISCOGS CON LOGICA DI PUNTEGGIO
         // =================================================================
-        /**
-         * Recupera i dettagli di un album da Discogs API
+       /**
+         * Recupera i dettagli di un album da Discogs API usando una logica di punteggio
+         * per trovare la corrispondenza migliore.
          * @param {string} artist - Nome dell'artista
          * @param {string} title - Titolo dell'album
+         * @param {string} year - Anno della release per migliorare l'accuratezza
          */
-        const getAlbumDetails = async (artist, title) => {
+        const getAlbumDetails = async (artist, title, year) => {
             // ⚠️ MODIFICA QUESTE RIGHE CON LE TUE CREDENZIALI
             const discogsKey = 'TEjlagvtVPAPwrQmSvUW';
             const discogsSecret = 'GlrUKEfYeylcsQKUXBovUaZDlwJArUQU';
-
-            // L'header User-Agent è sempre una buona pratica
-            const userAgent = 'CatalogoCD/1.0.0 ( YourAppName/YourEmail )';
+            const userAgent = 'CatalogoCD/1.1.0 ( YourAppName/YourEmail )';
             
             const fetchOptions = {
                 headers: {
@@ -700,7 +700,7 @@
             };
 
             try {
-                // 1. Cerca la release per ottenere l'URL della risorsa e la copertina
+                // 1. Cerca la release
                 let searchUrl = `https://api.discogs.com/database/search?release_title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}&type=release`;
                 let response = await fetch(searchUrl, fetchOptions);
                 if (!response.ok) throw new Error(`Discogs (Search): ${response.statusText}`);
@@ -710,20 +710,38 @@
                     console.log("Nessun risultato trovato su Discogs.");
                     return null;
                 }
-                
-                const firstResult = searchData.results[0];
-                const cover = firstResult.cover_image || null;
 
-                // 2. Usa l'URL della risorsa per ottenere i dettagli, inclusa la tracklist
-                let detailsUrl = firstResult.resource_url;
+                // 2. Calcola il punteggio per ogni risultato per trovare il migliore
+                const scoredResults = searchData.results.map(result => {
+                    let score = 0;
+                    const resultYear = parseInt(result.year, 10);
+                    const inputYear = parseInt(year, 10);
+
+                    if (result.format && result.format.includes('CD')) score += 10;
+                    if (resultYear && inputYear && resultYear === inputYear) score += 5;
+                    if (result.cover_image) score += 2;
+                    if (result.country && ['US', 'UK', 'Europe'].includes(result.country)) score += 1;
+
+                    return { ...result, score };
+                });
+
+                scoredResults.sort((a, b) => b.score - a.score);
+                const bestMatch = scoredResults[0];
+
+                if (bestMatch.score === 0) {
+                     console.log("Nessuna corrispondenza di alta qualità trovata, usando il primo risultato di default.");
+                }
+
+                // 3. Usa l'URL della risorsa del risultato migliore per ottenere i dettagli
+                let detailsUrl = bestMatch.resource_url;
                 response = await fetch(detailsUrl, fetchOptions);
-                 if (!response.ok) throw new Error(`Discogs (Details): ${response.statusText}`);
+                if (!response.ok) throw new Error(`Discogs (Details): ${response.statusText}`);
                 let detailsData = await response.json();
                 
                 const tracks = detailsData.tracklist ? detailsData.tracklist.map(track => track.title) : [];
 
                 return {
-                    cover: cover,
+                    cover: bestMatch.cover_image || null,
                     tracks: tracks
                 };
 
@@ -757,6 +775,7 @@
                     row.className = 'fade-in';
                     row.setAttribute('data-artist', cd.artist);
                     row.setAttribute('data-title', cd.title);
+                    row.setAttribute('data-year', cd.year || 0); // Aggiunto per lo scoring
                     row.innerHTML = `<td>${cd.title}</td><td>${cd.artist}</td><td>${cd.year || ''}</td><td>${cd.genre}</td>`;
                     dom.cdList.appendChild(row);
                 });
@@ -923,9 +942,12 @@
             if (!row || !row.dataset.artist) return;
             const artist = row.dataset.artist;
             const title = row.dataset.title;
-            showStatus('Ricerca su Discogs...', 'loading', null);
-            const details = await getAlbumDetails(artist, title);
+            const year = row.dataset.year; // Passiamo l'anno per lo scoring
+            
+            showStatus('Ricerca intelligente su Discogs...', 'loading', null);
+            const details = await getAlbumDetails(artist, title, year);
             hideStatus();
+
             if (details) {
                 dom.modalAlbumTitle.textContent = title;
                 dom.modalAlbumArtist.textContent = artist;
