@@ -872,7 +872,8 @@
                 cds = parseCsv(csvText);
                 localStorage.setItem('cds', JSON.stringify(cds));
                 applyFiltersAndSearch();
-                showStatus(`Importati ${cds.length} CD con successo!`, 'success');
+                // MESSAGGIO AGGIORNATO
+                showStatus('Importazione CD avvenuta correttamente', 'success');
             } catch (error) {
                 showStatus(`Errore importazione: ${error.message}`, 'error');
                 loadFromStorage();
@@ -978,13 +979,13 @@
         // --- INIZIALIZZAZIONE ---
         const init = () => {
             applyTheme(localStorage.getItem('theme') || 'light');
-            const savedUrl = localStorage.getItem('sheetsUrl');
-            if (savedUrl) {
-                dom.sheetsUrlInput.value = savedUrl;
-                importFromUrl(true);
-            } else {
-                loadFromStorage();
-            }
+            
+            // --- URL INSERITO AUTOMATICAMENTE NEL CODICE ---
+            const mySheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgRgeyXAs6ibw2aOQmOfpKtWyOSHClPMcsXDpHxEEjKgePp26G-Tmm_AMX2ldM2w/pub?output=csv";
+
+            // Imposta l'URL e avvia l'importazione automaticamente
+            dom.sheetsUrlInput.value = mySheetUrl;
+            importFromUrl(true); 
         };
         init();
     });
